@@ -17,9 +17,10 @@ module.exports = {
         const id = userUse.id_pmb
         const email = userUse.email
         const role = userUse.role
+        const kode_login = userUse.kode_login
         res.status(200).json({
             message: "login suksess",
-            id, email, role
+            id, email, role, kode_login
         })
     },
 
@@ -88,18 +89,18 @@ module.exports = {
             await transporter.sendMail({
                 from: 'muhammadbwi13@gmail.com',
                 to: `${email}`,
-                subject: "Atur Ulang Kata Kunci Apliaksi Mahasiswa STAINAA",
+                subject: "",
                 text: 'jangan disebarakan pada orang lain',
                 html: `<div class="card" style="width: 60%;>
                             <div class="card-body">
-                                <h5 class="card-title">Atur ulang kata kunci tinggal selangkah lagi.
-                                Silahkan masukkan nomor dibawah ini untuk mengatur ulang kata kunci Anda; </h5>
+                                <h5 class="card-title">Silakan masukkan kode verifikasi di bawah ini untuk mereset password anda
+                                jangan berikan kode verifikasi ini kepada siapapun</h5>
                                 <h3 style="color:blue" class="card-text">${randomNumber}</h3>
                                 <h6>Catatan :<br>
-                                1. ini adalah email yang dikirim oleh server STAINAA atas permintaan anda ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')} WIB
-                                    untuk mengatur ulang kata kunci pada aplikasi SIAKAD STAINAA.<br>
-                                2. Abaikan email ini jika anda merasa tidak melakukannya.<br>
-                                3. ini adalah email otomatis, mohon tidak membalas email ini</h6>
+                                1. Kode ini dikirim oleh server PMB STAINAA.<br>
+                                2. Abaikan jika anda merasa tidak melakukannya.<br>
+                                3. Pesan ini dikirim menggunakan email otomatis, mohon untuk tidak membalas email ini.
+                                </h6>
                                 <hr>
                                 <h6>banyuwangi, ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')} WIB <br>
                                 Sekolah Tinggi Agama Islam Nurul Abror Al-Robbaniyin <br>
@@ -136,9 +137,10 @@ module.exports = {
             const id = codeUse.id_pmb
             const email = codeUse.email
             const role = codeUse.role
+            const kode_login = codeUse.kode_login
             res.status(200).json({
                 message: "",
-                id, email, role
+                id, email, role, kode_login
             })
         } catch (err) {
             next(err)

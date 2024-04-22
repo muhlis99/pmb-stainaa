@@ -190,9 +190,10 @@ module.exports = {
         const id = dataPost.id_pmb
         const email = dataPost.email
         const role = dataPost.role
+        const kode_login =  dataPost.kode_login
         res.status(200).json({
             message: "login suksess",
-            id, email, role
+            id, email, role, kode_login
         })
     }
 }
