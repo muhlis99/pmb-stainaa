@@ -1,0 +1,25 @@
+{
+  "name": "pmb-stainaa",
+  "version": "1.0.0",
+  "description": "penerimaan mahasiswa baru stainaa",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mohammad muhlis",
+  "license": "ISC",
+  "dependencies": {
+    "argon2": "^0.40.1",
+    "body-parser": "^1.20.2",
+    "connect-session-sequelize": "^7.1.7",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-fileupload": "^1.5.0",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.0.1",
+    "mysql2": "^3.9.7",
+    "nodemailer": "^6.9.13",
+    "sequelize": "^6.37.3"
+  }
+}
