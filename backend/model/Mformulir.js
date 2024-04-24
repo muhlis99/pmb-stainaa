@@ -9,10 +9,7 @@ const formulir = db.define('formulir', {
         autoIncrement: true,
         primaryKey: true
     },
-    'kode_login': {
-        type: DataTypes.TEXT,
-    },
-    'nim': {
+    'token': {
         type: DataTypes.TEXT,
     },
     'no_kk': {
@@ -42,6 +39,10 @@ const formulir = db.define('formulir', {
     'jenis_kelamin': {
         type: DataTypes.ENUM,
         values: ['l', 'p']
+    },
+    'penerima_kps': {
+        type: DataTypes.ENUM,
+        values: ['ya', 'tidak']
     },
     'jalan': {
         type: DataTypes.TEXT
@@ -160,13 +161,10 @@ const formulir = db.define('formulir', {
     'foto_ijazah': {
         type: DataTypes.TEXT
     },
-    'tanggal_daftar_kuliah': {
-        type: DataTypes.TEXT
-    },
     'lastId': {
         type: DataTypes.VIRTUAL,
         get() {
-            return this.id;
+            return this.id_pmb;
         }, set(value) {
             throw new Error('Do not try to set the `id mahasiswa` value!');
         }

@@ -1,13 +1,71 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const { desa, kecamatan, kabupaten, provinsi, negara } = require('../model/Mequipment.js')
 const formulir =  require('../model/Mformulir.js')
+const path = require('path')
+const fs = require('fs')
 
 module.exports = {
+    getByToken : async (req, res, next) => {
+        const kode = req.params.kode
+        const formulirUse = await formulir.findOne({
+            include: [
+            {
+                model: negara
+            }, {
+                model: provinsi
+            }, {
+                model: kabupaten
+            }, {
+                model: kecamatan
+            }, {
+                model: desa
+            }],
+            where: {
+                token: kode,
+            }
+        }).
+            then(result => {
+                if (!result) {
+                    return res.status(404).json({
+                        message: "Data Tidak Ditemukan",
+                    })
+                }
+                res.status(201).json({
+                    message: "Data Ditemukan",
+                    data: result
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
+    },
+
+    checkByToken : async (req, res, next) => {
+        const kode =  req.params.kode
+        const data = await formulir.findOne({where:{token:kode}})
+        const diri = data.penerima_kps == "" ? 0 : 1
+        const alamat = data.jenis_tinggal == "" ? 0 : 1
+        const ortu = data.pendidikan_ibu == "" ? 0 : 1
+        const wali = data.pendidikan_wali == "" ? 0 : 1
+        const berkas = data.foto_ijazah == "" ? 0 : 1
+        res.status(201).json({
+            message: "Data success",
+            data : [{
+                nama : data.nama,
+                foto : data.foto_diri,
+                diri : diri,
+                alamat : alamat,
+                ortu : ortu,
+                wali : wali,
+                berkas : berkas
+            }]
+        })
+    },
+
     createFirst : async (req, res, next) => {
         const kode =  req.params.kode
         await formulir.create({
-            kode_login : kode,
-            nim: "",
+            token : kode,
             no_kk: "",
             nik: "",
             no_kps: "",
@@ -17,6 +75,7 @@ module.exports = {
             tanggal_lahir: "",
             tempat_lahir: "",
             jenis_kelamin: "",
+            penerima_kps : "",
             jalan: "",
             dusun: "",
             rt: "",
@@ -57,7 +116,6 @@ module.exports = {
             foto_ktp: "",
             foto_ijazah: "",
             foto_kip: "",
-            tanggal_daftar_kuliah: "",
         }).
             then(result => {
                 res.status(201).json({
@@ -65,7 +123,7 @@ module.exports = {
                 })
             }).
             catch(err => {
-                next(err)
+                console.log(err)
             })
     },
     
@@ -77,7 +135,7 @@ module.exports = {
         const tanggal_lahir = tahun + "-" + bulan + "-" + tanggal
         const formulirUse = await formulir.findOne({
             where: {
-                kode_login: kode
+                token: kode
             }
         })
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
@@ -98,7 +156,7 @@ module.exports = {
             jenis_pendaftaran: jenis_pendaftaran
         }, {
             where: {
-                kode_login: kode
+                token: kode
             }
         }).
             then(result => {
@@ -112,16 +170,17 @@ module.exports = {
     },
 
     form2 : async (req, res, next) => {
-        const { jalan, dusun, rt, rw, kode_pos, negara,
+        const { penerima_kps,jalan, dusun, rt, rw, kode_pos, negara,
             provinsi, kabupaten, kecamatan, desa, jenis_tinggal, alat_transportasi } = req.body
         const kode = req.params.kode
         const formulirUse = await formulir.findOne({
             where: {
-                kode_login: kode
+                token: kode
             }
         })
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
         await formulir.update({
+            penerima_kps : penerima_kps,
             jalan: jalan,
             dusun: dusun,
             rt: rt,
@@ -136,7 +195,7 @@ module.exports = {
             alat_transportasi: alat_transportasi,
         }, {
             where: {
-                kode_login: kode
+                token: kode
             }
         }).
             then(result => {
@@ -159,7 +218,7 @@ module.exports = {
 
         const formulirUse = await formulir.findOne({
             where: {
-                kode_login: kode
+                token: kode
             }
         })
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
@@ -178,7 +237,7 @@ module.exports = {
             pendidikan_ibu: pendidikan_ibu,
         }, {
             where: {
-                kode_login: kode
+                token: kode
             }
         }).
             then(result => {
@@ -199,7 +258,7 @@ module.exports = {
         const date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
         const formulirUse = await formulir.findOne({
             where: {
-                kode_login: kode
+                token: kode
             }
         })
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
@@ -212,7 +271,7 @@ module.exports = {
             pendidikan_wali: pendidikan_wali,
         }, {
             where: {
-                kode_login: kode
+                token: kode
             }
         }).
         then(result => {
@@ -229,7 +288,7 @@ module.exports = {
         const kode = req.params.kode
         const formulirUse = await formulir.findOne({
             where: {
-                kode_login: kode
+                token: kode
             }
         })
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
@@ -241,11 +300,11 @@ module.exports = {
             if (!file) return res.status(400).json({ message: "foto diri tidak boleh kosong" })
             const fileSize = file.data.length
             const ext = path.extname(file.name)
-            fileNameFotoDiri = "foto_diri" + id + file.md5 + ext
+            fileNameFotoDiri = "foto_diri" + kode + file.md5 + ext
             const allowedType = ['.png', '.jpg', '.jpeg']
             if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto diri yang anda upload tidak valid" })
             if (fileSize > 5000000) return res.status(422).json({ msg: "file foto diri yang anda upload tidak boleh lebih dari 5 mb" })
-            file.mv(`../tmp_pmb/diri/${fileNameFotoDiri}`, (err) => {
+            file.mv(`./tmp_pmb/diri/${fileNameFotoDiri}`, (err) => {
                 if (err) return res.status(500).json({ message: err.message })
             })
         } else {
@@ -253,13 +312,13 @@ module.exports = {
             if (!file) return res.status(400).json({ message: "foto diri tidak boleh kosong" })
             const fileSize = file.data.length
             const ext = path.extname(file.name)
-            fileNameFotoDiri = "foto_diri" + id + file.md5 + ext
+            fileNameFotoDiri = "foto_diri" + kode + file.md5 + ext
             const allowedType = ['.png', '.jpg', '.jpeg']
             if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto diri yang anda upload tidak valid" })
             if (fileSize > 5000000) return res.status(422).json({ message: "file foto diri yang anda upload tidak boleh lebih dari 5 mb" })
-            const filepath = `../tmp_pmb/diri/${formulirUse.foto_diri}`
+            const filepath = `./tmp_pmb/diri/${formulirUse.foto_diri}`
             fs.unlinkSync(filepath)
-            file.mv(`../tmp_pmb/diri/${fileNameFotoDiri}`, (err) => {
+            file.mv(`./tmp_pmb/diri/${fileNameFotoDiri}`, (err) => {
                 if (err) return res.status(500).json({ message: err.message })
             })
         }
@@ -273,11 +332,11 @@ module.exports = {
             if (!file) return res.status(400).json({ message: "foto kk tidak boleh kosong" })
             const fileSize = file.data.length
             const ext = path.extname(file.name)
-            fileNameFotoKK = "foto_kk" + id + file.md5 + ext
+            fileNameFotoKK = "foto_kk"  + kode +file.md5 + ext
             const allowedType = ['.png', '.jpg', '.jpeg']
             if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto kk yang anda upload tidak valid" })
             if (fileSize > 5000000) return res.status(422).json({ msg: "file foto kk yang anda upload tidak boleh lebih dari 5 mb" })
-            file.mv(`../tmp_pmb/kk/${fileNameFotoKK}`, (err) => {
+            file.mv(`./tmp_pmb/kk/${fileNameFotoKK}`, (err) => {
                 if (err) return res.status(500).json({ message: err.message })
             })
         } else {
@@ -285,30 +344,30 @@ module.exports = {
             if (!file) return res.status(400).json({ message: "foto kk tidak boleh kosong" })
             const fileSize = file.data.length
             const ext = path.extname(file.name)
-            fileNameFotoKK = "foto_kk" + id + file.md5 + ext
+            fileNameFotoKK = "foto_kk"  + kode + file.md5 + ext
             const allowedType = ['.png', '.jpg', '.jpeg']
             if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto kk yang anda upload tidak valid" })
             if (fileSize > 5000000) return res.status(422).json({ message: "file foto kk yang anda upload tidak boleh lebih dari 5 mb" })
-            const filepath = `../tmp_pmb/kk/${formulirUse.foto_kk}`
+            const filepath = `./tmp_pmb/kk/${formulirUse.foto_kk}`
             fs.unlinkSync(filepath)
-            file.mv(`../tmp_pmb/kk/${fileNameFotoKK}`, (err) => {
+            file.mv(`./tmp_pmb/kk/${fileNameFotoKK}`, (err) => {
                 if (err) return res.status(500).json({ message: err.message })
             })
         }
-        // ---------------- end foto kk --------------//
+        //  ---------------- end foto kk --------------//
 
-        //----------- foto ktp------------- //
+        // //----------- foto ktp------------- //
         let fileNameFotoKtp = ""
         if (formulirUse.foto_ktp === "") {
             const file = req.files.foto_ktp
             if (!file) return res.status(400).json({ message: "foto ktp tidak boleh kosong" })
             const fileSize = file.data.length
             const ext = path.extname(file.name)
-            fileNameFotoKtp = "foto_ktp" + id + file.md5 + ext
+            fileNameFotoKtp = "foto_ktp" + kode + file.md5 + ext
             const allowedType = ['.png', '.jpg', '.jpeg']
             if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto ktp yang anda upload tidak valid" })
             if (fileSize > 5000000) return res.status(422).json({ msg: "file foto ktp yang anda upload tidak boleh lebih dari 5 mb" })
-            file.mv(`../tmp_pmb/ktp/${fileNameFotoKtp}`, (err) => {
+            file.mv(`./tmp_pmb/ktp/${fileNameFotoKtp}`, (err) => {
                 if (err) return res.status(500).json({ message: err.message })
             })
         } else {
@@ -316,30 +375,30 @@ module.exports = {
             if (!file) return res.status(400).json({ message: "foto ktp tidak boleh kosong" })
             const fileSize = file.data.length
             const ext = path.extname(file.name)
-            fileNameFotoKtp = "foto_ktp" + id + file.md5 + ext
+            fileNameFotoKtp = "foto_ktp" + kode +file.md5 + ext
             const allowedType = ['.png', '.jpg', '.jpeg']
             if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto ktp yang anda upload tidak valid" })
             if (fileSize > 5000000) return res.status(422).json({ message: "file foto ktp yang anda upload tidak boleh lebih dari 5 mb" })
-            const filepath = `../tmp_pmb/ktp/${formulirUse.foto_ktp}`
+            const filepath = `./tmp_pmb/ktp/${formulirUse.foto_ktp}`
             fs.unlinkSync(filepath)
-            file.mv(`../tmp_pmb/ktp/${fileNameFotoKtp}`, (err) => {
+            file.mv(`./tmp_pmb/ktp/${fileNameFotoKtp}`, (err) => {
                 if (err) return res.status(500).json({ message: err.message })
             })
         }
-        // ---------------- end foto ktp --------------//
+        //  ---------------- end foto ktp --------------//
 
-        //----------- foto ijazah------------- //
+        // //----------- foto ijazah------------- //
         let fileNameFotoIjazah = ""
         if (formulirUse.foto_ijazah === "") {
             const file = req.files.foto_ijazah
             if (!file) return res.status(400).json({ message: "foto ijazah tidak boleh kosong" })
             const fileSize = file.data.length
             const ext = path.extname(file.name)
-            fileNameFotoIjazah = "foto_ijazah" + id + file.md5 + ext
+            fileNameFotoIjazah = "foto_ijazah" + kode + file.md5 + ext
             const allowedType = ['.png', '.jpg', '.jpeg']
             if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto ijazah yang anda upload tidak valid" })
             if (fileSize > 5000000) return res.status(422).json({ msg: "file foto ijazah yang anda upload tidak boleh lebih dari 5 mb" })
-            file.mv(`../tmp_pmb/ijazah/${fileNameFotoIjazah}`, (err) => {
+            file.mv(`./tmp_pmb/ijazah/${fileNameFotoIjazah}`, (err) => {
                 if (err) return res.status(500).json({ message: err.message })
             })
         } else {
@@ -347,13 +406,13 @@ module.exports = {
             if (!file) return res.status(400).json({ message: "foto ijazah tidak boleh kosong" })
             const fileSize = file.data.length
             const ext = path.extname(file.name)
-            fileNameFotoIjazah = "foto_ijazah" + id + file.md5 + ext
+            fileNameFotoIjazah = "foto_ijazah" + kode + file.md5 + ext
             const allowedType = ['.png', '.jpg', '.jpeg']
             if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto ijazah yang anda upload tidak valid" })
             if (fileSize > 5000000) return res.status(422).json({ message: "file foto ijazah yang anda upload tidak boleh lebih dari 5 mb" })
-            const filepath = `../tmp_pmb/ijazah/${formulirUse.foto_ijazah}`
+            const filepath = `./tmp_pmb/ijazah/${formulirUse.foto_ijazah}`
             fs.unlinkSync(filepath)
-            file.mv(`../tmp_pmb/ijazah/${fileNameFotoIjazah}`, (err) => {
+            file.mv(`./tmp_pmb/ijazah/${fileNameFotoIjazah}`, (err) => {
                 if (err) return res.status(500).json({ message: err.message })
             })
         }
@@ -366,14 +425,16 @@ module.exports = {
                 foto_ijazah: fileNameFotoIjazah,
             }, {
                 where: {
-                    kode_login: kode
+                    token: kode
                 }
             })
                 .then(result => {
                     res.status(200).json({ message: "Data file formulir berhasil ditambahkan" })
+                }).catch(err => {
+                    console.log(err)
                 })
         } catch (error) {
-            next(error)
+            console.log(error)
         }
     }
 

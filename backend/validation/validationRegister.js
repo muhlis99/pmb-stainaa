@@ -1,5 +1,5 @@
 const { body, check } = require('express-validator')
-
+const registrasi = require('../model/Mregistrasi.js')
 
 exports.validationRegistrasi = [
     check('nama')
@@ -10,7 +10,17 @@ exports.validationRegistrasi = [
         .withMessage('email tidak boleh kosong')
         .isEmail()
         .normalizeEmail()
-        .withMessage('email tidak valid'),
+        .withMessage('email tidak valid')
+        .custom(async value => {
+            const user = await registrasi.findOne({
+                where : {
+                    email : value
+                }
+            });
+            if (user) {
+                throw new Error('email sudah ada');
+            }
+        }),
     check('pass')
         .notEmpty()
         .withMessage('password tidak boleh kosong')

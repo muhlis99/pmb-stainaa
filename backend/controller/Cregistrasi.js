@@ -193,7 +193,7 @@ module.exports = {
         const id = dataPost.id_pmb
         const email = dataPost.email
         const role = dataPost.role
-        const token =  dataPost.token
+        const token =  randomNumber
         res.status(200).json({
             message: "login suksess",
             id, email, role, token
