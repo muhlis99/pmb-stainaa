@@ -19,7 +19,7 @@ module.exports = {
                         }
                     },
                     {
-                        kode_login: {
+                        token: {
                             [Op.like]: `%${search}%`
                         }
                     },
@@ -46,7 +46,7 @@ module.exports = {
                         }
                     },
                     {
-                        kode_login: {
+                        token: {
                             [Op.like]: `%${search}%`
                         }
                     },
@@ -108,14 +108,15 @@ module.exports = {
     },
     
     daftar : async (req, res, next) => {
-        const {nama, email, noHp, pass} = req.body
+        const {nama, email, pass, conPass} = req.body
+        if (pass != conPass) return res.status(400).json({ message: "confirmasi password yang anda masukkan salah" })
         const hashPass =  await argon.hash(pass)
         await registrasi.create({
             nama : nama,
             email : email,
-            no_hp_wali : noHp,
             password : hashPass,
             role : "user",
+            verivikasi_kode : "",
             status : "aktif"
         }).then(async result => {
             let randomNumber = Math.floor(100000 + Math.random() * 900000)
@@ -168,7 +169,8 @@ module.exports = {
 
     verifikasi : async (req, res, next) => {
         const {kode} = req.body
-        let randomNumber = Math.floor(100000 + Math.random() * 900000)
+        let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
+        if(kode.length < 6)return res.status(404).json({message: "kode yang anda masukkan kurang 6 digit"})
         const dataPost = await registrasi.findOne({
             where: {
                 verifikasi_kode: kode,
@@ -180,7 +182,8 @@ module.exports = {
             })
         }
         await registrasi.update({
-            kode_login : randomNumber 
+            token : randomNumber,
+            verifikasi_kode : ""
         }, {
             where : {
                 verifikasi_kode : kode
@@ -190,10 +193,10 @@ module.exports = {
         const id = dataPost.id_pmb
         const email = dataPost.email
         const role = dataPost.role
-        const kode_login =  dataPost.kode_login
+        const token =  dataPost.token
         res.status(200).json({
             message: "login suksess",
-            id, email, role, kode_login
+            id, email, role, token
         })
     }
 }

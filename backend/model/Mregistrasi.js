@@ -7,7 +7,7 @@ const registrasi = db.define('registrasi', {
         autoIncrement: true,
         primaryKey: true
     },
-    'kode_login': {
+    'token': {
         type: DataTypes.TEXT,
     },
     'nama': {
@@ -19,16 +19,10 @@ const registrasi = db.define('registrasi', {
     'password': {
         type: DataTypes.TEXT
     },
-    'no_hp_wali': {
-        type: DataTypes.TEXT
-    },
     'role': {
         type: DataTypes.TEXT
     },
     'verifikasi_kode': {
-        type: DataTypes.TEXT
-    },
-    'verifikasi_reset_password': {
         type: DataTypes.TEXT
     },
     'status': {

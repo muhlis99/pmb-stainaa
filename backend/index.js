@@ -30,9 +30,11 @@ app.use(bodyparser.urlencoded({ extended: true }))
 
 const registrasi =  require('./router/Rregistrasi.js')
 const login =  require('./router/Rlogin.js')
+const formulir = require('./router/Rformulir.js')
 
 app.use('/v1/registrasi', registrasi)
 app.use('/v1/login', login)
+app.use('/v1/formulir', formulir)
 
 app.listen(3001, (req, res) => {
     console.log(`APP IS RUNNING`)

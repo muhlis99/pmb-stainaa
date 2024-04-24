@@ -17,10 +17,10 @@ module.exports = {
         const id = userUse.id_pmb
         const email = userUse.email
         const role = userUse.role
-        const kode_login = userUse.kode_login
+        const token = userUse.token
         res.status(200).json({
             message: "login suksess",
-            id, email, role, kode_login
+            id, email, role, token
         })
     },
 
@@ -31,7 +31,7 @@ module.exports = {
             })
         }
         const userUse = await user.findOne({
-            attributes: ["id_pmb", "email", "role"],
+            attributes: ["id_pmb", "email","token","role"],
             where: {
                 id_pmb: req.session.userId,
                 status: "aktif"
@@ -73,7 +73,7 @@ module.exports = {
 
         try {
             await user.update({
-                verifikasi_reset_password: randomNumber,
+                verifikasi_kode: randomNumber,
             }, {
                 where: {
                     email: email,
@@ -119,17 +119,17 @@ module.exports = {
         const code = req.body.code
         const codeUse = await user.findOne({
             where: {
-                verifikasi_reset_password: code,
+                verifikasi_kode: code,
                 status: "aktif"
             }
         })
         if (!codeUse) return res.status(404).json({ message: "data tidak ditemukan" })
         try {
             await user.update({
-                verify_code: ""
+                verifikasi_kode: ""
             }, {
                 where: {
-                    id: codeUse.id,
+                    id_pmb: codeUse.id_pmb,
                     status: "aktif"
                 }
             })
@@ -137,10 +137,10 @@ module.exports = {
             const id = codeUse.id_pmb
             const email = codeUse.email
             const role = codeUse.role
-            const kode_login = codeUse.kode_login
+            const token = codeUse.token
             res.status(200).json({
                 message: "",
-                id, email, role, kode_login
+                id, email, role, token
             })
         } catch (err) {
             next(err)
@@ -149,10 +149,11 @@ module.exports = {
 
     resetPasswordByForgot: async (req, res, next) => {
         const id = req.params.id
-        const { newPassword } = req.body
-        const hashPassword = await argon.hash(newPassword)
+        const {pass, conPass} = req.body
+        if (pass != conPass) return res.status(400).json({ message: "confirmasi password yang anda masukkan salah" })
+        const hashPass =  await argon.hash(pass)
         await user.update({
-            password: hashPassword,
+            password: hashPass,
         }, {
             where: {
                 id_pmb: id,

@@ -7,11 +7,16 @@ exports.validationRegistrasi = [
         .withMessage('nama tidak boleh kosong'),
     check('email')
         .notEmpty()
-        .withMessage('email tidak boleh kosong'),
-    check('password')
+        .withMessage('email tidak boleh kosong')
+        .isEmail()
+        .normalizeEmail()
+        .withMessage('email tidak valid'),
+    check('pass')
         .notEmpty()
-        .withMessage('password tidak boleh kosong'),
-    check('noHp')
+        .withMessage('password tidak boleh kosong')
+        .isLength({ min: 8 })
+        .withMessage('password tidak kuat'),
+    check('conPass')
         .notEmpty()
-        .withMessage('role tidak boleh kosong')
+        .withMessage('conformasi password tidak boleh kosong')
 ]
