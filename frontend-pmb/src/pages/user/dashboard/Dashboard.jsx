@@ -1,7 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import LayoutUser from '../../LayoutUser'
+import { useDispatch, useSelector } from "react-redux"
+import { getMe } from "../../../features/authSlice"
+import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { isError, user } = useSelector((state) => state.auth)
+
+    useEffect(() => {
+        if (isError) {
+            navigate('/login')
+        }
+    }, [isError])
+
+    useEffect(() => {
+        dispatch(getMe())
+    }, [dispatch])
+
     return (
         <LayoutUser>
             <div className="container">
@@ -14,7 +31,8 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row"></div>
+                <div className="row">
+                </div>
             </div>
         </LayoutUser>
     )
