@@ -51,6 +51,10 @@ export const getMe = createAsyncThunk("user/getMe", async (_, thunkAPI) => {
     }
 })
 
+export const LogOut = createAsyncThunk("user/LogOut", async () => {
+    await axios.delete('v1/login/out')
+})
+
 
 export const authSlice = createSlice({
     name: "auth",

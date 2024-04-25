@@ -1,8 +1,33 @@
 import React from 'react'
 import logo from "../assets/stainaa.png"
-import { Link } from 'react-router-dom'
+import avatar from "../assets/userAvatar.png"
+import { Link, useNavigate } from 'react-router-dom'
+import { LogOut, reset } from "../features/authSlice"
+import { useDispatch, useSelector } from "react-redux"
+import Swal from "sweetalert2"
 
 const Navbar = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { user } = useSelector((state) => state.auth)
+
+    const logOut = () => {
+        Swal.fire({
+            title: "Anda Yakin Untuk Keluar?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch(LogOut())
+                dispatch(reset())
+                navigate("/login")
+            }
+        })
+    }
 
     return (
         <>
@@ -18,7 +43,7 @@ const Navbar = () => {
                                 <a className="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                     <div className="avatar avatar-md avatar-indicators avatar-online">
-                                        <img alt="avatar" src="../../../assets/images/avatar/avatar-1.jpg"
+                                        <img alt="avatar" src={avatar}
                                             className="rounded-circle" />
                                     </div>
                                 </a>
@@ -26,74 +51,19 @@ const Navbar = () => {
                                     <div className="dropdown-item">
                                         <div className="d-flex">
                                             <div className="avatar avatar-md avatar-indicators avatar-online">
-                                                <img alt="avatar" src="../../../assets/images/avatar/avatar-1.jpg"
+                                                <img alt="avatar" src={avatar}
                                                     className="rounded-circle" />
                                             </div>
                                             <div className="ms-3 lh-1">
-                                                <h5 className="mb-1">Annette Black</h5>
-                                                <p className="mb-0">annette@geeksui.com</p>
+                                                <h5 className="mb-1">{user && user.data.nama}</h5>
+                                                {user && <p className="mb-0">{user.data.email}</p>}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="dropdown-divider"></div>
                                     <ul className="list-unstyled">
-                                        <li className="dropdown-submenu dropstart-lg">
-                                            <a className="dropdown-item dropdown-list-group-item dropdown-toggle" href="#">
-                                                <i className="fe fe-circle me-2"></i>
-                                                Status
-                                            </a>
-                                            <ul className="dropdown-menu">
-                                                <li>
-                                                    <a className="dropdown-item" href="#">
-                                                        <span className="badge-dot bg-success me-2"></span>
-                                                        Online
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a className="dropdown-item" href="#">
-                                                        <span className="badge-dot bg-secondary me-2"></span>
-                                                        Offline
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a className="dropdown-item" href="#">
-                                                        <span className="badge-dot bg-warning me-2"></span>
-                                                        Away
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a className="dropdown-item" href="#">
-                                                        <span className="badge-dot bg-danger me-2"></span>
-                                                        Busy
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
                                         <li>
-                                            <a className="dropdown-item"
-                                                href="https://geeksui.codescandy.com/geeks/pages/profile-edit.html">
-                                                <i className="fe fe-user me-2"></i>
-                                                Profile
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a className="dropdown-item"
-                                                href="https://geeksui.codescandy.com/geeks/pages/student-subscriptions.html">
-                                                <i className="fe fe-star me-2"></i>
-                                                Subscription
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a className="dropdown-item" href="#">
-                                                <i className="fe fe-settings me-2"></i>
-                                                Settings
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div className="dropdown-divider"></div>
-                                    <ul className="list-unstyled">
-                                        <li>
-                                            <a className="dropdown-item" href="https://geeksui.codescandy.com/geeks/index.html">
+                                            <a className="dropdown-item" onClick={logOut}>
                                                 <i className="fe fe-power me-2"></i>
                                                 Sign Out
                                             </a>
