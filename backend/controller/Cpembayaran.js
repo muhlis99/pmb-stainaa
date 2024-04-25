@@ -1,4 +1,4 @@
-const pembayaran =  require('../model/MPembayaran.js')
+const pembayaran =  require('../model/Mpembayaran.js')
 const {Sequelize,Op} =  require('sequelize')
 
 module.exports = {
