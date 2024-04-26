@@ -1,6 +1,6 @@
-const soal =  require('../model/Msoal.js')
-const pertanyaan = require('../model/MPertanyaan.js')
-const {Sequelize,Op, where} =  require('sequelize')
+const Mpertanyaan = require('../model/MPertanyaan.js')
+const soal = require('../model/Msoal.js')
+const {Sequelize,Op} =  require('sequelize')
 
 
 module.exports = {
@@ -9,26 +9,24 @@ module.exports = {
         const perPage = parseInt(req.query.perPage) || 10
         const search = req.query.search || ""
         const offset = (currentPage - 1) * perPage
-        const totalPage = await soal.count({
+        const totalPage = await pertanyaan.count({
+            include : [{
+                model : soal
+            }],
             where: {
                 [Op.or]: [
                     {
-                        id_soal: {
+                        id_pertanyaan: {
                             [Op.like]: `%${search}%`
                         }
                     },
                     {
-                        kode_soal: {
+                        pertanyaan: {
                             [Op.like]: `%${search}%`
                         }
                     },
                     {
-                        nama_soal: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
-                        jumlah_soal: {
+                        kode_pertanyaan: {
                             [Op.like]: `%${search}%`
                         }
                     }
@@ -37,26 +35,24 @@ module.exports = {
             }
         })
         const totalItems = Math.ceil(totalPage / perPage)
-        await soal.findAll({
+        await pertanyaan.findAll({
+            include : [{
+                model : soal
+            }],
             where: {
                 [Op.or]: [
                     {
-                        id_soal: {
+                        id_pertanyaan: {
                             [Op.like]: `%${search}%`
                         }
                     },
                     {
-                        kode_soal: {
+                        pertanyaan: {
                             [Op.like]: `%${search}%`
                         }
                     },
                     {
-                        nama_soal: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
-                        jumlah_soal: {
+                        kode_pertanyaan: {
                             [Op.like]: `%${search}%`
                         }
                     }
@@ -66,12 +62,12 @@ module.exports = {
             offset: offset,
             limit: perPage,
             order: [
-                ["id_soal", "DESC"]
+                ["id_pertanyaan", "DESC"]
             ]
         }).
             then(result => {
                 res.status(200).json({
-                    message: "Get All soal Success",
+                    message: "Get All pertanyaan Success",
                     data: result,
                     total_data: totalPage,
                     per_page: perPage,
@@ -80,45 +76,27 @@ module.exports = {
                 })
             }).
             catch(err => {
-                next(err)
+                console.log(err)
             })
-    },
-
-    recordPertanyaan : async (req, res, next) => {
-        const kode = req.params.kode
-        const jumlahPertanyaan = await pertanyaan.count({
-            where : {
-                id_soal : kode,
-                status : "aktif"
-            }
-        }).
-        then(result => {
-            res.status(201).json({
-                message: "Data soal Ditemukan",
-                jumlahInsertPertanyaan: result
-            })
-        }).
-        catch(err => {
-            next(err)
-        })
     },
 
     getById : async (req, res, next) => {
         const id = req.params.id
-        await soal.findOne({
+        await pertanyaan.findOne({
             where: {
-                id_soal: id,
+                id_pertanyaan: id,
+                status : "aktif"
             }
         }).
             then(getById => {
                 if (!getById) {
                     return res.status(404).json({
-                        message: "Data soal Tidak Ditemukan",
+                        message: "Data pertanyaan Tidak Ditemukan",
                         data: null
                     })
                 }
                 res.status(201).json({
-                    message: "Data soal Ditemukan",
+                    message: "Data pertanyaan Ditemukan",
                     data: getById
                 })
             }).
@@ -126,19 +104,46 @@ module.exports = {
                 next(err)
             })
     },
+
+    getCheckPertanyaan : async (req, res, next) => {
+        const kode = req.params.kode
+        const jmldata = await Mpertanyaan.count({
+            where : {
+                id_soal : kode,
+                status : "aktif"
+            }
+        })
+        const jmlPaketSoal = await soal.findOne({
+            where : {
+                id_soal : kode,
+                status : "aktif"
+            }
+        })
+        if(!jmlPaketSoal) return res.json({message : "data noud foud"})
+        const status = jmldata > jmlPaketSoal.jumlah_soal ? "1" : "0"
+        res.status(201).json({
+            message: "Data pertanyaan success",
+            data: status
+        })
+    },
     
     tambah : async (req, res, next) => {
         let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
-        const {nama_soal, jumlah_soal, kategori} = req.body
-        await soal.create({
-            kode_soal : randomNumber,
-            nama_soal : nama_soal,
-            jumlah_soal : jumlah_soal,
-            kategori : kategori,
+        const {id_soal, pertanyaan,pilihan_a,
+            pilihan_b, pilihan_c, pilihan_d,kunci_jawaban} = req.body
+        await Mpertanyaan.create({
+            kode_pertanyaan : randomNumber,
+            id_soal : id_soal,
+            pertanyaan : pertanyaan,
+            pilihan_a : pilihan_a,
+            pilihan_b : pilihan_b,
+            pilihan_c : pilihan_c,
+            pilihan_d : pilihan_d,
+            kunci_jawaban : kunci_jawaban,
             status : "aktif"
         }).then(result => {
             res.status(201).json({
-                message: "Data soal success",
+                message: "Data pertanyaan success",
                 data: result
             })
         }).
@@ -149,18 +154,23 @@ module.exports = {
 
     edit : async (req, res, next) => {
         const id = req.params.id
-        const {nama_soal, jumlah_soal, kategori} = req.body
-        await soal.update({
-            nama_soal : nama_soal,
-            jumlah_soal : jumlah_soal,
-            kategori : kategori,
+        const {id_soal, pertanyaan,pilihan_a,
+            pilihan_b, pilihan_c, pilihan_d,kunci_jawaban} = req.body
+        await Mpertanyaan.update({
+            id_soal : id_soal,
+            pertanyaan : pertanyaan,
+            pilihan_a : pilihan_a,
+            pilihan_b : pilihan_b,
+            pilihan_c : pilihan_c,
+            pilihan_d : pilihan_d,
+            kunci_jawaban : kunci_jawaban,
         }, {
             where : {
-                id_soal : id
+                id_pertanyaan : id
             }
         }).then(result => {
             res.status(201).json({
-                message: "Data soal success",
+                message: "Data pertanyaan success",
             })
         }).
         catch(err => {
@@ -170,15 +180,15 @@ module.exports = {
 
     hapus : async (req, res, next) => {
         const id = req.params.id
-        await soal.update({
+        await Mpertanyaan.update({
             status : "tidak"
         }, {
             where : {
-                id_soal : id
+                id_pertanyaan : id
             }
         }).then(result => {
             res.status(201).json({
-                message: "Data soal success",
+                message: "Data pertanyaan success",
             })
         }).
         catch(err => {

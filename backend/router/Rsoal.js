@@ -5,6 +5,7 @@ const { validationSoal } = require('../validation/validationSoal.js')
 const { validationRequest } = require('../validation/validationRequest.js')
 
 router.get('/all', Csoal.getAll)
+router.get('/recordPertanyaan/:kode', Csoal.recordPertanyaan)
 router.get('/byId/:id', Csoal.getById)
 router.post('/tambah', validationSoal, validationRequest, Csoal.tambah)
 router.put('/edit/:id', Csoal.edit)
