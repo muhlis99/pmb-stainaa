@@ -7,9 +7,13 @@ const Ctransaksi =  require('../controller/Ctransaksi.js')
 // user
 router.get('/all/:kode', Ctransaksi.getAllByToken)
 router.get('/byId/:id', Ctransaksi.getById)
-// router.post('/tambah', validationTransaksi, validationRequest, Ctransaksi.tambah)
-// router.put('/edit/:id', validationTransaksi, validationRequest, Ctransaksi.edit)
-// router.put('/hapus/:id', Ctransaksi.hapus)
+router.get('/totalPembayaran/:kode', Ctransaksi.getTotalPembayaran)
+router.get('/buktiPendaftaran/:kode', Ctransaksi.getBuktiPendaftaran)
+router.get('/tenggatPembayaranHabis/:id', Ctransaksi.tenggatPembayaranHabis)
+router.post('/tambah', Ctransaksi.tambah)
+router.post('/tambahAnsuran', Ctransaksi.tambahAnsuran)
+router.put('/tambahTransaksi/:id', Ctransaksi.tambahTransaksi)
+
 // admin
 
 module.exports = router

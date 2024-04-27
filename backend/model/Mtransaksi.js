@@ -33,6 +33,10 @@ const transaksi = db.define('transaksi', {
     'bukti_transaksi': {
         type: DataTypes.TEXT
     },
+    'status_transaksi': {
+        type: DataTypes.ENUM,
+        values: ['selesai','belum']
+    },
     'status_tombol': {
         type: DataTypes.ENUM,
         values: ['1','0']
