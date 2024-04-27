@@ -1,4 +1,4 @@
-const Mpertanyaan = require('../model/MPertanyaan.js')
+const Mpertanyaan = require('../model/Mpertanyaan.js')
 const soal = require('../model/Msoal.js')
 const {Sequelize,Op} =  require('sequelize')
 
@@ -6,7 +6,7 @@ const {Sequelize,Op} =  require('sequelize')
 module.exports = {
     getAll : async (req, res, next) => {
         const currentPage = parseInt(req.query.page) || 1
-        const perPage = parseInt(req.query.perPage) || 10
+        const perPage = parseInt(req.query.perPage) || 1
         const search = req.query.search || ""
         const offset = (currentPage - 1) * perPage
         const totalPage = await pertanyaan.count({

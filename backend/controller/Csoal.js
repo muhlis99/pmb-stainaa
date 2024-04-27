@@ -1,5 +1,5 @@
 const soal =  require('../model/Msoal.js')
-const pertanyaan = require('../model/MPertanyaan.js')
+const pertanyaan = require('../model/Mpertanyaan.js')
 const {Sequelize,Op, where} =  require('sequelize')
 
 
