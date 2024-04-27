@@ -9,7 +9,7 @@ module.exports = {
         const perPage = parseInt(req.query.perPage) || 1
         const search = req.query.search || ""
         const offset = (currentPage - 1) * perPage
-        const totalPage = await pertanyaan.count({
+        const totalPage = await Mpertanyaan.count({
             include : [{
                 model : soal
             }],
@@ -35,7 +35,7 @@ module.exports = {
             }
         })
         const totalItems = Math.ceil(totalPage / perPage)
-        await pertanyaan.findAll({
+        await Mpertanyaan.findAll({
             include : [{
                 model : soal
             }],
@@ -82,7 +82,7 @@ module.exports = {
 
     getById : async (req, res, next) => {
         const id = req.params.id
-        await pertanyaan.findOne({
+        await Mpertanyaan.findOne({
             where: {
                 id_pertanyaan: id,
                 status : "aktif"

@@ -37,6 +37,7 @@ const transaksi = require('./router/Rtransaksi.js')
 const soal = require('./router/Rsoal.js')
 const pertanyaan = require('./router/Rpertanyaan.js')
 const jawaban = require('./router/Rjawaban.js')
+const seleksi = require('./router/Rseleksi.js')
 
 app.use('/v1/equipment', equipment)
 app.use('/v1/registrasi', registrasi)
@@ -47,6 +48,7 @@ app.use('/v1/transaksi', transaksi)
 app.use('/v1/soal', soal)
 app.use('/v1/pertanyaan', pertanyaan)
 app.use('/v1/jawaban', jawaban)
+app.use('/v1/seleksi', seleksi)
 
 app.listen(3001, (req, res) => {
     console.log(`APP IS RUNNING`)

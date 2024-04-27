@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const db = require('../config/database.js')
 const pertanyaan = require('./Mpertanyaan.js')
-// const seleksi = require('./Mselesksi.js')
+const seleksi = require('./Mseleksi.js')
 
 const jawaban = db.define('jawaban', {
     'id_jawaban': {
@@ -36,8 +36,8 @@ const jawaban = db.define('jawaban', {
 
 pertanyaan.belongsTo(jawaban, { foreignKey: 'id_pertanyaan' })
 jawaban.hasMany(pertanyaan, { sourceKey: 'id_pertanyaan', foreignKey: 'id_pertanyaan' })
-// seleksi.belongsTo(jawaban, { foreignKey: 'id_seleksi' })
-// jawaban.hasMany(seleksi, { sourceKey: 'id_seleksi', foreignKey: 'id_seleksi' })
+seleksi.belongsTo(jawaban, { foreignKey: 'id_seleksi' })
+jawaban.hasMany(seleksi, { sourceKey: 'id_seleksi', foreignKey: 'id_seleksi' })
 
 
 module.exports = jawaban
