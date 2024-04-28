@@ -5,6 +5,31 @@ const path = require('path')
 const fs = require('fs')
 
 module.exports = {
+    getAllCheck : async (req, res, next) => {
+        await formulir.findAll().
+            then(async result => {
+                const dataAll = result.map(el => {
+                    return {
+                        nama : el.nama,
+                        alamat : el.jalan,
+                        tempatLahir : el.tempat_lahir,
+                        jenkel : el.jenis_kelamin,
+                        datadiri : el.penerima_kps == "" ? 0 : 1,
+                        dataalamat : el.jenis_tinggal == "" ? 0 : 1,
+                        dataortu : el.pendidikan_ibu == "" ? 0 : 1,
+                        datawali : el.pendidikan_wali == "" ? 0 : 1,
+                        databerkas : el.foto_ijazah == "" ? 0 : 1,
+                    }
+                })
+                res.status(201).json({
+                    message: "Data success",
+                    data: dataAll
+                })
+            }).catch(err => {
+                console.log(err)
+            })
+    },
+
     getByToken : async (req, res, next) => {
         const kode = req.params.kode
         const formulirUse = await formulir.findOne({
