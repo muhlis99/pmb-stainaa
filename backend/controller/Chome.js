@@ -1,4 +1,5 @@
 const Mformulir = require('../model/Mformulir.js')
+const Minformasi = require('../model/Minformasi.js')
 const{Sequelize, Op} = require("sequelize")
 
 module.exports = {
@@ -29,6 +30,18 @@ module.exports = {
         }).then(result => {
             res.status(200).json({
                 message: "total formulir  succes",
+                data: result,
+            })
+        }).catch(err => {
+            console.log(err);
+        })
+    },
+
+    informasi : async (req, res, next) => {
+        const kode = req.params.kode
+        await Minformasi.findAll().then(result => {
+            res.status(200).json({
+                message: "total infprmasi  succes",
                 data: result,
             })
         }).catch(err => {
