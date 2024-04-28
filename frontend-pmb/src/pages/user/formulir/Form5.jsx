@@ -54,7 +54,7 @@ const Form5 = () => {
             setFotos(response.data.data.foto_diri)
             setKtps(response.data.data.foto_ktp)
             setKks(response.data.data.foto_kk)
-            setIjazahs(response.data.data.ijazah)
+            setIjazahs(response.data.data.foto_ijazah)
         } catch (error) {
 
         }
