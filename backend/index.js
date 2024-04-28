@@ -39,6 +39,7 @@ const soal = require('./router/Rsoal.js')
 const pertanyaan = require('./router/Rpertanyaan.js')
 const jawaban = require('./router/Rjawaban.js')
 const seleksi = require('./router/Rseleksi.js')
+const informasi = require('./router/Rinformasi.js')
 
 app.use('/v1/home', home)
 app.use('/v1/equipment', equipment)
@@ -51,6 +52,7 @@ app.use('/v1/soal', soal)
 app.use('/v1/pertanyaan', pertanyaan)
 app.use('/v1/jawaban', jawaban)
 app.use('/v1/seleksi', seleksi)
+app.use('/v1/informasi', informasi)
 
 app.listen(3001, (req, res) => {
     console.log(`APP IS RUNNING`)
