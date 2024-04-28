@@ -3,10 +3,76 @@ const Mseleksi = require('../model/Mseleksi.js')
 const Mformulir = require('../model/Mformulir.js')
 const Mjawaban = require('../model/Mjawaban.js')
 const Mpertanyaan = require('../model/Mpertanyaan.js')
+const Mprodi = require('../model/Mprodi.js')
+const MseleksiProdi = require('../model/MseleksiProdi.js')
 const {Sequelize,Op} =  require('sequelize')
 
 
 module.exports = {
+    getProdi : async (req, res, next) => {
+        await Mprodi.findAll().
+        then(result => {
+            res.status(201).json({
+                message: "Data seleksi Ditemukan",
+                data: result
+            })
+        }).
+        catch(err => {
+            next(err)
+        })
+    },
+
+    pemilihanProdiByid : async (req, res, next) => {
+        const id = req.params.id
+        await MseleksiProdi.findOne({
+            include : [{
+                attributes : ["token","nama","email","tempat_lahir"],
+                model : Mformulir
+            }, {
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"]
+            }],
+            where: {
+                id_seleksi_prodi: id,
+            }
+        }).
+            then(result => {
+                if (!result) {
+                    return res.status(404).json({
+                        message: "Data  Tidak Ditemukan",
+                        data: null
+                    })
+                }
+                res.status(201).json({
+                    message: "Data  Ditemukan",
+                    data: result
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
+    },
+
+    pemilihanProdi : async (req, res, next) => {
+        const {token, idProdi,tahun} = req.body
+        let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
+        await MseleksiProdi.create({
+            kode_seleksi_prodi : randomNumber,
+            token : token,
+            id_prodi : idProdi,
+            tahun : tahun
+        }).
+        then(result => {
+            res.status(201).json({
+                message: "Data seleksi prodi success",
+                data: result
+            })
+        }).
+        catch(err => {
+            next(err)
+        })
+    },
+
     getAwal : async (req, res, next) => {
         await Msoal.sum('jumlah_soal', {
             where : {
