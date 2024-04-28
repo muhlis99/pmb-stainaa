@@ -294,6 +294,7 @@ module.exports = {
             pekerjaan_wali: pekerjaan_wali,
             penghasilan_wali: penghasilan_wali,
             pendidikan_wali: pendidikan_wali,
+            tanggal_daftar : date
         }, {
             where: {
                 token: kode
