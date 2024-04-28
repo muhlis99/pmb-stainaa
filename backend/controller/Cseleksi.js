@@ -1,6 +1,8 @@
 const Msoal = require('../model/Msoal.js')
 const Mseleksi = require('../model/Mseleksi.js')
 const Mformulir = require('../model/Mformulir.js')
+const Mjawaban = require('../model/Mjawaban.js')
+const Mpertanyaan = require('../model/Mpertanyaan.js')
 const {Sequelize,Op} =  require('sequelize')
 
 
@@ -104,4 +106,113 @@ module.exports = {
             console.log(err)
         })
     },
+
+    getAll : async (req, res, next) => {
+        const currentPage = parseInt(req.query.page) || 1
+        const perPage = parseInt(req.query.perPage) || 10
+        const search = req.query.search || ""
+        const offset = (currentPage - 1) * perPage
+        const totalPage = await Mseleksi.count({
+            where: {
+                [Op.or]: [
+                    {
+                        id_seleksi: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        token: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        kode_seleksi: {
+                            [Op.like]: `%${search}%`
+                        }
+                    }
+                ]
+            }
+        })
+        const totalItems = Math.ceil(totalPage / perPage)
+        await Mseleksi.findAll({
+            include : [{
+                model : Mformulir,
+                attributes : ["nama", "email","tempat_lahir"]
+            }],
+            where: {
+                [Op.or]: [
+                    {
+                        id_seleksi: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        token: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        kode_seleksi: {
+                            [Op.like]: `%${search}%`
+                        }
+                    }
+                ]
+            },
+            offset: offset,
+            limit: perPage,
+            order: [
+                ["id_seleksi", "DESC"]
+            ]
+        }).
+            then(result => {
+                res.status(200).json({
+                    message: "Get All Registrasi Success",
+                    data: result,
+                    total_data: totalPage,
+                    per_page: perPage,
+                    current_page: currentPage,
+                    total_page: totalItems
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
+    },
+
+    umumkan : async (req, res, next) => {
+        const id = req.params.id
+        await Mseleksi.update({
+            status_info : 1
+        }, {
+            where : {
+                id_seleksi : id
+            }
+        }).then(result => {
+            res.status(201).json({
+                message: "Data seleksi ",
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+    },
+
+    detailJawaban : async (req, res, next) => {
+        const id = req.params.id
+        await Mjawaban.findAll({
+            include : [{
+                model : Mpertanyaan,
+
+            }],
+            where : {
+                id_seleksi : id
+            }
+        }).then(result => {
+            res.status(201).json({
+                message: "Data seleksi ",
+                data : result
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+    }
 }
