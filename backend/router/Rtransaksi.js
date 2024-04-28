@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const Ctransaksi =  require('../controller/Ctransaksi.js')
-// const { validationTransaksi } = require('../validation/validationTransaksi.js')
-// const { validationRequest } = require('../validation/validationRequest.js')
+const path = require('path')
 
+router.use('/seeImage/BuktiPembayaran', express.static(path.join('./tmp_pmb/transaksi')))
 // user
 router.get('/all/:kode', Ctransaksi.getAllByToken)
 router.get('/byId/:id', Ctransaksi.getById)
@@ -15,5 +15,9 @@ router.post('/tambahAnsuran', Ctransaksi.tambahAnsuran)
 router.put('/tambahTransaksi/:id', Ctransaksi.tambahTransaksi)
 
 // admin
+router.get('/checkTransaksi/:kode', Ctransaksi.checkTransaksi)
+router.put('/editTenggatPembayaran/:id', Ctransaksi.editTenggatPembayaran)
+
+
 
 module.exports = router

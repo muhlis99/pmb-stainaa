@@ -5,7 +5,9 @@ const { validationRequest } = require('../validation/validationRequest.js')
 const { validationForm1, validationForm2, validationForm3, validationForm4 } = require('../validation/validationFormulir.js')
 const path = require('path')
 
-
+// admin
+router.get('/getAllCheck', Cformulir.getAllCheck)
+// user
 router.get('/getByToken/:kode', Cformulir.getByToken)
 router.get('/checkByToken/:kode', Cformulir.checkByToken)
 router.post('/createFirst/:kode', Cformulir.createFirst)

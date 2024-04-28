@@ -149,6 +149,9 @@ const formulir = db.define('formulir', {
     'pendidikan_wali': {
         type: DataTypes.TEXT
     },
+    'tanggal_daftar': {
+        type: DataTypes.TEXT
+    },
     'foto_diri': {
         type: DataTypes.TEXT
     },

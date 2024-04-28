@@ -65,18 +65,21 @@ module.exports = {
         const kode = req.params.kode
         const date =  new Date().getFullYear()
         const data = await formulir.findOne({where:{token:kode}})
-        const totalPembayaran = await pembayaran.findOne({where:{tahun:date}})
+        const totalPembayaran = await pembayaran.findOne({
+            where:{
+                tahun:date,
+                status : "aktif"
+            }
+        })
         const jumlahBayar = await transaksi.sum("nominal",{where:{token:kode}})
-
         let status = ""
-        if (totalPembayaran.jumlah_pembayaran > jumlahBayar) {
-            status = "belum lunas"
+        if (jumlahBayar === null ) {
+            status = "belum bayar"
         } else if (totalPembayaran.jumlah_pembayaran <= jumlahBayar) {
             status = "lunas"
-        } else if (jumlahBayar == 0) {
-            status = "belum bayar"
+        } else if (totalPembayaran.jumlah_pembayaran > jumlahBayar ) {
+            status = "belum lunas"
         }
-
         res.status(201).json({
             message : "data success",
             data : [{
@@ -237,47 +240,50 @@ module.exports = {
         }
     },
 
-    // edit : async (req, res, next) => {
-    //     const id = req.params.id
-    //     const {jumlah_transaksi, minimal_transaksi, jumlah_ansuran, tahun} = req.body
-    //     const transaksiUse = await transaksi.findOne({where:{id_transaksi:id}})
-    //     if(!transaksi)res.status(401).json({message: "Data transaksi tidak ditemukan"})
-    //     await transaksi.update({
-    //         jumlah_transaksi : jumlah_transaksi,
-    //         minimal_transaksi : minimal_transaksi,
-    //         jumlah_ansuran : jumlah_ansuran,
-    //         tahun : tahun,
-    //     }, {
-    //         where : {
-    //             id_transaksi : id
-    //         }
-    //     }).then(result => {
-    //         res.status(201).json({
-    //             message: "Data transaksi success",
-    //         })
-    //     }).
-    //     catch(err => {
-    //         next(err)
-    //     })
-    // },
+    checkTransaksi : async (req, res, next) => {
+        const kode = req.params.kode
+        const date =  new Date().getFullYear()
+        const data = await formulir.findOne({where:{token:kode}})
+        const totalPembayaran = await pembayaran.findOne({
+            where:{
+                tahun:date,
+                status : "aktif"
+            }
+        })
+        const jumlahBayar = await transaksi.sum("nominal",{where:{token:kode}})
+        let status = ""
+        if (jumlahBayar === null ) {
+            status = "belum bayar"
+        } else if (totalPembayaran.jumlah_pembayaran <= jumlahBayar) {
+            status = "lunas"
+        } else if (totalPembayaran.jumlah_pembayaran > jumlahBayar ) {
+            status = "belum lunas"
+        }
+        res.status(200).json({ 
+            message: "Data transaksi berhasil ditambahkan",
+            status : status 
+        })
+    },
 
-    // hapus : async (req, res, next) => {
-    //     const id = req.params.id
-    //     const transaksiUse = await transaksi.findOne({where:{id_transaksi:id}})
-    //     if(!transaksi)res.status(401).json({message: "Data transaksi tidak ditemukan"})
-    //     await transaksi.update({
-    //         status : "tidak"
-    //     }, {
-    //         where : {
-    //             id_transaksi : id
-    //         }
-    //     }).then(result => {
-    //         res.status(201).json({
-    //             message: "Data transaksi success",
-    //         })
-    //     }).
-    //     catch(err => {
-    //         next(err)
-    //     })
-    // }
+    editTenggatPembayaran : async (req, res, next) => {
+        const id = req.params.id
+        const {tombol, tenggat} = req.body
+        const dataUse = await transaksi.findOne({where : {id_transaksi:id}})
+        if(!dataUse) return res.json({message:"data not found"})
+        await transaksi.update({
+            tenggat_pembayaran : tenggat,
+            status_tombol : tombol
+        }, {
+            where : {
+                id_transaksi : id
+            }
+        }).then(result => {
+            res.status(201).json({
+                message: "Data transaksi success"
+            })
+        }).
+        catch(err => {
+            console.log(err)
+        })
+    }
 }
