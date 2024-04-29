@@ -333,9 +333,9 @@ module.exports = {
                 text: 'jangan disebarakan pada orang lain',
                 html: `<div class="card" style="width: 60%;>
                             <div class="card-body">
-                                <h5 class="card-title">Pengumuman seleksi .</h5>
+                                <h5class="card-title">Pengumuman seleksi.</h5>
                                 <h2>selamat anda berhasil melakukan registrasi pendaftaran<h2>
-                                <h3>nim anda berupa<h3><h3 style="color:blue" class="card-text">${nim}</h3><br>
+                                <h3>nim anda berupa<h3><h3>${nim}</h3><br>
                                 <h3>nim anda digunakan untuk login ke aplikasi siamdos.siakad.ac.id
                                 apabila tidak bisa login silahkan menghubungi tim IT STAINAA <h3>
                                 <h6><br>
