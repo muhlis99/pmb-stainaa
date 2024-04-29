@@ -5,6 +5,7 @@ const Mjawaban = require('../model/Mjawaban.js')
 const Mpertanyaan = require('../model/Mpertanyaan.js')
 const Mprodi = require('../model/Mprodi.js')
 const MseleksiProdi = require('../model/MseleksiProdi.js')
+const Mapprove = require('../model/Mapprove.js')
 const {Sequelize,Op} =  require('sequelize')
 
 
@@ -61,11 +62,17 @@ module.exports = {
             token : token,
             id_prodi : idProdi,
             tahun : tahun
-        }).
-        then(result => {
+        })
+        
+        await Mapprove.update({
+            status_seleksi : "selesai"
+        }, {
+            where : {
+                token : token
+            }
+        }).then(result => {
             res.status(201).json({
                 message: "Data seleksi prodi success",
-                data: result
             })
         }).
         catch(err => {

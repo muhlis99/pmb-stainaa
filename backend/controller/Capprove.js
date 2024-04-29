@@ -1,5 +1,5 @@
-const registrasi =  require('../model/Mregistrasi.js')
-const Mapprove = require('../model/Mapprove.js')
+const Mapprove =  require('../model/Mapprove.js')
+const Mformulir = require('../model/Mapprove.js')
 const {Sequelize,Op} =  require('sequelize')
 const argon = require('argon2')
 const nodemailer = require('nodemailer')
@@ -11,26 +11,16 @@ module.exports = {
         const perPage = parseInt(req.query.perPage) || 10
         const search = req.query.search || ""
         const offset = (currentPage - 1) * perPage
-        const totalPage = await registrasi.count({
+        const totalPage = await Mapprove.count({
             where: {
                 [Op.or]: [
                     {
-                        id_pmb: {
+                        id_approve: {
                             [Op.like]: `%${search}%`
                         }
                     },
                     {
                         token: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
-                        nama: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
-                        email: {
                             [Op.like]: `%${search}%`
                         }
                     }
@@ -38,26 +28,16 @@ module.exports = {
             }
         })
         const totalItems = Math.ceil(totalPage / perPage)
-        await registrasi.findAll({
+        await Mapprove.findAll({
             where: {
                 [Op.or]: [
                     {
-                        id_pmb: {
+                        id_approve: {
                             [Op.like]: `%${search}%`
                         }
                     },
                     {
                         token: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
-                        nama: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
-                        email: {
                             [Op.like]: `%${search}%`
                         }
                     }
@@ -66,12 +46,12 @@ module.exports = {
             offset: offset,
             limit: perPage,
             order: [
-                ["id_pmb", "DESC"]
+                ["id_approve", "DESC"]
             ]
         }).
             then(result => {
                 res.status(200).json({
-                    message: "Get All Registrasi Success",
+                    message: "Get All Mapprove Success",
                     data: result,
                     total_data: totalPage,
                     per_page: perPage,
@@ -86,20 +66,20 @@ module.exports = {
 
     getById : async (req, res, next) => {
         const id = req.params.id
-        await registrasi.findOne({
+        await Mapprove.findOne({
             where: {
-                id_pmb: id,
+                id_approve: id,
             }
         }).
             then(getById => {
                 if (!getById) {
                     return res.status(404).json({
-                        message: "Data registrasi Tidak Ditemukan",
+                        message: "Data Mapprove Tidak Ditemukan",
                         data: null
                     })
                 }
                 res.status(201).json({
-                    message: "Data registrasi Ditemukan",
+                    message: "Data Mapprove Ditemukan",
                     data: getById
                 })
             }).
@@ -107,12 +87,23 @@ module.exports = {
                 next(err)
             })
     },
+
+    approve : async (req, res, next) => {
+        const {token, prodi} = req.body
+        const date = new Date().toLocaleDateString('en-CA')
+        await Mapprove.update({
+            tanggal_approve : date,
+            status : "setuju"
+        })
+
+        // const dataMhs = await 
+    },
     
     daftar : async (req, res, next) => {
         const {nama, email, pass, conPass} = req.body
         if (pass != conPass) return res.status(400).json({ message: "confirmasi password yang anda masukkan salah" })
         const hashPass =  await argon.hash(pass)
-        await registrasi.create({
+        await Mapprove.create({
             nama : nama,
             email : email,
             password : hashPass,
@@ -121,7 +112,7 @@ module.exports = {
             status : "aktif"
         }).then(async result => {
             let randomNumber = Math.floor(100000 + Math.random() * 900000)
-            await registrasi.update({
+            await Mapprove.update({
                 verifikasi_kode : randomNumber
             }, {
                 where : {
@@ -159,55 +150,12 @@ module.exports = {
                         </div>`
             })
             res.status(201).json({
-                message: "Data registrasi Ditemukan",
+                message: "Data Mapprove Ditemukan",
                 data: result
             })
         }).
         catch(err => {
             next(err)
-        })
-    },
-
-    verifikasi : async (req, res, next) => {
-        const {kode} = req.body
-        let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
-        if(kode.length < 6)return res.status(404).json({message: "kode yang anda masukkan kurang 6 digit"})
-        const dataPost = await registrasi.findOne({
-            where: {
-                verifikasi_kode: kode,
-            }
-        })
-        if (!dataPost) {
-            return res.status(404).json({
-                message: "kode yang anda masukkan salah"
-            })
-        }
-        await registrasi.update({
-            token : randomNumber,
-            verifikasi_kode : ""
-        }, {
-            where : {
-                verifikasi_kode : kode
-            }
-        })
-
-        await Mapprove.create({
-            token : randomNumber,
-            status_formulir : "belum",
-            status_pembayaran : "belum",
-            status_seleksi : "belum",
-            tanggal_approve : "",
-            status : "tidak"
-        })
-
-        req.session.userId = dataPost.id_pmb
-        const id = dataPost.id_pmb
-        const email = dataPost.email
-        const role = dataPost.role
-        const token =  randomNumber
-        res.status(200).json({
-            message: "login suksess",
-            id, email, role, token
         })
     }
 }

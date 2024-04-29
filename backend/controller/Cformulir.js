@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const { desa, kecamatan, kabupaten, provinsi, negara } = require('../model/Mequipment.js')
 const formulir =  require('../model/Mformulir.js')
+const Mapprove = require('../model/Mapprove.js')
 const path = require('path')
 const fs = require('fs')
 
@@ -454,11 +455,20 @@ module.exports = {
                     token: kode
                 }
             })
-                .then(result => {
-                    res.status(200).json({ message: "Data file formulir berhasil ditambahkan" })
-                }).catch(err => {
-                    console.log(err)
+            
+            await Mapprove.update({
+                status_formulir : "selesai"
+            }, {
+                where : {
+                    token : kode
+                }
+            }).then(result => {
+                res.status(200).json({ 
+                    message: "Data file formulir berhasil ditambahkan" 
                 })
+            }).catch(err => {
+                console.log(err)
+            })
         } catch (error) {
             console.log(error)
         }
