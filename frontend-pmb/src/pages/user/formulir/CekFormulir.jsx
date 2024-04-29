@@ -50,7 +50,7 @@ const CekFormulir = () => {
                 setWali(response.data.data[0].wali)
                 setBerkas(response.data.data[0].berkas)
                 setFotoDiri(response.data.data[0].foto)
-                setFotoDiri(response.data.data[0].foto)
+                setNama(response.data.data[0].nama)
             }
         } catch (error) {
 
@@ -99,20 +99,20 @@ const CekFormulir = () => {
                                         <h5>Mohon menyelesaikan pengisian formulir meliputi detail diri, detail alamat, detail orang tua sesuai kartu keluarga atau KTP.</h5>
                                     </div>
                                 </div>
-                                <div className="row">
+                                <div className="row mt-3">
                                     <div className="col-md-4">
                                         <div className='row'>
-                                            <div className="col-sm-12">
-                                                <img src={prevFoto} className="img-thumbnail" alt="..." />
+                                            <div className="col-sm-12 d-flex justify-content-center">
+                                                <img src={prevFoto} className="img-thumbnail mt-3" width={150} alt="..." />
                                             </div>
                                         </div>
-                                        <div className="row">
-                                            <div className="col-md-12">
+                                        <div className="row mt-2">
+                                            <div className="col-md-12 text-center">
                                                 <h3>{nama}</h3>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-8 border-start border-dark">
+                                    <div className="col-md-8 mt-3">
                                         <table cellPadding={5}>
                                             <tbody>
                                                 <tr>
@@ -131,19 +131,19 @@ const CekFormulir = () => {
                                                     <td><h5>Detail Orang Tua</h5></td>
                                                     <td>&nbsp;:&nbsp;</td>
                                                     <td>{ortu == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                    <td><Link to="/formulir3" state={{ token: token }} className="btn btn-sm btn-info ms-3">Mulai</Link></td>
+                                                    <td><Link to="/formulir3" state={{ token: token }} className="btn btn-sm btn-info ms-3">{ortu == 0 ? 'Mulai' : 'Lihat'}</Link></td>
                                                 </tr>
                                                 <tr>
                                                     <td><h5>Detail Wali</h5></td>
                                                     <td>&nbsp;:&nbsp;</td>
                                                     <td>{wali == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                    <td><Link to="/formulir4" state={{ token: token }} className="btn btn-sm btn-info ms-3">Mulai</Link></td>
+                                                    <td><Link to="/formulir4" state={{ token: token }} className="btn btn-sm btn-info ms-3">{wali == 0 ? 'Mulai' : 'Lihat'}</Link></td>
                                                 </tr>
                                                 <tr>
                                                     <td><h5>Detail Berkas</h5></td>
                                                     <td>&nbsp;:&nbsp;</td>
                                                     <td>{berkas == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                    <td><Link to="/formulir5" state={{ token: token }} className="btn btn-sm btn-info ms-3">Mulai</Link></td>
+                                                    <td><Link to="/formulir5" state={{ token: token }} className="btn btn-sm btn-info ms-3">{berkas == 0 ? 'Mulai' : 'Lihat'}</Link></td>
                                                 </tr>
                                             </tbody>
                                         </table>
