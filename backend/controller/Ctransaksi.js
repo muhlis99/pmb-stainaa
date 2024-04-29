@@ -2,6 +2,7 @@ const {Sequelize,Op} =  require('sequelize')
 const pembayaran = require('../model/Mpembayaran.js')
 const transaksi =  require('../model/Mtransaksi.js')
 const formulir = require('../model/Mformulir.js')
+const Mapprove = require('../model/Mapprove.js')
 const path = require('path')
 const fs = require('fs')
 
@@ -217,6 +218,24 @@ module.exports = {
             })
         }
 
+        const date =  new Date().getFullYear()
+        const totalPembayaran = await pembayaran.findOne({
+            where:{
+                tahun:date,
+                status :"aktif"
+            }
+        })
+        const jumlahBayar = await transaksi.sum("nominal",{where:{token:transaksiUse.token}}) 
+        const totalJumlahBayarMHs = parseFloat(jumlahBayar) + parseFloat(nominal)
+        if (totalPembayaran.jumlah_pembayaran <= totalJumlahBayarMHs) {
+            await Mapprove.update({
+                status_pembayaran : "selesai"
+            }, {
+                where : {
+                    token : transaksiUse.token
+                }
+            })
+        }
         try {
             await transaksi.update({
                 bukti_transaksi: buktiTransaksi,
