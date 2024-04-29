@@ -6,11 +6,14 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import jsPDF from "jspdf"
 import kop from "../../../assets/kop.png"
+import Swal from 'sweetalert2'
+import moment from 'moment'
 
 const TransaksiPembayaran = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const templateRef = useRef(null)
+    const closeModal = useRef()
     const { isError, user } = useSelector((state) => state.auth)
     const [Transaksi, setTransaksi] = useState([])
     const [nama, setNama] = useState('')
@@ -27,7 +30,15 @@ const TransaksiPembayaran = () => {
     const [provinsi, setProvinsi] = useState('')
     const [today, setToday] = useState('')
     const [statusDownload, setStatusDownload] = useState('')
-    const [show, setShow] = useState(false)
+    const [idPembayaran, setIdPembayaran] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const [transaksiKe, setTransaksiKe] = useState('')
+    const [idTransaksi, setIdTransaksi] = useState('')
+    const [nominal, setNominal] = useState('')
+    const [kwitansi, setKwitansi] = useState('')
+    const [tanggalTransaksi, setTanggalTansaksi] = useState('')
+    const [prevKwitansi, setPrevKwitansi] = useState('')
 
     useEffect(() => {
         if (isError) {
@@ -96,6 +107,7 @@ const TransaksiPembayaran = () => {
                 setTotalBayar(response.data.data[0].jumlahBayar)
                 setStatus(response.data.data[0].statusPembayaran)
                 setJumlahAngsuran(response.data.data[0].pembayaran.jumlah_ansuran)
+                setIdPembayaran(response.data.data[0].pembayaran.id_pembayaran)
             }
         } catch (error) {
 
@@ -121,7 +133,7 @@ const TransaksiPembayaran = () => {
 
         doc.html(templateRef.current, {
             async callback(doc) {
-                await doc.save('Bukti Pendaftaran')
+                await doc.save('Bukti Pendaftaran' + nama)
             }
         })
     }
@@ -161,7 +173,7 @@ const TransaksiPembayaran = () => {
         try {
             await axios.post(`v1/transaksi/tambah`, {
                 kode: biodata.token,
-                id_pembayaran: 1
+                id_pembayaran: idPembayaran
             }).then(function () {
                 handleGeneratePdf()
                 getStatusDownload()
@@ -179,6 +191,7 @@ const TransaksiPembayaran = () => {
         const date = today.getDate()
         const namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
         setToday(`${date} ${namaBulan[month]} ${year}`)
+        setTanggalTansaksi(moment().format('YYYY-MM-DD'))
     }
 
     const getDataDiri = async () => {
@@ -236,8 +249,179 @@ const TransaksiPembayaran = () => {
         }
     }
 
+    const modalShow = async (e) => {
+        const response = await axios.get(`v1/transaksi/byId/${e}`)
+        setTransaksiKe(response.data.data.pembayaran_ke)
+        setIdTransaksi(response.data.data.id_transaksi)
+    }
+
+    const loadBukti = (e) => {
+        const image = e.target.files[0]
+        setKwitansi(image)
+        setPrevKwitansi(URL.createObjectURL(image))
+    }
+
+    const simpanTransaksiPertama = async (e) => {
+        e.preventDefault()
+        const formData = new FormData()
+        formData.append("nominal", nominal)
+        formData.append("tanggal_transaksi", tanggalTransaksi)
+        formData.append("bukti_transaksi", kwitansi)
+        try {
+            if (nominal == '') {
+                Swal.fire({
+                    title: 'Transaksi gagal',
+                    text: 'Nominal Tidak Boleh Kosong',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                })
+            } else if (nominal < 1000000) {
+                Swal.fire({
+                    title: 'Transaksi gagal',
+                    text: 'Nominal pembayaran pertama minimal harus Rp. 1.000.000',
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6'
+                })
+            } else if (kwitansi == '') {
+                Swal.fire({
+                    title: 'Transaksi gagal',
+                    text: 'Bukti Transaksi tidak boleh kosong',
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6'
+                })
+            } else {
+                await axios.put(`v1/transaksi/tambahTransaksi/${idTransaksi}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then(function (response) {
+                    Swal.fire({
+                        title: response.data.message,
+                        icon: "success"
+                    }).then(() => {
+                        getStatusDownload()
+                        getTotalPembayaran()
+                        getTransaksi()
+                        setNominal('')
+                        setKwitansi('')
+                        setPrevKwitansi('')
+                        closeModal.current.click()
+                    });
+                })
+            }
+        } catch (error) {
+
+        }
+    }
+
+    const simpanTransaksi = async (e) => {
+        e.preventDefault()
+        const formData = new FormData()
+        formData.append("nominal", nominal)
+        formData.append("tanggal_transaksi", tanggalTransaksi)
+        formData.append("bukti_transaksi", kwitansi)
+        try {
+            if (nominal == '') {
+                Swal.fire({
+                    title: 'Transaksi gagal',
+                    text: 'Nominal Tidak Boleh Kosong',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                })
+            } else if (kwitansi == '') {
+                Swal.fire({
+                    title: 'Transaksi gagal',
+                    text: 'Bukti Transaksi tidak boleh kosong',
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6'
+                })
+            } else {
+                await axios.put(`v1/transaksi/tambahTransaksi/${idTransaksi}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then(function (response) {
+                    Swal.fire({
+                        title: response.data.message,
+                        icon: "success"
+                    }).then(() => {
+                        getStatusDownload()
+                        getTotalPembayaran()
+                        getTransaksi()
+                        setNominal('')
+                        setKwitansi('')
+                        setPrevKwitansi('')
+                        closeModal.current.click()
+                    });
+                })
+            }
+        } catch (error) {
+
+        }
+    }
+
+    const tambahTransaksi = async (e) => {
+        try {
+            if (user) {
+                await axios.post(`v1/transaksi/tambahAnsuran`, {
+                    kode: user.data.token,
+                    id_pembayaran: idPembayaran,
+                    pembayaran_ke: e,
+                    tanggal_transaksi: tanggalTransaksi
+                }).then(function (response) {
+                    getTransaksi()
+                })
+            }
+        } catch (error) {
+
+        }
+    }
+
+    const downloadHabis = () => {
+        Swal.fire({
+            title: 'Download Gagal',
+            text: 'Anda telah mendownload bukti pendaftaran',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+        })
+    }
+
     return (
         <LayoutUser>
+            <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <form onSubmit={transaksiKe == 1 ? simpanTransaksiPertama : simpanTransaksi}>
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="staticBackdropLabel">Transaksi ke {transaksiKe}</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" ref={closeModal}></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="row">
+                                    <div className="col-md-12 mb-3">
+                                        <label htmlFor="nominal" className="form-label">Nominal Transaksi</label>
+                                        <input type="number" id="nominal" className="form-control form-control-sm" name="nominal" placeholder="Nominal Transakti" value={nominal} onChange={(e) => setNominal(e.target.value)} />
+                                    </div>
+                                    <div className="col-md-12 mb-3">
+                                        <label htmlFor="bukti" className="form-label">Bukti Transaksi</label>
+                                        <div className='mb-2'>
+                                            {prevKwitansi ?
+                                                <img src={prevKwitansi} alt="" width={150} className='border border-1 border-dark' />
+                                                :
+                                                ""
+                                            }
+                                        </div>
+                                        <input type="file" onChange={loadBukti} id="bukti" className="form-control form-control-sm" name="bukti" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type='submit' className="btn btn-info btn-sm">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div className="container">
                 <div className="row">
                     <div className="col-lg-12 col-md-12 col-12">
@@ -256,7 +440,7 @@ const TransaksiPembayaran = () => {
                                 {statusDownload == 'belum' ?
                                     <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
                                     :
-                                    <button className='btn btn-sm btn-info float-end mt-4'>Download</button>
+                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadHabis}>Download</button>
                                 }
                             </div>
                         </div>
@@ -328,6 +512,13 @@ const TransaksiPembayaran = () => {
                 </div>
                 <div className='row mt-3'>
                     <div className="col-md-12">
+                        {Transaksi.length == jumlahAngsuran || status == 'lunas' ?
+                            "" :
+                            <div className='d-flex justify-content-center mb-2'>
+                                <button className='btn btn-sm btn-info' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Transaksi</button>
+                            </div>
+                        }
+
                         {Transaksi.map((item, index) => (
                             <div key={item.id_transaksi} className="card shadow mb-2">
                                 <div className="card-body">
@@ -338,11 +529,11 @@ const TransaksiPembayaran = () => {
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Akhir Pembayaran</h5>
-                                            <span>{item.tenggat_pembayaran}</span>
+                                            <span>{moment(item.tenggat_pembayaran).format('DD MMMM YYYY')}</span>
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Tanggal Transaksi</h5>
-                                            <span>{item.tanggal_transaksi}</span>
+                                            <span>{item.tanggal_transaksi && moment(item.tanggal_transaksi).format('DD MMMM YYYY')}</span>
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Nominal Transaksi</h5>
@@ -354,7 +545,7 @@ const TransaksiPembayaran = () => {
                                         </div>
                                         <div className="col-md-2 d-flex align-items-center">
                                             {item.status_tombol == '0' ?
-                                                <button className='btn btn-sm btn-info'>Upload Bukti</button>
+                                                <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
                                                 : ""
                                             }
                                         </div>
@@ -363,11 +554,8 @@ const TransaksiPembayaran = () => {
                             </div>
                         ))}
 
-                        <button className='btn btn-sm btn-info float-end'>Tambah Transaksi</button>
                     </div>
                 </div>
-
-
                 <div className="row">
                     <div className='d-none'>
                         <div ref={templateRef}>
