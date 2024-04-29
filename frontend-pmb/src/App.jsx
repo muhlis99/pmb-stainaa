@@ -11,6 +11,7 @@ import Form3 from "./pages/user/formulir/Form3"
 import Form4 from "./pages/user/formulir/Form4"
 import Form5 from "./pages/user/formulir/Form5"
 import TransaksiPembayaran from "./pages/user/pembayaran/TransaksiPembayaran"
+import Home from "./pages/admin/dashboard/Home"
 
 function App() {
   return (
@@ -29,6 +30,9 @@ function App() {
           <Route path="/formulir4" element={<Form4 />} />
           <Route path="/formulir5" element={<Form5 />} />
           <Route path="/pembayaran" element={<TransaksiPembayaran />} />
+
+
+          <Route path="/home" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </>
