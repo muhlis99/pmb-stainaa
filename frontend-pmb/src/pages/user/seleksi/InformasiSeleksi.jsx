@@ -69,8 +69,7 @@ const InformasiSeleksi = () => {
                 token: user && user.data.token,
                 total_soal: totalSoal
             }).then(function (response) {
-                // navigate('/formseleksi')
-                getInformasiHasil()
+                navigate("/formseleksi", { state: { waktuNow: new Date() } })
             })
         } catch (error) {
 
@@ -139,7 +138,7 @@ const InformasiSeleksi = () => {
                                         {idSeleksi == '' ?
                                             <button className="btn btn-success" onClick={tambahSeleksi}>Mulai</button>
                                             :
-                                            <Link to="/formseleksi" className="btn btn-success" >Mulai</Link>
+                                            <Link to="/formseleksi" state={{ waktuNow: new Date() }} className="btn btn-success" >Mulai</Link>
                                         }
                                     </div>
                                 </div>

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import LayoutUser from '../../LayoutUser'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa"
 import moment from 'moment'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const FormSeleksi = () => {
     const dispatch = useDispatch()
@@ -16,16 +17,11 @@ const FormSeleksi = () => {
     const [perPage, setperPage] = useState(0)
     const [pages, setPages] = useState(0)
     const [rows, setrows] = useState(0)
-    const [waktu, setWaktu] = useState('')
-    const [time, setTime] = useState({ sec: 0, min: 0, hr: 0 })
-    const [intervalId, setIntervalId] = useState()
     const [idSeleksi, setIdSeleksi] = useState('')
     const [idPertanyaan, setIdPertanyaan] = useState('')
     const [pilihanUser, setPilihanUser] = useState('')
-
-    useEffect(() => {
-        pauseOrResume()
-    }, [])
+    const [minutesDifference, setMinutesDifference] = useState('')
+    const location = useLocation()
 
     useEffect(() => {
         if (isError) {
@@ -36,6 +32,10 @@ const FormSeleksi = () => {
     useEffect(() => {
         dispatch(getMe())
     }, [dispatch])
+
+    useEffect(() => {
+        calculateMinutes()
+    }, [])
 
     useEffect(() => {
         const getSeleksiByToken = async () => {
@@ -56,6 +56,24 @@ const FormSeleksi = () => {
         getPertanyaan()
     }, [page])
 
+    useEffect(() => {
+        getJawabanTerpilih()
+    }, [idPertanyaan, idSeleksi])
+
+    const calculateMinutes = () => {
+        const startTime = location.state.waktuNow
+        const endTime = new Date()
+
+        const difference = Math.abs((endTime.getTime() - startTime.getTime()) / (1000 * 60))
+        const formattedDifference = `${difference.toFixed()} menit`
+        setMinutesDifference(formattedDifference)
+    }
+
+    useEffect(() => {
+        const interval = setInterval(calculateMinutes, 1000) // Perbarui setiap detik
+        return () => clearInterval(interval) // Bersihkan interval setelah komponen di-unmount
+    }, [])
+
     const getPertanyaan = async () => {
         try {
             const response = await axios.get(`v1/pertanyaan/all?page=${page}`)
@@ -69,30 +87,14 @@ const FormSeleksi = () => {
         }
     }
 
-    const updateTimer = () => {
-        setTime((prev) => {
-            let newTime = { ...prev }
-            if (newTime.sec < 59) newTime.sec += 1
-            else {
-                newTime.min += 1
-                newTime.sec = 0
+    const getJawabanTerpilih = async () => {
+        try {
+            if (idPertanyaan && idSeleksi) {
+                const response = await axios.get(`v1/jawaban/checkJawaban/${idPertanyaan}/${idSeleksi}`)
+                setPilihanUser(response.data.data.jawaban)
             }
-            if (newTime.min === 60) {
-                newTime.min = 0
-                newTime.hr += 1
-            }
+        } catch (error) {
 
-            return newTime
-        })
-    }
-
-    const pauseOrResume = () => {
-        if (!intervalId) {
-            let id = setInterval(updateTimer, 1000)
-            setIntervalId(id)
-        } else {
-            clearInterval(intervalId)
-            setIntervalId("")
         }
     }
 
@@ -113,6 +115,74 @@ const FormSeleksi = () => {
         setPilihanUser(e)
     }
 
+    const selanjutnya = async () => {
+        try {
+            if (pilihanUser == '') {
+                paginate(page + 1)
+            } else {
+                await axios.post(`v1/jawaban/postJawaban`, {
+                    id_pertanyaan: idPertanyaan,
+                    id_seleksi: idSeleksi,
+                    jawaban: pilihanUser,
+                }).then(function () {
+                    setPilihanUser()
+                    paginate(page + 1)
+                })
+            }
+        } catch (error) {
+        }
+    }
+
+    const sebelumnya = () => {
+        setPilihanUser()
+        paginate(page - 1)
+    }
+
+    const selesai = () => {
+        try {
+            Swal.fire({
+                title: "Yakin untuk menyelesaikan?",
+                text: 'Pastikan semua pertanyaan tidak ada yang terlewat!',
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (pilihanUser == null) {
+                        Swal.fire({
+                            title: 'Gagal Selesai',
+                            text: 'Anda belum memilih jawaban pertanyaan terakhir',
+                            icon: 'warning',
+                            confirmButtonColor: '#3085d6'
+                        })
+                    } else {
+                        axios.post(`v1/jawaban/selesai`, {
+                            id_pertanyaan: idPertanyaan,
+                            id_seleksi: idSeleksi,
+                            jawaban: pilihanUser,
+                            durasi: minutesDifference
+                        }).then(function (response) {
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: response.data.message,
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                navigate('/pemilihanProdi')
+                            })
+                        })
+                    }
+
+                }
+            })
+        } catch (error) {
+
+        }
+    }
+
     return (
         <LayoutUser>
             <div className="container">
@@ -120,7 +190,7 @@ const FormSeleksi = () => {
                     <div className="col-lg-12 col-md-12 col-12">
                         <div className="border-bottom pb-2 mb-3 d-lg-flex justify-content-between align-items-center">
                             <div className="mb-2 mb-lg-0">
-                                <h1 className="mb-0 h2 fw-bold">Seleksi pilihan : {pilihanUser}</h1>
+                                <h1 className="mb-0 h2 fw-bold">Seleksi {pilihanUser}</h1>
                             </div>
                         </div>
                     </div>
@@ -132,7 +202,7 @@ const FormSeleksi = () => {
                                 <div className='row'>
                                     <div className="col-md-12">
                                         <span>{moment().format('DD MMM YYYY')}</span>
-                                        <button className='btn btn-sm btn-light float-end'>{`${time.hr < 10 ? 0 : ""}${time.hr} : ${time.min < 10 ? 0 : ""}${time.min} : ${time.sec < 10 ? 0 : ""}${time.sec}`}</button>
+                                        <span className='float-end'>{minutesDifference}</span>
                                     </div>
                                 </div>
                             </div>
@@ -173,13 +243,13 @@ const FormSeleksi = () => {
                                         </div>
                                         <div className="row">
                                             <div className="col-md-12">
-                                                {page == rows ? <button className='btn btn-success float-end'>Selesai</button>
+                                                {page == rows ? <button className='btn btn-success float-end' onClick={selesai}>Selesai</button>
                                                     :
-                                                    <button className='btn btn-light float-end' onClick={() => paginate(page + 1)}>Selanjutnya <FaAngleDoubleRight /></button>
+                                                    <button className='btn btn-light float-end' onClick={selanjutnya}>Selanjutnya <FaAngleDoubleRight /></button>
                                                 }
                                                 {page == perPage ? ""
                                                     :
-                                                    <button className='btn btn-light' onClick={() => paginate(page - 1)}><FaAngleDoubleLeft /> Sebelumnya</button>
+                                                    <button className='btn btn-light' onClick={sebelumnya}><FaAngleDoubleLeft /> Sebelumnya</button>
                                                 }
                                             </div>
                                         </div>
