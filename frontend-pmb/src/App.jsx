@@ -12,6 +12,9 @@ import Form4 from "./pages/user/formulir/Form4"
 import Form5 from "./pages/user/formulir/Form5"
 import TransaksiPembayaran from "./pages/user/pembayaran/TransaksiPembayaran"
 import Home from "./pages/admin/dashboard/Home"
+import InformasiSeleksi from "./pages/user/seleksi/InformasiSeleksi"
+import FormSeleksi from "./pages/user/seleksi/FormSeleksi"
+import PemilihanProdi from "./pages/user/seleksi/PemilihanProdi"
 
 function App() {
   return (
@@ -30,6 +33,9 @@ function App() {
           <Route path="/formulir4" element={<Form4 />} />
           <Route path="/formulir5" element={<Form5 />} />
           <Route path="/pembayaran" element={<TransaksiPembayaran />} />
+          <Route path="/infoseleksi" element={<InformasiSeleksi />} />
+          <Route path="/formseleksi" element={<FormSeleksi />} />
+          <Route path="/pemilihanProdi" element={<PemilihanProdi />} />
 
 
           <Route path="/home" element={<Home />} />
