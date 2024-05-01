@@ -155,7 +155,7 @@ module.exports = {
     
     form1 : async (req, res, next) => {
         const { nik, nama, no_kk, jenis_kelamin, tempat_lahir, tanggal, bulan, tahun, email, no_hp,
-            no_telepon, nisn, no_kps, npwp,
+            no_telepon, nisn, no_kps, npwp,penerima_kps,
             jalur_pendaftaran, jenis_pendaftaran } = req.body
         const kode = req.params.kode
         const tanggal_lahir = tahun + "-" + bulan + "-" + tanggal
@@ -179,7 +179,8 @@ module.exports = {
             no_kps: no_kps,
             npwp: npwp,
             jalur_pendaftaran: jalur_pendaftaran,
-            jenis_pendaftaran: jenis_pendaftaran
+            jenis_pendaftaran: jenis_pendaftaran,
+            penerima_kps : penerima_kps,
         }, {
             where: {
                 token: kode
@@ -196,7 +197,7 @@ module.exports = {
     },
 
     form2 : async (req, res, next) => {
-        const { penerima_kps,jalan, dusun, rt, rw, kode_pos, negara,
+        const {jalan, dusun, rt, rw, kode_pos, negara,
             provinsi, kabupaten, kecamatan, desa, jenis_tinggal, alat_transportasi } = req.body
         const kode = req.params.kode
         const formulirUse = await formulir.findOne({
@@ -206,7 +207,6 @@ module.exports = {
         })
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
         await formulir.update({
-            penerima_kps : penerima_kps,
             jalan: jalan,
             dusun: dusun,
             rt: rt,
