@@ -108,27 +108,23 @@ const InformasiSeleksi = () => {
                                                         <h3 className='display-6'>Total Selesai</h3>
                                                         <h1 className='display-3'>{penyelesaian == '' ? 0 : penyelesaian}</h1>
                                                     </div>
-                                                    <div className="text-center mb-2">
-                                                        <h3 className='display-6'>Total Belum</h3>
-                                                        <h1 className='display-3'>{belum == '' ? totalSoal : belum}</h1>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={`row mt-2 ${penyelesaian == totalSoal ? '' : 'd-none'}`}>
+                                        <div className="row mt-2">
                                             <div className="col-md-12 d-flex justify-content-center">
                                                 <div className="d-flex gap-5">
                                                     <div className="text-center mb-2">
                                                         <h3 className='display-6'>Benar</h3>
-                                                        <h1 className='display-3'>{benar}</h1>
+                                                        <h1 className='display-4'>{benar == '' ? '0' : benar}</h1>
                                                     </div>
                                                     <div className="text-center mb-2">
                                                         <h3 className='display-6'>Salah</h3>
-                                                        <h1 className='display-3'>{salah}</h1>
+                                                        <h1 className='display-4'>{salah == '' ? '0' : salah}</h1>
                                                     </div>
                                                     <div className="text-center mb-2">
                                                         <h3 className='display-6'>Skor</h3>
-                                                        <h1 className='display-3'>{skor}</h1>
+                                                        <h1 className='display-4'>{skor == '' ? '0' : skor}</h1>
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,8 +142,8 @@ const InformasiSeleksi = () => {
                                     <div className="col-sm-4 text-center">
                                         <h5>Tanggal : {moment().format('DD MMM YYYY')}</h5>
                                     </div>
-                                    <div className="col-sm-4">
-                                        <h5>Waktu : {durasi}</h5>
+                                    <div className="col-sm-4 text-center">
+                                        <h5>Waktu yang dihabiskan : {durasi == '' ? '0 menit' : durasi}</h5>
                                     </div>
                                 </div>
                             </div>

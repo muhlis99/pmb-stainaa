@@ -190,7 +190,7 @@ const FormSeleksi = () => {
                     <div className="col-lg-12 col-md-12 col-12">
                         <div className="border-bottom pb-2 mb-3 d-lg-flex justify-content-between align-items-center">
                             <div className="mb-2 mb-lg-0">
-                                <h1 className="mb-0 h2 fw-bold">Seleksi {pilihanUser}</h1>
+                                <h1 className="mb-0 h2 fw-bold">Seleksi</h1>
                             </div>
                         </div>
                     </div>

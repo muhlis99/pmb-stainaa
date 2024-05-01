@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from "../assets/stainaa.png"
 import avatar from "../assets/userAvatar.png"
 import { Link, useNavigate } from 'react-router-dom'
 import { LogOut, reset } from "../features/authSlice"
 import { useDispatch, useSelector } from "react-redux"
 import Swal from "sweetalert2"
+import axios from 'axios'
 
 const Navbar = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { user } = useSelector((state) => state.auth)
+    const [nama, setNama] = useState('')
 
     const logOut = () => {
         Swal.fire({
@@ -27,6 +29,19 @@ const Navbar = () => {
                 navigate("/login")
             }
         })
+    }
+
+    useEffect(() => {
+        getByToken()
+    }, [user])
+
+    const getByToken = async () => {
+        try {
+            const response = await axios.get(`v1/formulir/getByToken/${user && user.data.token}`)
+            setNama(response.data.data.nama)
+        } catch (error) {
+
+        }
     }
 
     return (
@@ -55,7 +70,7 @@ const Navbar = () => {
                                                     className="rounded-circle" />
                                             </div>
                                             <div className="ms-3 lh-1">
-                                                <h5 className="mb-1">{user && user.data.nama}</h5>
+                                                <h5 className="mb-1">{nama}</h5>
                                                 {user && <p className="mb-0">{user.data.email}</p>}
                                             </div>
                                         </div>
@@ -104,11 +119,6 @@ const Navbar = () => {
                             <li className="nav-item">
                                 <Link to='/infoseleksi' className='nav-link'>
                                     Seleksi
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className='nav-link'>
-                                    Informasi
                                 </Link>
                             </li>
                         </ul>
