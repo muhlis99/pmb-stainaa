@@ -15,7 +15,6 @@ const FormSeleksi = () => {
     const [Perntanyaan, setPertanyaan] = useState([])
     const [page, setPage] = useState(0)
     const [perPage, setperPage] = useState(0)
-    const [pages, setPages] = useState(0)
     const [rows, setrows] = useState(0)
     const [idSeleksi, setIdSeleksi] = useState('')
     const [idPertanyaan, setIdPertanyaan] = useState('')
@@ -54,7 +53,8 @@ const FormSeleksi = () => {
 
     useEffect(() => {
         getPertanyaan()
-    }, [page])
+    }, [page, location])
+
 
     useEffect(() => {
         getJawabanTerpilih()
@@ -201,7 +201,7 @@ const FormSeleksi = () => {
                             <div className="card-header">
                                 <div className='row'>
                                     <div className="col-md-12">
-                                        <span>{moment().format('DD MMM YYYY')}</span>
+                                        <Link className='btn btn-sm btn-danger' to='/infoseleksi'>Keluar</Link>
                                         <span className='float-end'>{minutesDifference}</span>
                                     </div>
                                 </div>
@@ -222,19 +222,19 @@ const FormSeleksi = () => {
                                                     <h4>{item.pertanyaan}</h4>
                                                     <ul className='list-group'>
                                                         <li className='list-group-item border-0'>
-                                                            <button className={`btn btn-sm ${pilihanUser == 'a' ? 'btn-info' : 'btn-outline-info'}`} onClick={() => jawabanPilihanUser('a')}>A</button>
+                                                            <button className={`btn btn-sm ${pilihanUser == 'a' ? 'btn-secondary' : 'btn-outline-secondary'}`} onClick={() => jawabanPilihanUser('a')}>A</button>
                                                             <span className='ms-2'>{item.pilihan_a}</span>
                                                         </li>
                                                         <li className='list-group-item border-0'>
-                                                            <button className={`btn btn-sm ${pilihanUser == 'b' ? 'btn-info' : 'btn-outline-info'}`} onClick={() => jawabanPilihanUser('b')}>B</button>
+                                                            <button className={`btn btn-sm ${pilihanUser == 'b' ? 'btn-secondary' : 'btn-outline-secondary'}`} onClick={() => jawabanPilihanUser('b')}>B</button>
                                                             <span className='ms-2'>{item.pilihan_b}</span>
                                                         </li>
                                                         <li className='list-group-item border-0'>
-                                                            <button className={`btn btn-sm ${pilihanUser == 'c' ? 'btn-info' : 'btn-outline-info'}`} onClick={() => jawabanPilihanUser('c')}>C</button>
+                                                            <button className={`btn btn-sm ${pilihanUser == 'c' ? 'btn-secondary' : 'btn-outline-secondary'}`} onClick={() => jawabanPilihanUser('c')}>C</button>
                                                             <span className='ms-2'>{item.pilihan_c}</span>
                                                         </li>
                                                         <li className='list-group-item border-0'>
-                                                            <button className={`btn btn-sm ${pilihanUser == 'd' ? 'btn-info' : 'btn-outline-info'}`} onClick={() => jawabanPilihanUser('d')}>D</button>
+                                                            <button className={`btn btn-sm ${pilihanUser == 'd' ? 'btn-secondary' : 'btn-outline-secondary'}`} onClick={() => jawabanPilihanUser('d')}>D</button>
                                                             <span className='ms-2'>{item.pilihan_d}</span>
                                                         </li>
                                                     </ul>

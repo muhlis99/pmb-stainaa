@@ -5,7 +5,7 @@ import { getMe } from "../../../features/authSlice"
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import jsPDF from "jspdf"
-import kop from "../../../assets/kop.png"
+import kop from "../../../assets/stainaa.png"
 import Swal from 'sweetalert2'
 import moment from 'moment'
 
@@ -31,14 +31,18 @@ const TransaksiPembayaran = () => {
     const [today, setToday] = useState('')
     const [statusDownload, setStatusDownload] = useState('')
     const [idPembayaran, setIdPembayaran] = useState('')
-    const [loading, setLoading] = useState(false)
-
     const [transaksiKe, setTransaksiKe] = useState('')
     const [idTransaksi, setIdTransaksi] = useState('')
     const [nominal, setNominal] = useState('')
     const [kwitansi, setKwitansi] = useState('')
     const [tanggalTransaksi, setTanggalTansaksi] = useState('')
     const [prevKwitansi, setPrevKwitansi] = useState('')
+    const [idPendaftar, setIdPendaftar] = useState('')
+    const [statusFormulir, setStatusFormulir] = useState('')
+    const [minimalBayar, setMinimalBayar] = useState('')
+    const [accountMinimal, setAccountMinimal] = useState('')
+    const [biaya, setBiaya] = useState('')
+    const [accountBiaya, setAccountBiaya] = useState('')
 
     useEffect(() => {
         if (isError) {
@@ -49,6 +53,24 @@ const TransaksiPembayaran = () => {
     useEffect(() => {
         dispatch(getMe())
     }, [dispatch])
+
+    useEffect(() => {
+        const getDataByToken = async () => {
+            try {
+                if (user) {
+                    const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
+                    setIdPendaftar(response.data.data.id)
+                }
+            } catch (error) {
+
+            }
+        }
+        getDataByToken()
+    }, [user])
+
+    useEffect(() => {
+        getStatusFormulir()
+    }, [idPendaftar])
 
     useEffect(() => {
         getTransaksi()
@@ -74,6 +96,18 @@ const TransaksiPembayaran = () => {
         getKabupaten()
         getProvinsi()
     }, [biodata])
+
+    const getStatusFormulir = async () => {
+        try {
+            if (idPendaftar) {
+                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
+                setStatusFormulir(response.data.data.status_formulir)
+                console.log(response.data.data.status_formulir);
+            }
+        } catch (error) {
+
+        }
+    }
 
     const getStatusDownload = async () => {
         try {
@@ -108,6 +142,8 @@ const TransaksiPembayaran = () => {
                 setStatus(response.data.data[0].statusPembayaran)
                 setJumlahAngsuran(response.data.data[0].pembayaran.jumlah_ansuran)
                 setIdPembayaran(response.data.data[0].pembayaran.id_pembayaran)
+                setMinimalBayar(response.data.data[0].pembayaran.minimal_pembayaran)
+                setBiaya(response.data.data[0].pembayaran.jumlah_pembayaran)
             }
         } catch (error) {
 
@@ -120,11 +156,14 @@ const TransaksiPembayaran = () => {
             currency: 'IDR'
         })
         setAccountingTransaksi(currency.format(totalBayar).replace(/(\.|,)00$/g, ''))
+        setAccountMinimal(currency.format(minimalBayar).replace(/(\.|,)00$/g, ''))
+        setAccountBiaya(currency.format(biaya).replace(/(\.|,)00$/g, ''))
     }
 
     const handleGeneratePdf = () => {
         const doc = new jsPDF({
-            format: 'a4',
+            format: 'a6',
+            orientation: 'landscape',
             unit: 'pt',
         })
 
@@ -133,39 +172,9 @@ const TransaksiPembayaran = () => {
 
         doc.html(templateRef.current, {
             async callback(doc) {
-                await doc.save('Bukti Pendaftaran' + nama)
+                await doc.save('Bukti Pendaftaran ' + nama)
             }
         })
-    }
-
-    const tableStyle = {
-        image: {
-            width: '597px'
-        },
-        wrap: {
-            width: '600px',
-            fontFamily: "TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif",
-            background: '#ffffff',
-            color: '#000000'
-        },
-        title: {
-            fontSize: '12px',
-            margin: 'auto',
-        },
-        grid: {
-            display: 'grid',
-            gridTemplateColumns: 'auto auto',
-            width: '80%',
-            margin: 'auto'
-        },
-        gridItem: {
-            fontSize: '12px',
-            fontFamily: "TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif",
-        },
-        uraian: {
-            width: '80%',
-            margin: 'auto'
-        }
     }
 
     const downloadBuktiPendaftaran = async (e) => {
@@ -275,10 +284,10 @@ const TransaksiPembayaran = () => {
                     icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
-            } else if (nominal < 1000000) {
+            } else if (nominal < minimalBayar) {
                 Swal.fire({
                     title: 'Transaksi gagal',
-                    text: 'Nominal pembayaran pertama minimal harus Rp. 1.000.000',
+                    text: `Pembayaran pertama harus ${accountMinimal}`,
                     icon: 'warning',
                     confirmButtonColor: '#3085d6'
                 })
@@ -386,6 +395,56 @@ const TransaksiPembayaran = () => {
         })
     }
 
+    const waktuHabis = () => {
+        Swal.fire({
+            title: 'Gagal',
+            text: 'Pembayaran anda melebihi batas akhir pembayaran',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+        })
+    }
+
+    const formulirBelum = () => {
+        Swal.fire({
+            title: 'Download Gagal',
+            text: 'Anda belum menyelesaikan pengisian formulir',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+
+        })
+    }
+
+    const tableStyle = {
+        image: {
+            width: '597px'
+        },
+        wrap: {
+            width: '100%',
+            fontFamily: "TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif",
+            background: '#ffffff',
+            color: '#000000',
+            paddingTop: '10px'
+        },
+        title: {
+            fontSize: '12px',
+            margin: 'auto',
+        },
+        grid: {
+            display: 'grid',
+            gridTemplateColumns: 'auto auto',
+            width: '97%',
+            margin: 'auto'
+        },
+        gridItem: {
+            fontSize: '12px',
+            fontFamily: "TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif",
+        },
+        uraian: {
+            width: '80%',
+            margin: 'auto'
+        }
+    }
+
     return (
         <LayoutUser>
             <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -435,25 +494,29 @@ const TransaksiPembayaran = () => {
                 <div className="row">
                     <div className="col-md-4 mb-2">
                         <div className="card shadow">
-                            <div className="card-body">
+                            <div className="card-body p-5">
                                 <h5>Sebelum melakukan transaksi pembayaran pendaftaran, anda harus mendownload terlebih dahulu bukti pendaftaran.</h5>
-                                {statusDownload == 'belum' ?
-                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
-                                    :
-                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadHabis}>Download</button>
+                                {statusFormulir == 'belum' ?
+                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={formulirBelum}>Download</button>
+                                    : statusDownload == 'belum' ?
+                                        <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
+                                        :
+                                        <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadHabis}>Download</button>
                                 }
                             </div>
                         </div>
                     </div>
                     <div className="col-md-8">
                         <div className="card shadow">
-                            <div className="card-body">
+                            <div className="card-body py-3">
                                 <h5>Tata cara melakukan pembayaran</h5>
                                 <ol>
                                     <li>Download bukti pendaftaran.</li>
                                     <li>Transfer pembayaran melalui rekening LK SMK NAA.</li>
-                                    <li>Atau langsung mendatangi LK SMK NAA dengan menyerahkan bukti pendaftaran</li>
-                                    <li>Upload bukti pembayaran</li>
+                                    <li>Atau langsung mendatangi LK SMK NAA dengan menyerahkan bukti pendaftaran.</li>
+                                    <li>Upload bukti pembayaran.</li>
+                                    <li>Total Biaya yang harus dilunasi adalah {accountBiaya} dengan angsuran sebanyak {jumlahAngsuran} Kali.</li>
+                                    <li>Untuk melakukan pembayaran pertama anda harus membayar sebesar {accountMinimal}.</li>
                                 </ol>
                             </div>
                         </div>
@@ -487,16 +550,20 @@ const TransaksiPembayaran = () => {
                                     </div>
                                     <div className="col-md-8 mt-2">
                                         <div className="row">
-                                            <div className="col-sm-4">
-                                                <h3>Jumlah Angsuran</h3>
+                                            <div className="col-sm-3">
+                                                <h3>Angsuran</h3>
                                                 <h3>{jumlahAngsuran} Kali</h3>
                                             </div>
-                                            <div className="col-sm-4">
+                                            <div className="col-sm-3">
+                                                <h3>Total Biaya</h3>
+                                                <h3>{accountBiaya}</h3>
+                                            </div>
+                                            <div className="col-sm-3">
                                                 <h3>Total Bayar</h3>
                                                 <h3>{accountingTransaksi && accountingTransaksi}</h3>
                                             </div>
-                                            <div className="col-sm-4">
-                                                <h3>Status Pembayaran</h3>
+                                            <div className="col-sm-3">
+                                                <h3>Status</h3>
                                                 {status == 'lunas' ?
                                                     <h3 className='text-capitalize text-success'>{status}</h3>
                                                     :
@@ -506,19 +573,21 @@ const TransaksiPembayaran = () => {
                                         </div>
                                     </div>
                                 </div>
+                                {Transaksi.length == 0 || Transaksi.length == jumlahAngsuran || status == 'lunas' ?
+                                    ""
+                                    :
+                                    <div className="row">
+                                        <div className='col-md-12'>
+                                            <button className='btn btn-sm btn-info float-end' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Angsuran</button>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className='row mt-3'>
                     <div className="col-md-12">
-                        {Transaksi.length == jumlahAngsuran || status == 'lunas' ?
-                            "" :
-                            <div className='d-flex justify-content-center mb-2'>
-                                <button className='btn btn-sm btn-info' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Transaksi</button>
-                            </div>
-                        }
-
                         {Transaksi.map((item, index) => (
                             <div key={item.id_transaksi} className="card shadow mb-2">
                                 <div className="card-body">
@@ -544,94 +613,32 @@ const TransaksiPembayaran = () => {
                                             <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi}</span>
                                         </div>
                                         <div className="col-md-2 d-flex align-items-center">
-                                            {item.status_tombol == '0' ?
-                                                <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
-                                                : ""
+                                            {item.status_tombol == '1' ?
+                                                ""
+                                                : item.status_tombol == '0' ?
+                                                    <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
+                                                    : item.tenggat_pembayaran == moment().format('YYYY-MM-DD') ?
+                                                        <button className='btn btn-sm btn-info' onClick={waktuHabis} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
+                                                        : ''
                                             }
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ))}
-
                     </div>
                 </div>
                 <div className="row">
                     <div className='d-none'>
                         <div ref={templateRef}>
                             <div style={tableStyle.wrap}>
-                                <img src={kop} alt="kop" style={tableStyle.image} />
-                                <div style={tableStyle.title} className='text-center text-uppercase  mt-2 mb-2'>
-                                    <span>BUKTI PENDAFTARAN MAHASISWA</span>
-                                </div>
-                                <div style={tableStyle.grid} className='mb-3'>
+                                <div style={tableStyle.grid} className='border-bottomm-3'>
                                     <div style={tableStyle.gridItem}>
-                                        <table width={300} cellPadding={3}>
-                                            <tbody>
-                                                <tr>
-                                                    <td>NIK</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{biodata.nik}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Nama</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td className='text-uppercase'>{nama}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Tempat Lahir</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td className='text-uppercase'>{biodata.tempat_lahir}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Tanggal Lahir</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{biodata.tanggal_lahir}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Jenis Kelamin</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td className='text-uppercase'>{kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Desa</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{desa}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Kecamatan</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{kecamatan}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Kabupaten</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{kabupaten}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Provinsi</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{provinsi}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Nomor WhatsApp</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{biodata.no_hp}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Nomor Telepon</td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{biodata.no_telepon}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <img src={kop} alt="" width={50} />
                                     </div>
-                                </div>
-                                <div style={tableStyle.title}>
-                                    <span className='ms-4'>Bukti Pendaftaran dipergunakan sebagai syarat melakukan pembayaran pendaftaran PMB STAINAA.</span>
-                                </div>
-                                <div style={tableStyle.uraian} className='mt-4 text-end'>
-                                    <span>Alasbuluh, {today}</span>
+                                    <div style={tableStyle.gridItem}>
+                                        <h4>KARTU BUKTI PENDAFTARAN MAHASISWA BARU</h4>
+                                    </div>
                                 </div>
                             </div>
                         </div>

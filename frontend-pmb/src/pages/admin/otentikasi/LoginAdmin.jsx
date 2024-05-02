@@ -1,21 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from "../../../assets/stainaa.png"
+import { useDispatch, useSelector } from "react-redux"
+import { LoginUser, reset } from "../../../features/authSlice"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
-import axios from 'axios'
 import Swal from 'sweetalert2'
 import { FallingLines } from 'react-loader-spinner'
 
-const Registrasi = () => {
+const LoginAdmin = () => {
     const [showPass, setShowPass] = useState(false)
-    const [showConfirm, setShowConfirm] = useState(false)
-    const [nama, setNama] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [konfirmPass, setKonfirmPass] = useState("")
     const [loading, setLoading] = useState(false)
+    const { user, isSuccess, isError, message } = useSelector((state) => state.auth)
+    const dispatch = useDispatch()
     const navigate = useNavigate()
-
     const togglePass = () => {
         if (showPass) {
             setShowPass(false)
@@ -24,82 +23,58 @@ const Registrasi = () => {
         }
     }
 
-    const toggleKonPass = () => {
-        if (showConfirm) {
-            setShowConfirm(false)
-        } else {
-            setShowConfirm(true)
-        }
-    }
-
-    const auth = async (e) => {
-        e.preventDefault()
-        try {
-            if (nama == '') {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'username tidak boleh kosong',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (email == '') {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'email tidak boleh kosong',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (password == '') {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Password tidak boleh kosong',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (password.length < 8) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Password kurang dari 8 digit',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (konfirmPass == '') {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Konfirmasi Password tidak boleh kosong',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (konfirmPass != password) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Konfirmasi password tidak sama dengan password',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else {
-                setLoading(true)
-                await axios.post('v1/registrasi/daftar', {
-                    nama: nama,
-                    email: email,
-                    conPass: konfirmPass,
-                    pass: password
-                }).then(function (response) {
-                    setLoading(false)
+    useEffect(() => {
+        if (user || isSuccess) {
+            setLoading(false)
+            Swal.fire({
+                title: user.message,
+                icon: 'success',
+                confirmButtonColor: '#3085d6'
+            }).then(() => {
+                if (user.role == 'admin') {
+                    navigate('/home')
+                } else {
                     Swal.fire({
-                        title: 'Sukses',
-                        text: 'Anda telah berhasil membuat akun',
-                        icon: 'success',
+                        title: 'Login Gagal',
+                        text: 'Mohon Login menggunakan akun anda',
+                        icon: 'error',
                         confirmButtonColor: '#3085d6'
-                    }).then(() => {
-                        navigate('/verifyKode')
                     })
-                })
-            }
-        } catch (error) {
+                }
+            })
+        } else if (isError) {
+            setLoading(false)
+            Swal.fire({
+                title: 'Error',
+                text: message,
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            })
+        }
+        dispatch(reset())
+    }, [user, isSuccess, navigate, message, dispatch])
+
+    const Auth = (e) => {
+        e.preventDefault()
+        if (email == '') {
+            Swal.fire({
+                title: 'Error',
+                text: 'Email tidak boleh kosong',
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            })
+        } else if (password == '') {
+            Swal.fire({
+                title: 'Error',
+                text: 'Email tidak boleh kosong',
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            })
+        } else {
+            setLoading(true)
+            dispatch(LoginUser({ email, password }))
         }
     }
-
 
     return (
         <>
@@ -125,20 +100,16 @@ const Registrasi = () => {
                                         <div className="card-body p-6">
                                             <div className="mb-2">
                                                 <img src={logo} className="mb-2" width={60} alt="logo" />
-                                                <h1 className="mb-1 fw-bold">Daftar Akun PMB</h1>
+                                                <h1 className="mb-1 fw-bold">Selamat Datang</h1>
                                                 <span>
-                                                    Sudah memiliki akun?
-                                                    <Link to="/login" className="ms-1">Login</Link>
+                                                    Belum memiliki akun?
+                                                    <Link to="/" className="ms-1">Daftar</Link>
                                                 </span>
                                             </div>
-                                            <form className="needs-validation" autoComplete='off' onSubmit={auth}>
-                                                <div className="mb-3">
-                                                    <label htmlFor="username" className="form-label">username</label>
-                                                    <input type="text" id="username" className="form-control" placeholder="username" value={nama} onChange={(e) => setNama(e.target.value)} />
-                                                </div>
+                                            <form className="needs-validation" onSubmit={Auth}>
                                                 <div className="mb-3">
                                                     <label htmlFor="email" className="form-label">Email</label>
-                                                    <input type="email" id="email" className="form-control" placeholder="example@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                                    <input type="email" id="email" className="form-control" name="email" placeholder="example@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label htmlFor="password" className="form-label">Password</label>
@@ -147,16 +118,12 @@ const Registrasi = () => {
                                                         <button className="btn btn-primary btn-sm" type="button" onClick={togglePass}>{showPass ? <FaEyeSlash /> : <FaEye />}</button>
                                                     </div>
                                                 </div>
-                                                <div className="mb-3">
-                                                    <label htmlFor="konpassword" className="form-label">Konfirmasi Password</label>
-                                                    <div className="input-group mb-3">
-                                                        <input type={showConfirm ? 'text' : 'password'} className="form-control" id='konpassword' placeholder="***************" value={konfirmPass} onChange={(e) => setKonfirmPass(e.target.value)} />
-                                                        <button className="btn btn-primary btn-sm" type="button" onClick={toggleKonPass}>{showConfirm ? <FaEyeSlash /> : <FaEye />}</button>
-                                                    </div>
+                                                <div className='mb-4'>
+                                                    <Link to='/forgotpassword'><u>Lupa Password?</u></Link>
                                                 </div>
                                                 <div>
                                                     <div className="d-grid">
-                                                        <button type="submit" className="btn btn-primary">Daftar Akun</button>
+                                                        <button type="submit" className="btn btn-primary">Login</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -199,4 +166,4 @@ const Registrasi = () => {
     )
 }
 
-export default Registrasi
+export default LoginAdmin
