@@ -48,10 +48,16 @@ const LayoutAdmin = ({ children }) => {
                         </Link>
                         <ul className="navbar-nav flex-column" id="sideNavbar">
                             <li className="nav-item">
-                                <a className="nav-link " href="../../pages/dashboard/chat-app.html">
+                                <Link className="nav-link ">
                                     <i className="nav-icon fe fe-home me-2"></i>
-                                    Chat
-                                </a>
+                                    Dashboard
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/dataFormulir" className="nav-link">
+                                    <i className="nav-icon fe fe-home me-2"></i>
+                                    Data Formulir
+                                </Link>
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link " href="#" data-bs-toggle="collapse" data-bs-target="#navDashboard"
@@ -73,6 +79,7 @@ const LayoutAdmin = ({ children }) => {
                         </ul>
                     </div>
                 </nav>
+
                 <main id='page-content'>
                     <div className="header">
                         <nav className="navbar-default navbar navbar-expand-lg">

@@ -16,7 +16,7 @@ import Home from "./pages/admin/dashboard/Home"
 import InformasiSeleksi from "./pages/user/seleksi/InformasiSeleksi"
 import FormSeleksi from "./pages/user/seleksi/FormSeleksi"
 import PemilihanProdi from "./pages/user/seleksi/PemilihanProdi"
-import LoginAdmin from "./pages/admin/otentikasi/LoginAdmin"
+import ListFormulir from "./pages/admin/dataFormulir/ListFormulir"
 
 function App() {
   return (
@@ -40,8 +40,8 @@ function App() {
           <Route path="/formseleksi" element={<FormSeleksi />} />
           <Route path="/pemilihanProdi" element={<PemilihanProdi />} />
 
-          <Route path="/administrator" element={<LoginAdmin />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/dataFormulir" element={<ListFormulir />} />
         </Routes>
       </BrowserRouter>
     </>

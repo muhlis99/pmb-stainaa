@@ -11,7 +11,7 @@ const Home = () => {
 
     useEffect(() => {
         if (isError) {
-            navigate('/administrator')
+            navigate('/login')
         }
     }, [isError])
 
