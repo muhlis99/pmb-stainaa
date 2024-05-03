@@ -17,6 +17,7 @@ import InformasiSeleksi from "./pages/user/seleksi/InformasiSeleksi"
 import FormSeleksi from "./pages/user/seleksi/FormSeleksi"
 import PemilihanProdi from "./pages/user/seleksi/PemilihanProdi"
 import ListFormulir from "./pages/admin/dataFormulir/ListFormulir"
+import PembayaranList from "./pages/admin/pembayaran/PembayaranList"
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
 
           <Route path="/home" element={<Home />} />
           <Route path="/dataFormulir" element={<ListFormulir />} />
+          <Route path="/pembayaranlist" element={<PembayaranList />} />
         </Routes>
       </BrowserRouter>
     </>

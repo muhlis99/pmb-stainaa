@@ -63,15 +63,15 @@ const LayoutAdmin = ({ children }) => {
                                 <a className="nav-link " href="#" data-bs-toggle="collapse" data-bs-target="#navDashboard"
                                     aria-expanded="false" aria-controls="navDashboard">
                                     <i className="nav-icon fe fe-home me-2"></i>
-                                    Lainnya
+                                    Data Pembayaran
                                 </a>
                                 <div id="navDashboard" className="collapse  show " data-bs-parent="#sideNavbar">
                                     <ul className="nav flex-column">
                                         <li className="nav-item">
-                                            <Link className="nav-link  active">Overview</Link>
+                                            <Link to="/pembayaranlist" className="nav-link  active">Data Pembayaran</Link>
                                         </li>
                                         <li className="nav-item">
-                                            <Link className="nav-link ">Analytics</Link>
+                                            <Link className="nav-link ">Transaksi Pembayaran</Link>
                                         </li>
                                     </ul>
                                 </div>

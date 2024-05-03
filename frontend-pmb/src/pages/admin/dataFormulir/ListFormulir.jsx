@@ -106,13 +106,12 @@ const ListFormulir = () => {
                                     ))}
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="tabPaneList" role="tabpanel" aria-labelledby="tabPaneList">
+                <div className="tab-pane fade" id="tabPaneList" role="tabpanel" aria-labelledby="tabPaneList">
                     <div className="card">
-                        <div className="card-body">
+                        <div className="card-body p-3">
                             <div className="row mb-2">
                                 <div className="col-md-3 col-lg-3 col-sm-12 offset-9">
                                     <input type="text" className='form-control form-control-sm float-end' />
