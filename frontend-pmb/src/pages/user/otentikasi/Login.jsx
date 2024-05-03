@@ -31,7 +31,11 @@ const Login = () => {
                 icon: 'success',
                 confirmButtonColor: '#3085d6'
             }).then(() => {
-                navigate('/dashboard')
+                if (user.role == 'admin') {
+                    navigate('/home')
+                } else {
+                    navigate('/dashboard')
+                }
             })
         } else if (isError) {
             setLoading(false)

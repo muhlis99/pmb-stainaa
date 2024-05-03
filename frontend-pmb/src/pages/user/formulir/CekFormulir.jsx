@@ -3,6 +3,7 @@ import LayoutUser from '../../LayoutUser'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
 import { useNavigate, Link } from 'react-router-dom'
+import noProfil from "../../../assets/foto.svg"
 import axios from 'axios'
 
 const CekFormulir = () => {
@@ -18,6 +19,8 @@ const CekFormulir = () => {
     const [fotoDiri, setFotoDiri] = useState("")
     const [prevFoto, setPrevFoto] = useState("")
     const [nama, setNama] = useState("")
+    const [idPendaftar, setIdPendaftar] = useState('')
+    const [statusFormulir, setStatusFormulir] = useState('')
 
     useEffect(() => {
         if (isError) {
@@ -30,11 +33,29 @@ const CekFormulir = () => {
     }, [dispatch])
 
     useEffect(() => {
+        const getDataByToken = async () => {
+            try {
+                if (user) {
+                    const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
+                    setIdPendaftar(response.data.data.id)
+                }
+            } catch (error) {
+
+            }
+        }
+        getDataByToken()
+    }, [user])
+
+    useEffect(() => {
         getDetailForm()
         if (user) {
             setToken(user.data.token)
         }
     }, [user])
+
+    useEffect(() => {
+        getStatusFormulir()
+    }, [idPendaftar])
 
     useEffect(() => {
         lihatFoto()
@@ -57,10 +78,21 @@ const CekFormulir = () => {
         }
     }
 
+    const getStatusFormulir = async () => {
+        try {
+            if (idPendaftar) {
+                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
+                setStatusFormulir(response.data.data.status_formulir)
+            }
+        } catch (error) {
+
+        }
+    }
+
     const lihatFoto = async () => {
         try {
             if (fotoDiri) {
-                await axios.get(`v1/formulir/seeImage/pmb/diri/${fotoDiri} `, {
+                await axios.get(`v1/formulir/seeImage/pmb/diri/${fotoDiri}`, {
                     responseType: "arraybuffer"
                 }).then((response) => {
                     const base64 = btoa(
@@ -100,53 +132,59 @@ const CekFormulir = () => {
                                     </div>
                                 </div>
                                 <div className="row mt-3">
-                                    <div className="col-md-4">
-                                        <div className='row'>
-                                            <div className="col-sm-12 d-flex justify-content-center">
-                                                <img src={prevFoto} className="img-thumbnail mt-3" width={150} alt="..." />
+                                    <div className="col-md-10">
+                                        <div className="row">
+                                            <div className="col-md-4">
+                                                <div className='row'>
+                                                    <div className="col-sm-12 d-flex justify-content-center">
+                                                        <img src={noProfil} className="img-thumbnail mt-3 rounded-circle" width={150} alt="..." />
+                                                    </div>
+                                                </div>
+                                                <div className="row mt-2">
+                                                    <div className="col-md-12 text-center">
+                                                        <h3>{nama}</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-5 mt-3 d-flex justify-content-center">
+                                                <table cellPadding={5}>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><h5>Detail Diri</h5></td>
+                                                            <td>&nbsp;:&nbsp;</td>
+                                                            <td>{diri == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><h5>Detail Alamat</h5></td>
+                                                            <td>&nbsp;:&nbsp;</td>
+                                                            <td>{alamat == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><h5>Detail Orang Tua</h5></td>
+                                                            <td>&nbsp;:&nbsp;</td>
+                                                            <td>{ortu == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><h5>Detail Wali</h5></td>
+                                                            <td>&nbsp;:&nbsp;</td>
+                                                            <td>{wali == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><h5>Detail Berkas</h5></td>
+                                                            <td>&nbsp;:&nbsp;</td>
+                                                            <td>{berkas == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div className="col-md-3 d-flex justify-content-center align-items-center">
+                                                {statusFormulir == 'belum' ?
+                                                    <div><Link to='/formulir1' state={{ token: token }} className="btn btn-sm btn-success ms-3">Mulai</Link></div>
+                                                    :
+                                                    <div><Link to='/detailformulir' state={{ token: token }} className="btn btn-sm btn-info ms-3">Lihat</Link></div>
+                                                }
                                             </div>
                                         </div>
-                                        <div className="row mt-2">
-                                            <div className="col-md-12 text-center">
-                                                <h3>{nama}</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-8 mt-3">
-                                        <table cellPadding={5}>
-                                            <tbody>
-                                                <tr>
-                                                    <td><h5>Detail Diri</h5></td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{diri == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                    <td><Link to='/formulir1' state={{ token: token }} className={`btn btn-sm ${diri == 0 ? 'btn-success' : 'btn-info'} ms-3`}>{diri == 0 ? 'Mulai' : 'Lihat'}</Link></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><h5>Detail Alamat</h5></td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{alamat == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                    <td><Link to='/formulir2' state={{ token: token }} className="btn btn-sm btn-info ms-3">{alamat == 0 ? 'Mulai' : 'Lihat'}</Link></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><h5>Detail Orang Tua</h5></td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{ortu == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                    <td><Link to="/formulir3" state={{ token: token }} className="btn btn-sm btn-info ms-3">{ortu == 0 ? 'Mulai' : 'Lihat'}</Link></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><h5>Detail Wali</h5></td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{wali == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                    <td><Link to="/formulir4" state={{ token: token }} className="btn btn-sm btn-info ms-3">{wali == 0 ? 'Mulai' : 'Lihat'}</Link></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><h5>Detail Berkas</h5></td>
-                                                    <td>&nbsp;:&nbsp;</td>
-                                                    <td>{berkas == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                    <td><Link to="/formulir5" state={{ token: token }} className="btn btn-sm btn-info ms-3">{berkas == 0 ? 'Mulai' : 'Lihat'}</Link></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>

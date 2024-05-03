@@ -10,11 +10,14 @@ import Form2 from "./pages/user/formulir/Form2"
 import Form3 from "./pages/user/formulir/Form3"
 import Form4 from "./pages/user/formulir/Form4"
 import Form5 from "./pages/user/formulir/Form5"
+import DetailFormulir from "./pages/user/formulir/DetailFormulir"
 import TransaksiPembayaran from "./pages/user/pembayaran/TransaksiPembayaran"
 import Home from "./pages/admin/dashboard/Home"
 import InformasiSeleksi from "./pages/user/seleksi/InformasiSeleksi"
 import FormSeleksi from "./pages/user/seleksi/FormSeleksi"
 import PemilihanProdi from "./pages/user/seleksi/PemilihanProdi"
+import ListFormulir from "./pages/admin/dataFormulir/ListFormulir"
+import PembayaranList from "./pages/admin/pembayaran/PembayaranList"
 
 function App() {
   return (
@@ -32,13 +35,15 @@ function App() {
           <Route path="/formulir3" element={<Form3 />} />
           <Route path="/formulir4" element={<Form4 />} />
           <Route path="/formulir5" element={<Form5 />} />
+          <Route path="/detailformulir" element={<DetailFormulir />} />
           <Route path="/pembayaran" element={<TransaksiPembayaran />} />
           <Route path="/infoseleksi" element={<InformasiSeleksi />} />
           <Route path="/formseleksi" element={<FormSeleksi />} />
           <Route path="/pemilihanProdi" element={<PemilihanProdi />} />
 
-
           <Route path="/home" element={<Home />} />
+          <Route path="/dataFormulir" element={<ListFormulir />} />
+          <Route path="/pembayaranlist" element={<PembayaranList />} />
         </Routes>
       </BrowserRouter>
     </>

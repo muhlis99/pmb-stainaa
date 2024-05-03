@@ -5,6 +5,7 @@ import { getMe } from "../../../features/authSlice"
 import { Link, useNavigate } from 'react-router-dom'
 import moment from "moment"
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const InformasiSeleksi = () => {
     const dispatch = useDispatch()
@@ -14,10 +15,8 @@ const InformasiSeleksi = () => {
     const [idSeleksi, setIdSeleksi] = useState('')
     const [penyelesaian, setPenyelesaian] = useState('')
     const [durasi, setDurasi] = useState('')
-    const [belum, setBelum] = useState('')
-    const [benar, setBenar] = useState('')
-    const [salah, setSalah] = useState('')
-    const [skor, setSkor] = useState('')
+    const [idPendaftar, setIdPendaftar] = useState('')
+    const [statusPembayaran, setStatusPembayaran] = useState('')
 
     useEffect(() => {
         if (isError) {
@@ -36,6 +35,35 @@ const InformasiSeleksi = () => {
     useEffect(() => {
         getInformasiHasil()
     }, [user])
+
+    useEffect(() => {
+        const getDataByToken = async () => {
+            try {
+                if (user) {
+                    const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
+                    setIdPendaftar(response.data.data.id)
+                }
+            } catch (error) {
+
+            }
+        }
+        getDataByToken()
+    }, [user])
+
+    useEffect(() => {
+        getStatusPembayaran()
+    }, [idPendaftar])
+
+    const getStatusPembayaran = async () => {
+        try {
+            if (idPendaftar) {
+                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
+                setStatusPembayaran(response.data.data.status_pembayaran)
+            }
+        } catch (error) {
+
+        }
+    }
 
     const getTotalPertanyaan = async () => {
         try {
@@ -65,12 +93,22 @@ const InformasiSeleksi = () => {
 
     const tambahSeleksi = async () => {
         try {
-            await axios.post('v1/seleksi/tambah', {
-                token: user && user.data.token,
-                total_soal: totalSoal
-            }).then(function (response) {
-                navigate("/formseleksi", { state: { waktuNow: new Date() } })
-            })
+            if (statusPembayaran == 'belum') {
+                Swal.fire({
+                    title: 'Seleksi Gagal',
+                    text: 'Anda belum menyelesaikan pembayaran pendaftaran',
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6'
+
+                })
+            } else {
+                await axios.post('v1/seleksi/tambah', {
+                    token: user && user.data.token,
+                    total_soal: totalSoal
+                }).then(function (response) {
+                    navigate("/formseleksi", { state: { waktuNow: new Date() } })
+                })
+            }
         } catch (error) {
 
         }
@@ -111,30 +149,12 @@ const InformasiSeleksi = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="row mt-2">
-                                            <div className="col-md-12 d-flex justify-content-center">
-                                                <div className="d-flex gap-5">
-                                                    <div className="text-center mb-2">
-                                                        <h3 className='display-6'>Benar</h3>
-                                                        <h1 className='display-4'>{benar == '' ? '0' : benar}</h1>
-                                                    </div>
-                                                    <div className="text-center mb-2">
-                                                        <h3 className='display-6'>Salah</h3>
-                                                        <h1 className='display-4'>{salah == '' ? '0' : salah}</h1>
-                                                    </div>
-                                                    <div className="text-center mb-2">
-                                                        <h3 className='display-6'>Skor</h3>
-                                                        <h1 className='display-4'>{skor == '' ? '0' : skor}</h1>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div className="col-md-4 mb-2 d-flex justify-content-center align-items-center">
                                         {idSeleksi == '' ?
-                                            <button className="btn btn-success" onClick={tambahSeleksi}>Mulai</button>
+                                            <button className="btn btn-success btn-sm" onClick={tambahSeleksi}>Mulai</button>
                                             :
-                                            <Link to="/formseleksi" state={{ waktuNow: new Date() }} className="btn btn-success" >Mulai</Link>
+                                            <Link to="/formseleksi" state={{ waktuNow: new Date() }} className="btn btn-success btn-sm" >Lanjutkan</Link>
                                         }
                                     </div>
                                 </div>

@@ -38,7 +38,7 @@ const Registrasi = () => {
             if (nama == '') {
                 Swal.fire({
                     title: 'Error',
-                    text: 'nama tidak boleh kosong',
+                    text: 'username tidak boleh kosong',
                     icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
@@ -133,8 +133,8 @@ const Registrasi = () => {
                                             </div>
                                             <form className="needs-validation" autoComplete='off' onSubmit={auth}>
                                                 <div className="mb-3">
-                                                    <label htmlFor="username" className="form-label">Nama</label>
-                                                    <input type="text" id="username" className="form-control" placeholder="Nama anda" value={nama} onChange={(e) => setNama(e.target.value)} />
+                                                    <label htmlFor="username" className="form-label">username</label>
+                                                    <input type="text" id="username" className="form-control" placeholder="username" value={nama} onChange={(e) => setNama(e.target.value)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label htmlFor="email" className="form-label">Email</label>

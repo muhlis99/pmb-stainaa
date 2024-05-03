@@ -37,8 +37,10 @@ const Navbar = () => {
 
     const getByToken = async () => {
         try {
-            const response = await axios.get(`v1/formulir/getByToken/${user && user.data.token}`)
-            setNama(response.data.data.nama)
+            if (user) {
+                const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
+                setNama(response.data.data.nama)
+            }
         } catch (error) {
 
         }
