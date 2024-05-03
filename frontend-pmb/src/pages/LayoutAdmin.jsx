@@ -60,18 +60,35 @@ const LayoutAdmin = ({ children }) => {
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link " href="#" data-bs-toggle="collapse" data-bs-target="#navDashboard"
-                                    aria-expanded="false" aria-controls="navDashboard">
+                                <a className="nav-link " href="#" data-bs-toggle="collapse" data-bs-target="#navPembayaran"
+                                    aria-expanded="false" aria-controls="navPembayaran">
                                     <i className="nav-icon fe fe-home me-2"></i>
-                                    Data Pembayaran
+                                    Pembayaran
                                 </a>
-                                <div id="navDashboard" className="collapse  show " data-bs-parent="#sideNavbar">
+                                <div id="navPembayaran" className="collapse" data-bs-parent="#sideNavbar">
                                     <ul className="nav flex-column">
                                         <li className="nav-item">
                                             <Link to="/pembayaranlist" className="nav-link  active">Data Pembayaran</Link>
                                         </li>
                                         <li className="nav-item">
-                                            <Link className="nav-link ">Transaksi Pembayaran</Link>
+                                            <Link to="/transaksi" className="nav-link ">Transaksi Pembayaran</Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link " href="#" data-bs-toggle="collapse" data-bs-target="#navSeleksi"
+                                    aria-expanded="false" aria-controls="navSeleksi">
+                                    <i className="nav-icon fe fe-home me-2"></i>
+                                    Seleksi
+                                </a>
+                                <div id="navSeleksi" className="collapse" data-bs-parent="#sideNavbar">
+                                    <ul className="nav flex-column">
+                                        <li className="nav-item">
+                                            <Link className="nav-link  active">Data Soal</Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link className="nav-link ">Hasil Seleksi</Link>
                                         </li>
                                     </ul>
                                 </div>

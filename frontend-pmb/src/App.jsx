@@ -18,6 +18,8 @@ import FormSeleksi from "./pages/user/seleksi/FormSeleksi"
 import PemilihanProdi from "./pages/user/seleksi/PemilihanProdi"
 import ListFormulir from "./pages/admin/dataFormulir/ListFormulir"
 import PembayaranList from "./pages/admin/pembayaran/PembayaranList"
+import TransaksiList from "./pages/admin/transaksi/TransaksiList"
+import TransaksiCek from "./pages/admin/transaksi/TransaksiCek"
 
 function App() {
   return (
@@ -44,6 +46,8 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/dataFormulir" element={<ListFormulir />} />
           <Route path="/pembayaranlist" element={<PembayaranList />} />
+          <Route path="/transaksi" element={<TransaksiList />} />
+          <Route path="/cektransaksi" element={<TransaksiCek />} />
         </Routes>
       </BrowserRouter>
     </>
