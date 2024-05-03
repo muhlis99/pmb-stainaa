@@ -8,6 +8,75 @@ const fs = require('fs')
 
 
 module.exports = {
+    gtAllTransaksiMhs : async (req, res, next) => {
+        const currentPage = parseInt(req.query.page) || 1
+        const perPage = parseInt(req.query.perPage) || 10
+        const search = req.query.search || ""
+        const offset = (currentPage - 1) * perPage
+        const totalPage = await formulir.count({
+            where: {
+                [Op.or]: [
+                    {
+                        id: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        token: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        nama: {
+                            [Op.like]: `%${search}%`
+                        }
+                    }
+                ]
+            }
+        })
+        const totalItems = Math.ceil(totalPage / perPage)
+        await formulir.findAll({
+            attributes : ["id","nama","token","tempat_lahir","tanggal_lahir","jenis_kelamin"],
+            where: {
+                [Op.or]: [
+                    {
+                        id: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        token: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        nama: {
+                            [Op.like]: `%${search}%`
+                        }
+                    }
+                ]
+            },
+            offset: offset,
+            limit: perPage,
+            order: [
+                ["id", "DESC"]
+            ]
+        }).
+            then(result => {
+                res.status(200).json({
+                    message: "Get All formulir Success",
+                    data: result,
+                    total_data: totalPage,
+                    per_page: perPage,
+                    current_page: currentPage,
+                    total_page: totalItems
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
+    },
+
     getAllByToken : async (req, res, next) => {
         const kode = req.params.kode
         await transaksi.findAll({
