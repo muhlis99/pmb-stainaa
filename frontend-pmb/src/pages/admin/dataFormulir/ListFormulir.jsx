@@ -55,15 +55,10 @@ const ListFormulir = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row mt-3">
                     <div className="col-lg-12 col-md-12 col-12">
                         <div className="tab-content">
                             <div className="tab-pane fade show active" id="tabPaneGrid" role="tabpanel" aria-labelledby="tabPaneGrid">
-                                <div className="row">
-                                    <div className="col-md-3 col-lg-3 col-sm-12 offset-9 mb-4">
-                                        <input type="text" placeholder='Cari' className='form-control form-control-sm float-end' />
-                                    </div>
-                                </div>
                                 <div className="row">
                                     {Formulir.map((item, index) => (
                                         <div key={index} className="col-xl-3 col-lg-6 col-md-6 col-12">
