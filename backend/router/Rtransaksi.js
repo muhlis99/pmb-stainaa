@@ -15,6 +15,7 @@ router.post('/tambahAnsuran', Ctransaksi.tambahAnsuran)
 router.put('/tambahTransaksi/:id', Ctransaksi.tambahTransaksi)
 
 // admin
+router.get('/allTransaksiMhs', Ctransaksi.gtAllTransaksiMhs)
 router.get('/checkTransaksi/:kode', Ctransaksi.checkTransaksi)
 router.put('/editTenggatPembayaran/:id', Ctransaksi.editTenggatPembayaran)
 
