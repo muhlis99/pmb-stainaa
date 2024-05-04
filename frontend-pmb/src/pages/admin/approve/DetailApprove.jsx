@@ -149,17 +149,17 @@ const DetailApprove = () => {
                                     </div>
                                     {Prodi.map((item, index) => (
                                         <div key={index} className='col-lg-4 col-md-4 col-sm-12'>
-                                            <div class="card widget-flat">
-                                                <div class="card-body">
-                                                    <div class="float-end">
-                                                        <i class="mdi mdi-pulse widget-icon"></i>
+                                            <div className="card widget-flat">
+                                                <div className="card-body">
+                                                    <div className="float-end">
+                                                        <i className="mdi mdi-pulse widget-icon"></i>
                                                     </div>
-                                                    <h5 class="text-muted fw-normal mt-0" title="Growth">Program Studi</h5>
-                                                    <h3 class="mt-3 mb-3">{item.nama_prodi}</h3>
-                                                    <p class="mb-0 text-muted">
-                                                        <span class="text-success me-2">
-                                                            <i class="mdi mdi-arrow-up-bold"></i> 4.87%</span>
-                                                        <span class="text-nowrap">Since last month</span>
+                                                    <h5 className="text-muted fw-normal mt-0" title="Growth">Program Studi</h5>
+                                                    <h3 className="mt-3 mb-3">{item.nama_prodi}</h3>
+                                                    <p className="mb-0 text-muted">
+                                                        <span className="text-success me-2">
+                                                            <i className="mdi mdi-arrow-up-bold"></i> 4.87%</span>
+                                                        <span className="text-nowrap">Since last month</span>
                                                     </p>
                                                 </div>
                                             </div>
