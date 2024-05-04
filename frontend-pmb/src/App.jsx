@@ -22,6 +22,8 @@ import TransaksiList from "./pages/admin/transaksi/TransaksiList"
 import TransaksiCek from "./pages/admin/transaksi/TransaksiCek"
 import SoalList from "./pages/admin/dataSoal/SoalList"
 import PertanyaanList from "./pages/admin/dataSoal/PertanyaanList"
+import HasilSeleksiList from "./pages/admin/hasilSeleksi/HasilSeleksiList"
+import DetailHasilSeleksi from "./pages/admin/hasilSeleksi/DetailHasilSeleksi"
 
 function App() {
   return (
@@ -52,6 +54,8 @@ function App() {
           <Route path="/cektransaksi" element={<TransaksiCek />} />
           <Route path="/paketSoal" element={<SoalList />} />
           <Route path="/settingSoal" element={<PertanyaanList />} />
+          <Route path="/hasilSeleksi" element={<HasilSeleksiList />} />
+          <Route path="/detailhasilSeleksi" element={<DetailHasilSeleksi />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -88,7 +88,7 @@ const LayoutAdmin = ({ children }) => {
                                             <Link to="/paketSoal" className="nav-link">Data Soal</Link>
                                         </li>
                                         <li className="nav-item">
-                                            <Link className="nav-link ">Hasil Seleksi</Link>
+                                            <Link to="/hasilSeleksi" className="nav-link ">Hasil Seleksi</Link>
                                         </li>
                                     </ul>
                                 </div>
