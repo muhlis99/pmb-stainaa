@@ -24,6 +24,8 @@ import SoalList from "./pages/admin/dataSoal/SoalList"
 import PertanyaanList from "./pages/admin/dataSoal/PertanyaanList"
 import HasilSeleksiList from "./pages/admin/hasilSeleksi/HasilSeleksiList"
 import DetailHasilSeleksi from "./pages/admin/hasilSeleksi/DetailHasilSeleksi"
+import Approve from "./pages/admin/approve/Approve"
+import DetailApprove from "./pages/admin/approve/DetailApprove"
 
 function App() {
   return (
@@ -56,6 +58,8 @@ function App() {
           <Route path="/settingSoal" element={<PertanyaanList />} />
           <Route path="/hasilSeleksi" element={<HasilSeleksiList />} />
           <Route path="/detailhasilSeleksi" element={<DetailHasilSeleksi />} />
+          <Route path="/approve" element={<Approve />} />
+          <Route path="/detailapprove" element={<DetailApprove />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -93,6 +93,12 @@ const LayoutAdmin = ({ children }) => {
                                     </ul>
                                 </div>
                             </li>
+                            <li className="nav-item">
+                                <Link to="/approve" className="nav-link">
+                                    <i className="nav-icon fe fe-home me-2"></i>
+                                    Approve
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </nav>

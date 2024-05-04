@@ -123,8 +123,8 @@ const DetailHasilSeleksi = () => {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <ol>
-                                            {Hasil.map((item) => (
-                                                <li key={item.id_jawaban}>
+                                            {Hasil.map((item, index) => (
+                                                <li key={index}>
                                                     <h5>{item.pertanyaans[0].pertanyaan}</h5>
                                                     <p className='text-dark text-capitalize'>Jawaban : {item.jawaban} <span className={`badge ${item.status == 'benar' ? 'bg-success' : 'bg-danger'}`}>{item.status}</span></p>
                                                 </li>

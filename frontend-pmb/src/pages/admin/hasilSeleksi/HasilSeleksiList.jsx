@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const HasilSeleksiList = () => {
     const dispatch = useDispatch()
@@ -32,6 +33,31 @@ const HasilSeleksiList = () => {
         } catch (error) {
 
         }
+    }
+
+    const umumkan = async (seleksiId) => {
+        await axios.put(
+            `v1/seleksi/umumkan/${seleksiId}`
+        ).then(function (response) {
+            Swal.fire({
+                title: "Berhasil Diumumkan",
+                text: response.data.message,
+                icon: "success",
+                confirmButtonColor: '#3085d6'
+            }).then(() => {
+                getHasilSeleksi()
+            })
+        })
+    }
+
+    const tidak = () => {
+        Swal.fire({
+            text: 'Hasil Seleksi telah diumumkan',
+            title: 'Gagal',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+
+        })
     }
 
     return (
@@ -76,8 +102,13 @@ const HasilSeleksiList = () => {
                                                             <span className='badge bg-danger'>Belum Selesai</span>
                                                         }
                                                     </td>
-                                                    <td>
+                                                    <td className='d-flex gap-2'>
                                                         <Link to="/detailhasilSeleksi" state={{ idSeleksi: item.id_seleksi, token: item.token }} className='btn btn-sm btn-info' >Detail</Link>
+                                                        {item.status_info == 0 ?
+                                                            <button onClick={() => umumkan(item.id_seleksi)} className='btn btn-sm btn-secondary'>Umumkan</button>
+                                                            :
+                                                            <button onClick={tidak} className='btn btn-sm btn-secondary'>Umumkan</button>
+                                                        }
                                                     </td>
                                                 </tr>
                                             ))}
