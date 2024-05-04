@@ -85,7 +85,7 @@ const LayoutAdmin = ({ children }) => {
                                 <div id="navSeleksi" className="collapse" data-bs-parent="#sideNavbar">
                                     <ul className="nav flex-column">
                                         <li className="nav-item">
-                                            <Link className="nav-link  active">Data Soal</Link>
+                                            <Link to="/paketSoal" className="nav-link">Data Soal</Link>
                                         </li>
                                         <li className="nav-item">
                                             <Link className="nav-link ">Hasil Seleksi</Link>

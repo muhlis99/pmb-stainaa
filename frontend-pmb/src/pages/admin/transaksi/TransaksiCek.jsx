@@ -167,7 +167,7 @@ const TransaksiCek = () => {
                 <div className="modal-dialog modal-sm modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Kwitansi Transaksi Ke {transaksiKe}</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">Kwitansi Transaksi Ke {transaksiKe}</h5>
                             <button type="button" className="btn-close d-none" ref={modalImageClose} data-bs-dismiss="modal" aria-label="Close"></button>
                             <button type="button" onClick={closeModalImage} className="btn-close" aria-label="Close"></button>
                         </div>
@@ -179,17 +179,17 @@ const TransaksiCek = () => {
             </div>
 
             {/* Modal Tenggat Waktu */}
-            <button type="button" class="btn btn-primary d-none" ref={modalOpen} data-bs-toggle="modal" data-bs-target="#modalTenggat"></button>
-            <div class="modal fade" id="modalTenggat" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-sm modal-dialog-centered">
-                    <div class="modal-content">
+            <button type="button" className="btn btn-primary d-none" ref={modalOpen} data-bs-toggle="modal" data-bs-target="#modalTenggat"></button>
+            <div className="modal fade" id="modalTenggat" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-sm modal-dialog-centered">
+                    <div className="modal-content">
                         <form onSubmit={editTenggatWaktu}>
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">Perpanjangan Waktu Transaksi</h5>
-                                <button type="button" class="btn-close d-none" ref={modalClose} data-bs-dismiss="modal" aria-label="Close"></button>
-                                <button type="button" class="btn-close" onClick={CloseModal} aria-label="Close"></button>
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="staticBackdropLabel">Perpanjangan Waktu Transaksi</h5>
+                                <button type="button" className="btn-close d-none" ref={modalClose} data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" className="btn-close" onClick={CloseModal} aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
+                            <div className="modal-body">
                                 <div className="row">
                                     <div className="col-md-12">
                                         <label htmlFor="batas" className="form-label">Batas Akhir Pembayaran</label>
@@ -197,8 +197,8 @@ const TransaksiCek = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-sm btn-info">Simpan</button>
+                            <div className="modal-footer">
+                                <button className="btn btn-sm btn-info">Simpan</button>
                             </div>
                         </form>
                     </div>
