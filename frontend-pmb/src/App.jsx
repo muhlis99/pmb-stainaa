@@ -18,6 +18,12 @@ import FormSeleksi from "./pages/user/seleksi/FormSeleksi"
 import PemilihanProdi from "./pages/user/seleksi/PemilihanProdi"
 import ListFormulir from "./pages/admin/dataFormulir/ListFormulir"
 import PembayaranList from "./pages/admin/pembayaran/PembayaranList"
+import TransaksiList from "./pages/admin/transaksi/TransaksiList"
+import TransaksiCek from "./pages/admin/transaksi/TransaksiCek"
+import SoalList from "./pages/admin/dataSoal/SoalList"
+import PertanyaanList from "./pages/admin/dataSoal/PertanyaanList"
+import HasilSeleksiList from "./pages/admin/hasilSeleksi/HasilSeleksiList"
+import DetailHasilSeleksi from "./pages/admin/hasilSeleksi/DetailHasilSeleksi"
 
 function App() {
   return (
@@ -44,6 +50,12 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/dataFormulir" element={<ListFormulir />} />
           <Route path="/pembayaranlist" element={<PembayaranList />} />
+          <Route path="/transaksi" element={<TransaksiList />} />
+          <Route path="/cektransaksi" element={<TransaksiCek />} />
+          <Route path="/paketSoal" element={<SoalList />} />
+          <Route path="/settingSoal" element={<PertanyaanList />} />
+          <Route path="/hasilSeleksi" element={<HasilSeleksiList />} />
+          <Route path="/detailhasilSeleksi" element={<DetailHasilSeleksi />} />
         </Routes>
       </BrowserRouter>
     </>
