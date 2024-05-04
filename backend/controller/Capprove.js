@@ -5,6 +5,7 @@ const MhistoryMhs = require('../model/historyMahasiswaModel.js')
 const Mprodi = require('../model/Mprodi.js')
 const Msemester = require('../model/semesterModel.js')
 const MloginMhs = require('../model/loginModel.js')
+const MtahunAjaran = require('../model/tahunAjaranModel.js')
 const {Sequelize,Op} =  require('sequelize')
 const argon = require('argon2')
 const nodemailer = require('nodemailer')
@@ -13,7 +14,7 @@ const fs = require('fs')
 const QRCode = require("qrcode");
 const { createCanvas, loadImage } = require("canvas");
 
-module.exports = {
+module.exports = {    
     getAll : async (req, res, next) => {
         const currentPage = parseInt(req.query.page) || 1
         const perPage = parseInt(req.query.perPage) || 10
@@ -70,6 +71,38 @@ module.exports = {
             catch(err => {
                 next(err)
             })
+    },
+
+    getAllTahunAjaran : async (req, res, next) => {
+        await MtahunAjaran.findAll().
+        then(result => {
+            res.status(201).json({
+                message: "Data tahun ajaran Ditemukan",
+                data: result
+            })
+        }).
+        catch(err => {
+            next(err)
+        })
+    },
+
+    getAllSemester : async (req, res, next) => {
+        const kode = req.params.kode
+        await Msemester.findAll({
+            where : {
+                code_tahun_ajaran : kode,
+                status : "aktif"
+            }
+        }).
+        then(result => {
+            res.status(201).json({
+                message: "Data semester Ditemukan",
+                data: result
+            })
+        }).
+        catch(err => {
+            next(err)
+        })
     },
 
     getById : async (req, res, next) => {
