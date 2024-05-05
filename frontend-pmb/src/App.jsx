@@ -26,6 +26,8 @@ import HasilSeleksiList from "./pages/admin/hasilSeleksi/HasilSeleksiList"
 import DetailHasilSeleksi from "./pages/admin/hasilSeleksi/DetailHasilSeleksi"
 import Approve from "./pages/admin/approve/Approve"
 import DetailApprove from "./pages/admin/approve/DetailApprove"
+import ListMahasiswa from "./pages/admin/dataInformasi/ListMahasiswa"
+import KirimInformasi from "./pages/admin/dataInformasi/KirimInformasi"
 
 function App() {
   return (
@@ -60,6 +62,8 @@ function App() {
           <Route path="/detailhasilSeleksi" element={<DetailHasilSeleksi />} />
           <Route path="/approve" element={<Approve />} />
           <Route path="/detailapprove" element={<DetailApprove />} />
+          <Route path="/informasi" element={<ListMahasiswa />} />
+          <Route path="/detailInformasi" element={<KirimInformasi />} />
         </Routes>
       </BrowserRouter>
     </>

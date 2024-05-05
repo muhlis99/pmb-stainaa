@@ -23,7 +23,7 @@ const Forgot = () => {
                 await axios.post('v1/login/forgot', {
                     email: email
                 }).then(function (response) {
-                    // navigate('/')
+
                 })
             }
         } catch (error) {
@@ -58,11 +58,8 @@ const Forgot = () => {
                                                 <h1 className="mb-1 fw-bold">PMB STAINAA</h1>
                                             </div>
                                             <div className="mb-5 text-center">
-                                                <span>
-                                                    Reset kata sandi akun anda
-                                                </span><br />
                                                 <span className='mt-2'>
-                                                    Silakan masukkan email anda!
+                                                    Masukkan email untuk mereset kata sandi anda!
                                                 </span>
                                             </div>
                                             <form className="needs-validation" autoComplete='off' >

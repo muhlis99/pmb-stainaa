@@ -36,8 +36,8 @@ const HasilSeleksiList = () => {
     }
 
     const umumkan = async (seleksiId) => {
-        await axios.put(
-            `v1/seleksi/umumkan/${seleksiId}`
+        await axios.post(
+            `v1/informasi/umumkanSeleksi/${seleksiId}`
         ).then(function (response) {
             Swal.fire({
                 title: "Berhasil Diumumkan",

@@ -42,13 +42,13 @@ const LayoutAdmin = ({ children }) => {
             <div id="db-wrapper" className={toggle ? 'toggled' : ''}>
                 <nav className="navbar-vertical navbar">
                     <div className="vh-100" data-simplebar>
-                        <Link className="navbar-brand d-flex align-items-center" style={{ fontSize: '20px', fontWeight: '600' }}>
+                        <Link to="/home" className="navbar-brand d-flex align-items-center" style={{ fontSize: '20px', fontWeight: '600' }}>
                             <img src={logo} alt="" width="33" className="d-inline-block align-text-top" />
                             <span className='ms-2'>PMB STAINAA</span>
                         </Link>
                         <ul className="navbar-nav flex-column" id="sideNavbar">
                             <li className="nav-item">
-                                <Link className="nav-link ">
+                                <Link to="/home" className="nav-link ">
                                     <i className="nav-icon fe fe-home me-2"></i>
                                     Dashboard
                                 </Link>
@@ -97,6 +97,12 @@ const LayoutAdmin = ({ children }) => {
                                 <Link to="/approve" className="nav-link">
                                     <i className="nav-icon fe fe-home me-2"></i>
                                     Approve
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/informasi" className="nav-link">
+                                    <i className="nav-icon fe fe-home me-2"></i>
+                                    Informasi
                                 </Link>
                             </li>
                         </ul>
