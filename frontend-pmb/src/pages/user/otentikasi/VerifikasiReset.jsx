@@ -5,27 +5,34 @@ import { FallingLines } from 'react-loader-spinner'
 import Swal from "sweetalert2"
 import axios from "axios"
 
-const Forgot = () => {
-    const [email, setEmail] = useState("")
+const VerifikasiReset = () => {
+    const [codeVerifikasi, setCodeVerifikasi] = useState("")
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const kirimEmail = async (e) => {
+    const kirimKode = async (e) => {
         e.preventDefault()
         try {
-            if (email == '') {
+            if (codeVerifikasi == '') {
                 Swal.fire({
                     title: 'Error',
-                    text: 'Email tidak boleh kosong',
+                    text: 'Kode verifikasi tidak boleh kosong',
                     icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
             } else {
                 setLoading(true)
-                await axios.post('v1/login/forgot', {
-                    email: email
+                await axios.post('v1/login/verify', {
+                    code: codeVerifikasi
                 }).then(function (response) {
-                    navigate('/verifikasiKode')
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Kode verifikasi telah diterima',
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6'
+                    }).then(() => {
+                        navigate('/resetPassword', { state: { id: response.data.id } })
+                    })
                 })
             }
         } catch (error) {
@@ -67,12 +74,15 @@ const Forgot = () => {
                                             </div>
                                             <div className="mb-5 text-center">
                                                 <span className='mt-2'>
-                                                    Masukkan email untuk mereset kata sandi anda!
+                                                    Kode verifikasi telah kami kirimkan ke email anda
+                                                </span><br />
+                                                <span className='mt-2'>
+                                                    Silakan cek email anda!
                                                 </span>
                                             </div>
-                                            <form onSubmit={kirimEmail} autoComplete='off' >
+                                            <form autoComplete='off' onSubmit={kirimKode}>
                                                 <div className="mb-4">
-                                                    <input type="email" className="form-control" placeholder="example@gmail.com" required value={email || ""} onChange={(e) => setEmail(e.target.value)} />
+                                                    <input type="number" className="form-control" placeholder="Kode Verifikasi" value={codeVerifikasi || ''} onChange={(e) => setCodeVerifikasi(e.target.value)} />
                                                 </div>
                                                 <div>
                                                     <div className="d-grid">
@@ -91,4 +101,4 @@ const Forgot = () => {
     )
 }
 
-export default Forgot
+export default VerifikasiReset
