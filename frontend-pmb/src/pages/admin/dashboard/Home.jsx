@@ -116,14 +116,7 @@ const Home = () => {
                     <div className="col-xl-3 col-lg-6 col-md-12 col-12">
                         <div className="card mb-4">
                             <div className="card-body">
-                                <div className="d-flex align-items-center mb-2 lh-1">
-                                    <div>
-                                        <span className="fs-6 fw-semibold ls-md">
-                                            Hai.. Selamat Datang.
-                                        </span>
-                                    </div>
-                                </div>
-                                <h6 className="mb-1">Anda dapat mengelola dan memonitoring Pendaftaran Mahasiswa Baru STAINAA</h6>
+                                <h6 className="mb-1">Selamat Datang. Anda dapat mengelola dan memonitoring Pendaftaran Mahasiswa Baru STAINAA</h6>
                             </div>
                         </div>
                     </div>

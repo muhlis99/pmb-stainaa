@@ -28,6 +28,7 @@ import Approve from "./pages/admin/approve/Approve"
 import DetailApprove from "./pages/admin/approve/DetailApprove"
 import ListMahasiswa from "./pages/admin/dataInformasi/ListMahasiswa"
 import KirimInformasi from "./pages/admin/dataInformasi/KirimInformasi"
+import DataUser from "./pages/admin/dataUser/DataUser"
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
           <Route path="/detailapprove" element={<DetailApprove />} />
           <Route path="/informasi" element={<ListMahasiswa />} />
           <Route path="/detailInformasi" element={<KirimInformasi />} />
+          <Route path="/users" element={<DataUser />} />
         </Routes>
       </BrowserRouter>
     </>
