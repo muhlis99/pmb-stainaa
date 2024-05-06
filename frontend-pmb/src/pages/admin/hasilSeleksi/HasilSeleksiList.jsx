@@ -130,7 +130,7 @@ const HasilSeleksiList = () => {
                                                         :
                                                         HasilSeleksi.map((item, index) => (
                                                             <tr key={item.id_seleksi}>
-                                                                <td>{index + 1}</td>
+                                                                <td>{(page - 1) * 10 + index + 1}</td>
                                                                 <td>{item.formulirs[0].nama}</td>
                                                                 <td>{item.score}</td>
                                                                 <td>{item.total_durasi}</td>

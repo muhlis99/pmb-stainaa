@@ -320,13 +320,13 @@ const SoalList = () => {
                             <div className="card-body p-3">
                                 <div className="row">
                                     <div className="col-md-12">
-                                        <div className="row mb-2">
+                                        <div className="row">
                                             <div className="col-md-12">
                                                 <div className="row">
-                                                    <div className="col-lg-9 col-md-6 col-sm-12">
+                                                    <div className="col-lg-9 col-md-6 col-sm-12 mb-2">
                                                         <button onClick={modalAddOpen} className="btn btn-sm btn-success">Tambah Data</button>
                                                     </div>
-                                                    <div className="col-lg-3 col-md-6 col-sm-12">
+                                                    <div className="col-lg-3 col-md-6 col-sm-12 mb-2">
                                                         <div className="col-auto">
                                                             <input type="text" className='form-control form-control-sm float-end' placeholder='Cari' onChange={cariData} />
                                                         </div>
@@ -355,7 +355,7 @@ const SoalList = () => {
                                                                 </tr>
                                                                 : PaketSoal.map((item, index) => (
                                                                     <tr key={item.id_soal}>
-                                                                        <td>{index + 1}</td>
+                                                                        <td>{(page - 1) * 10 + index + 1}</td>
                                                                         <td className='text-capitalize'>{item.nama_soal}</td>
                                                                         <td className='text-capitalize'>{item.kategori == 'farduAin' ? "Fardlu 'Ain" : item.kategori == 'pendahuluan' ? 'Pendahuluan' : 'Prodi'}</td>
                                                                         <td className='text-capitalize'>{item.jumlah_soal} Soal</td>
