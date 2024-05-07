@@ -148,7 +148,14 @@ module.exports = {
     },
 
     resetPasswordByForgot: async (req, res, next) => {
-        const id = req.params.id
+        const kode = req.params.id
+        const userUse = await user.findOne({
+            where: {
+                id_pmb: kode,
+                status: "aktif"
+            }
+        })
+        if(!userUse) return res.status(402).json({message:"data not found"})
         const {pass, conPass} = req.body
         if (pass != conPass) return res.status(400).json({ message: "confirmasi password yang anda masukkan salah" })
         const hashPass =  await argon.hash(pass)
@@ -156,14 +163,18 @@ module.exports = {
             password: hashPass,
         }, {
             where: {
-                id_pmb: id,
+                id_pmb: kode,
                 status: "aktif"
             }
-        }).
-            then(result => {
-                res.status(201).json({
-                    message: "reset password anda telah berhasil"
-                })
-            })
+        })
+        req.session.userId = userUse.id_pmb
+        const id = userUse.id_pmb
+        const email = userUse.email
+        const role = userUse.role
+        const token = userUse.token
+        res.status(200).json({
+            message: "reset password anda telah berhasil",
+            id, email, role, token
+        })
     }
 }
