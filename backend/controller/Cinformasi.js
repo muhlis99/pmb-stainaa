@@ -85,7 +85,11 @@ module.exports = {
 
     getAllByToken : async (req, res, next) => {
         const kode =  req.params.kode
-        await informasi.findAll().
+        await informasi.findAll({
+            where : {
+                token : kode
+            }
+        }).
         then(result => {
             res.status(200).json({
                 message: "Get All informasi Success",
