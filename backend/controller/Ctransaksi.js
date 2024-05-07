@@ -191,12 +191,17 @@ module.exports = {
                 status_transaksi : "belum"
             }
         })
+        if(!dataUse) return res.status(401).json({message: "data not found"})
         const date = new Date().toLocaleDateString('en-CA')
         const tenggat_pembayaran = dataUse.tenggat_pembayaran
         if (date >= tenggat_pembayaran) {
             await transaksi.update({
                 status_tombol : "1",
                 status_transaksi : "selesai"
+            },{
+                where : {
+                    id_transaksi:id,
+                }
             }).then(result => {
                 res.status(201).json({
                     message: "Data transaksi success",
