@@ -368,7 +368,7 @@ module.exports = {
                 service: "gmail",
                 auth: {
                     user: "stainaabanyuwangi@gmail.com",
-                    pass: "kmmohoedyaopgekt",
+                    pass: "kmmo hoed yaop gekt",
                 }
             }))
             await transporter.sendMail({
