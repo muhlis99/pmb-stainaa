@@ -31,11 +31,12 @@ const Login = () => {
                 icon: 'success',
                 confirmButtonColor: '#3085d6'
             }).then(() => {
-                if (user.role == 'admin') {
-                    navigate('/home')
-                } else {
-                    navigate('/dashboard')
-                }
+                console.log(user)
+                // if (user.role == 'admin') {
+                //     navigate('/home')
+                // } else {
+                //     navigate('/dashboard')
+                // }
             })
         } else if (isError) {
             setLoading(false)
