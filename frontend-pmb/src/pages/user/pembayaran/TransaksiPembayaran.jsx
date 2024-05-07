@@ -5,7 +5,7 @@ import { getMe } from "../../../features/authSlice"
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import jsPDF from "jspdf"
-import kop from "../../../assets/stainaa.png"
+import logo from "../../../assets/stainaa.png"
 import Swal from 'sweetalert2'
 import moment from 'moment'
 
@@ -69,10 +69,6 @@ const TransaksiPembayaran = () => {
     }, [user])
 
     useEffect(() => {
-        getStatusFormulir()
-    }, [idPendaftar])
-
-    useEffect(() => {
         getTransaksi()
         getTotalPembayaran()
         getStatusDownload()
@@ -96,18 +92,6 @@ const TransaksiPembayaran = () => {
         getKabupaten()
         getProvinsi()
     }, [biodata])
-
-    const getStatusFormulir = async () => {
-        try {
-            if (idPendaftar) {
-                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
-                setStatusFormulir(response.data.data.status_formulir)
-                console.log(response.data.data.status_formulir);
-            }
-        } catch (error) {
-
-        }
-    }
 
     const getStatusDownload = async () => {
         try {
@@ -386,15 +370,6 @@ const TransaksiPembayaran = () => {
         }
     }
 
-    const downloadHabis = () => {
-        Swal.fire({
-            title: 'Download Gagal',
-            text: 'Anda telah mendownload bukti pendaftaran',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-        })
-    }
-
     const waktuHabis = () => {
         Swal.fire({
             title: 'Gagal',
@@ -402,47 +377,6 @@ const TransaksiPembayaran = () => {
             icon: 'warning',
             confirmButtonColor: '#3085d6'
         })
-    }
-
-    const formulirBelum = () => {
-        Swal.fire({
-            title: 'Download Gagal',
-            text: 'Anda belum menyelesaikan pengisian formulir',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-
-        })
-    }
-
-    const tableStyle = {
-        image: {
-            width: '597px'
-        },
-        wrap: {
-            width: '100%',
-            fontFamily: "TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif",
-            background: '#ffffff',
-            color: '#000000',
-            paddingTop: '10px'
-        },
-        title: {
-            fontSize: '12px',
-            margin: 'auto',
-        },
-        grid: {
-            display: 'grid',
-            gridTemplateColumns: 'auto auto',
-            width: '97%',
-            margin: 'auto'
-        },
-        gridItem: {
-            fontSize: '12px',
-            fontFamily: "TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif",
-        },
-        uraian: {
-            width: '80%',
-            margin: 'auto'
-        }
     }
 
     return (
@@ -496,12 +430,10 @@ const TransaksiPembayaran = () => {
                         <div className="card shadow">
                             <div className="card-body p-5">
                                 <h5>Sebelum melakukan transaksi pembayaran pendaftaran, anda harus mendownload terlebih dahulu bukti pendaftaran.</h5>
-                                {statusFormulir == 'belum' ?
-                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={formulirBelum}>Download</button>
-                                    : statusDownload == 'belum' ?
-                                        <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
-                                        :
-                                        <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadHabis}>Download</button>
+                                {statusDownload == 'belum' ?
+                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
+                                    :
+                                    <button className='btn btn-sm btn-info float-end mt-4'>Download</button>
                                 }
                             </div>
                         </div>
@@ -578,7 +510,7 @@ const TransaksiPembayaran = () => {
                                     :
                                     <div className="row">
                                         <div className='col-md-12'>
-                                            <button className='btn btn-sm btn-info float-end' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Angsuran</button>
+                                            <button className='btn btn-sm btn-info float-end' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Transaksi</button>
                                         </div>
                                     </div>
                                 }
@@ -628,21 +560,8 @@ const TransaksiPembayaran = () => {
                         ))}
                     </div>
                 </div>
-                <div className="row">
-                    <div className='d-none'>
-                        <div ref={templateRef}>
-                            <div style={tableStyle.wrap}>
-                                <div style={tableStyle.grid} className='border-bottomm-3'>
-                                    <div style={tableStyle.gridItem}>
-                                        <img src={kop} alt="" width={50} />
-                                    </div>
-                                    <div style={tableStyle.gridItem}>
-                                        <h4>KARTU BUKTI PENDAFTARAN MAHASISWA BARU</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div className="row" ref={templateRef}>
+
                 </div>
             </div>
         </LayoutUser>

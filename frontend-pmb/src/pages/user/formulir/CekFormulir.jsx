@@ -99,67 +99,77 @@ const CekFormulir = () => {
                 </div>
                 <div className="row">
                     <div className="col-xl-12 col-md-12 col-sm-12">
-                        <div className="row justify-content-center mb-5">
-                            <div className={`timeline-point ${diri == 1 ? 'done' : ''}`}>
-                                <FaHandPointer className='text-light' size={45} />
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="row justify-content-center mb-5">
+                                    <div className={`timeline-point ${diri == 1 ? 'done' : ''}`}>
+                                        <FaHandPointer className='text-light' size={45} />
+                                    </div>
+                                    <div className="timeline-space">
+                                    </div>
+                                    <div className={`timeline-point ${alamat == 1 ? 'done' : ''}`}>
+                                        <FaMapMarkedAlt className='text-light' size={45} />
+                                    </div>
+                                    <div className="timeline-space">
+                                    </div>
+                                    <div className={`timeline-point ${ortu == 1 ? 'done' : ''}`}>
+                                        <RiParentFill className='text-light' size={45} />
+                                    </div>
+                                    <div className="timeline-space ">
+                                    </div>
+                                    <div className={`timeline-point ${wali == 1 ? 'done' : ''}`}>
+                                        <i className="fas fa-envelope fa-4x"></i>
+                                        <FaHands className='text-light' size={45} />
+                                    </div>
+                                    <div className="timeline-space ">
+                                    </div>
+                                    <div className={`timeline-point ${berkas == 1 ? 'done' : ''}`}>
+                                        <i className="fas fa-check fa-4x"></i>
+                                        <FaFileAlt className='text-light' size={45} />
+                                    </div>
+                                </div>
+                                <div className="row justify-content-center">
+                                    <div className="titleplace">
+                                        Melengkapi Data Diri
+                                    </div>
+                                    <div className="titlespace">
+
+                                    </div>
+                                    <div className="titleplace">
+                                        Mengisi Data Alamat
+                                    </div>
+                                    <div className="titlespace">
+
+                                    </div>
+                                    <div className="titleplace">
+                                        Mengisi Data Orang Tua
+                                    </div>
+                                    <div className="titlespace">
+
+                                    </div>
+                                    <div className="titleplace">
+                                        Mengisi Data Wali
+                                    </div>
+                                    <div className="titlespace">
+
+                                    </div>
+                                    <div className="titleplace">
+                                        Melengkapi Berkas
+                                    </div>
+                                </div>
                             </div>
-                            <div className="timeline-space">
-                            </div>
-                            <div className={`timeline-point ${alamat == 1 ? 'done' : ''}`}>
-                                <FaMapMarkedAlt className='text-light' size={45} />
-                            </div>
-                            <div className="timeline-space">
-                            </div>
-                            <div className={`timeline-point ${ortu == 1 ? 'done' : ''}`}>
-                                <RiParentFill className='text-light' size={45} />
-                            </div>
-                            <div className="timeline-space ">
-                            </div>
-                            <div className={`timeline-point ${wali == 1 ? 'done' : ''}`}>
-                                <i className="fas fa-envelope fa-4x"></i>
-                                <FaHands className='text-light' size={45} />
-                            </div>
-                            <div className="timeline-space ">
-                            </div>
-                            <div className={`timeline-point ${berkas == 1 ? 'done' : ''}`}>
-                                <i className="fas fa-check fa-4x"></i>
-                                <FaFileAlt className='text-light' size={45} />
+                            <div className="card-footer">
+                                <div className='row'>
+                                    <div className="col-xl-12 col-md-12 col-sm-12 d-flex justify-content-center">
+                                        {statusFormulir == 'belum' ?
+                                            <Link to="/formulir1" state={{ token: user.data.token }} className='btn btn-sm btn-primary'>Mulai</Link>
+                                            :
+                                            <Link to="/detailformulir" state={{ token: user.data.token }} className='btn btn-sm btn-primary'>Detail</Link>
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div className="row justify-content-center">
-                            <div className="titleplace">
-                                Melengkapi Data Diri
-                            </div>
-                            <div className="titlespace">
-
-                            </div>
-                            <div className="titleplace">
-                                Mengisi Data Alamat
-                            </div>
-                            <div className="titlespace">
-
-                            </div>
-                            <div className="titleplace">
-                                Mengisi Data Orang Tua
-                            </div>
-                            <div className="titlespace">
-
-                            </div>
-                            <div className="titleplace">
-                                Mengisi Data Wali
-                            </div>
-                            <div className="titlespace">
-
-                            </div>
-                            <div className="titleplace">
-                                Melengkapi Berkas
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className='row'>
-                    <div className="col-xl-12 col-md-12 col-sm-12">
-                        <Link to="/formulir1" state={{ token: user.data.token }} className='btn btn-sm btn-primary'>Mulai</Link>
                     </div>
                 </div>
             </div>

@@ -51,7 +51,8 @@ const Form5 = () => {
         scanKtp()
         scanKk()
         scanIjazah()
-    }, [fotos, kks, ktps, ijazahs])
+        scanSuket()
+    }, [fotos, kks, ktps, ijazahs, sukets])
 
     const getDataDiri = async () => {
         try {
@@ -60,6 +61,7 @@ const Form5 = () => {
             setKtps(response.data.data.foto_ktp)
             setKks(response.data.data.foto_kk)
             setIjazahs(response.data.data.foto_ijazah)
+            setSukets(response.data.data.foto_suket_santri)
         } catch (error) {
 
         }
@@ -149,6 +151,27 @@ const Form5 = () => {
         }
     }
 
+    const scanSuket = async () => {
+        try {
+            if (sukets) {
+                await axios.get(`v1/formulir/seeImage/pmb/suketSantri/${sukets}`, {
+                    responseType: "arraybuffer"
+                }).then((response) => {
+                    const base64 = btoa(
+                        new Uint8Array(response.data).reduce(
+                            (data, byte) => data + String.fromCharCode(byte),
+                            ''
+                        )
+                    )
+                    setPrevSuket(`data:;base64,${base64}`)
+                })
+
+            }
+        } catch (error) {
+
+        }
+    }
+
     const loadFoto = (e) => {
         const image = e.target.files[0]
         setFoto(image)
@@ -174,6 +197,13 @@ const Form5 = () => {
         setPrevIjazah(URL.createObjectURL(image))
     }
 
+    const loadSuket = (e) => {
+        const image = e.target.files[0]
+        setSuket(image)
+        console.log(image);
+        setPrevSuket(URL.createObjectURL(image))
+    }
+
     const simpanBerkas = async (e) => {
         e.preventDefault()
         const formData = new FormData()
@@ -181,6 +211,7 @@ const Form5 = () => {
         formData.append("foto_kk", kk)
         formData.append("foto_ktp", ktp)
         formData.append("foto_ijazah", ijazah)
+        formData.append("foto_suket_santri", suket)
         try {
             if (foto == fotos) {
                 Swal.fire({
@@ -200,6 +231,11 @@ const Form5 = () => {
             } else if (ijazah == ijazahs) {
                 Swal.fire({
                     title: "Scan Ijazah Tidak Boleh Kosong",
+                    icon: "warning"
+                })
+            } else if (suket == sukets) {
+                Swal.fire({
+                    title: "Scan Surat Keterangan Tidak Boleh Kosong",
                     icon: "warning"
                 })
             } else {
@@ -366,6 +402,17 @@ const Form5 = () => {
                                                     }
                                                 </div>
                                                 <input type="file" onChange={loadIjazah} name="scanIjazah" id="scanIjazah" className='form-control form-control-sm' />
+                                            </div>
+                                            <div className="col-md-6 mb-3">
+                                                <label htmlFor="scanSuket" className="form-label">Scan Surat Keterangan Santri Aktif</label>
+                                                <div className='text-center mb-2'>
+                                                    {prevSuket ?
+                                                        <img src={prevSuket} alt="" width={150} className='border border-3' />
+                                                        :
+                                                        ""
+                                                    }
+                                                </div>
+                                                <input type="file" onChange={loadSuket} name="scanSuket" id="scanSuket" className='form-control form-control-sm' />
                                             </div>
                                         </div>
                                     </div>
