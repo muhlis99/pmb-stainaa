@@ -332,7 +332,7 @@ const TransaksiPembayaran = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-md-4 mb-2">
                         <div className="card shadow">
                             <div className="card-body p-5">
@@ -360,7 +360,7 @@ const TransaksiPembayaran = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className="row mt-3">
                     <div className="col-md-12">
                         <div className="card">
