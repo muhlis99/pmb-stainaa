@@ -277,18 +277,18 @@ const TransaksiPembayaran = () => {
         formData.append("tanggal_transaksi", tanggalTransaksi)
         formData.append("bukti_transaksi", kwitansi)
         try {
-            if (nominal == '') {
-                Swal.fire({
-                    title: 'Transaksi gagal',
-                    text: 'Nominal Tidak Boleh Kosong',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (nominal < minimalBayar) {
+            if (nominal < minimalBayar) {
                 Swal.fire({
                     title: 'Transaksi gagal',
                     text: `Pembayaran pertama harus ${accountMinimal}`,
                     icon: 'warning',
+                    confirmButtonColor: '#3085d6'
+                })
+            } else if (nominal == '') {
+                Swal.fire({
+                    title: 'Transaksi gagal',
+                    text: 'Nominal Tidak Boleh Kosong',
+                    icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
             } else if (kwitansi == '') {

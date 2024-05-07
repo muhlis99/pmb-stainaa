@@ -1,0 +1,80 @@
+.timeline-point {
+    border-radius: 50%;
+    border: 3px solid;
+    height: 100px;
+    width: 100px;
+    border-color: #a0a4c6;
+    background-color: #a0a4c6;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #a0a4c6;
+}
+
+.timeline-point i {
+    color: white;
+}
+
+.done { 
+    border-color: #009ef7;
+    background-color: #009ef7;
+    color: #009ef7 !important;
+}
+
+.timeline-space {
+    border-top:3px solid;
+    width: 75px;
+    margin-top: 46px;
+    border-color: #e4e6ef;
+    border-top-style: dashed;
+
+}
+
+.timeline-space.done {
+    border-color: #009ef7;
+    background-color: transparent;
+}
+
+.titleplace {
+    width: 100px;
+    display: flex;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.titlespace {
+    width: 75px;
+    display: flex;
+}
+
+.testing {
+    background-image: url("http://127.0.0.1:8000/font/tespic.jpg");
+    height: 200px;
+    width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+    .timeline-point {
+        height: 10vw;
+        width: 10vw;
+    }
+
+    .timeline-space {
+        
+        width: 5vw;
+        margin-top: 20px;
+        border-color: #e4e6ef;
+        border-top-style: dashed;
+    
+    }
+
+    .titleplace {
+        display:none
+    }
+
+    .timeline-point i  {
+        font-size: 14px;
+    }
+  }

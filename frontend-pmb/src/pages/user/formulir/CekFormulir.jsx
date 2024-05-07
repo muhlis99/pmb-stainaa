@@ -3,8 +3,10 @@ import LayoutUser from '../../LayoutUser'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
 import { useNavigate, Link } from 'react-router-dom'
-import noProfil from "../../../assets/foto.svg"
+import { FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt } from "react-icons/fa"
+import { RiParentFill } from "react-icons/ri"
 import axios from 'axios'
+import "./timeline.css"
 
 const CekFormulir = () => {
     const dispatch = useDispatch()
@@ -16,8 +18,6 @@ const CekFormulir = () => {
     const [wali, setWali] = useState("")
     const [berkas, setBerkas] = useState("")
     const [token, setToken] = useState("")
-    const [fotoDiri, setFotoDiri] = useState("")
-    const [prevFoto, setPrevFoto] = useState("")
     const [nama, setNama] = useState("")
     const [idPendaftar, setIdPendaftar] = useState('')
     const [statusFormulir, setStatusFormulir] = useState('')
@@ -57,10 +57,6 @@ const CekFormulir = () => {
         getStatusFormulir()
     }, [idPendaftar])
 
-    useEffect(() => {
-        lihatFoto()
-    }, [fotoDiri])
-
     const getDetailForm = async () => {
         try {
             if (user) {
@@ -89,27 +85,6 @@ const CekFormulir = () => {
         }
     }
 
-    const lihatFoto = async () => {
-        try {
-            if (fotoDiri) {
-                await axios.get(`v1/formulir/seeImage/pmb/diri/${fotoDiri}`, {
-                    responseType: "arraybuffer"
-                }).then((response) => {
-                    const base64 = btoa(
-                        new Uint8Array(response.data).reduce(
-                            (data, byte) => data + String.fromCharCode(byte),
-                            ''
-                        )
-                    )
-                    setPrevFoto(`data: ; base64, ${base64} `)
-                })
-
-            }
-        } catch (error) {
-
-        }
-    }
-
     return (
         <LayoutUser>
             <div className="container">
@@ -123,72 +98,68 @@ const CekFormulir = () => {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-12">
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="row">
-                                    <div className="col-md-12 text-center">
-                                        <h5>Mohon menyelesaikan pengisian formulir meliputi detail diri, detail alamat, detail orang tua sesuai kartu keluarga atau KTP.</h5>
-                                    </div>
-                                </div>
-                                <div className="row mt-3">
-                                    <div className="col-md-10">
-                                        <div className="row">
-                                            <div className="col-md-4">
-                                                <div className='row'>
-                                                    <div className="col-sm-12 d-flex justify-content-center">
-                                                        <img src={noProfil} className="img-thumbnail mt-3 rounded-circle" width={150} alt="..." />
-                                                    </div>
-                                                </div>
-                                                <div className="row mt-2">
-                                                    <div className="col-md-12 text-center">
-                                                        <h3>{nama}</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-5 mt-3 d-flex justify-content-center">
-                                                <table cellPadding={5}>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>Detail Diri</h5></td>
-                                                            <td>&nbsp;:&nbsp;</td>
-                                                            <td>{diri == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Detail Alamat</h5></td>
-                                                            <td>&nbsp;:&nbsp;</td>
-                                                            <td>{alamat == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Detail Orang Tua</h5></td>
-                                                            <td>&nbsp;:&nbsp;</td>
-                                                            <td>{ortu == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Detail Wali</h5></td>
-                                                            <td>&nbsp;:&nbsp;</td>
-                                                            <td>{wali == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Detail Berkas</h5></td>
-                                                            <td>&nbsp;:&nbsp;</td>
-                                                            <td>{berkas == 1 ? <h5 className='text-success'>Selesai</h5> : <h5 className="text-danger">Belum</h5>}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div className="col-md-3 d-flex justify-content-center align-items-center">
-                                                {statusFormulir == 'belum' ?
-                                                    <div><Link to='/formulir1' state={{ token: token }} className="btn btn-sm btn-success ms-3">Mulai</Link></div>
-                                                    :
-                                                    <div><Link to='/detailformulir' state={{ token: token }} className="btn btn-sm btn-info ms-3">Lihat</Link></div>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div className="col-xl-12 col-md-12 col-sm-12">
+                        <div className="row justify-content-center mb-5">
+                            <div className={`timeline-point ${diri == 1 ? 'done' : ''}`}>
+                                <FaHandPointer className='text-light' size={45} />
+                            </div>
+                            <div className="timeline-space">
+                            </div>
+                            <div className={`timeline-point ${alamat == 1 ? 'done' : ''}`}>
+                                <FaMapMarkedAlt className='text-light' size={45} />
+                            </div>
+                            <div className="timeline-space">
+                            </div>
+                            <div className={`timeline-point ${ortu == 1 ? 'done' : ''}`}>
+                                <RiParentFill className='text-light' size={45} />
+                            </div>
+                            <div className="timeline-space ">
+                            </div>
+                            <div className={`timeline-point ${wali == 1 ? 'done' : ''}`}>
+                                <i className="fas fa-envelope fa-4x"></i>
+                                <FaHands className='text-light' size={45} />
+                            </div>
+                            <div className="timeline-space ">
+                            </div>
+                            <div className={`timeline-point ${berkas == 1 ? 'done' : ''}`}>
+                                <i className="fas fa-check fa-4x"></i>
+                                <FaFileAlt className='text-light' size={45} />
                             </div>
                         </div>
+                        <div className="row justify-content-center">
+                            <div className="titleplace">
+                                Melengkapi Data Diri
+                            </div>
+                            <div className="titlespace">
+
+                            </div>
+                            <div className="titleplace">
+                                Mengisi Data Alamat
+                            </div>
+                            <div className="titlespace">
+
+                            </div>
+                            <div className="titleplace">
+                                Mengisi Data Orang Tua
+                            </div>
+                            <div className="titlespace">
+
+                            </div>
+                            <div className="titleplace">
+                                Mengisi Data Wali
+                            </div>
+                            <div className="titlespace">
+
+                            </div>
+                            <div className="titleplace">
+                                Melengkapi Berkas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className="col-xl-12 col-md-12 col-sm-12">
+                        <Link to="/formulir1" state={{ token: user.data.token }} className='btn btn-sm btn-primary'>Mulai</Link>
                     </div>
                 </div>
             </div>
