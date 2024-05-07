@@ -105,6 +105,32 @@ module.exports = {
             })
     },
 
+    getBySoal : async (req, res, next) => {
+        const id = req.params.kode
+        const soalUse = await soal.findOne({
+            where : {
+                id_soal : id,
+                status : "aktif"
+            }
+        })
+        if(!soalUse) return res.status(401).json({message :"data not found"})
+        await Mpertanyaan.findAll({
+            where: {
+                id_soal: id,
+                status : "aktif"
+            }
+        }).
+            then(result => {
+                res.status(201).json({
+                    message: "Data pertanyaan Ditemukan",
+                    data: result
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
+    },
+
     getCheckPertanyaan : async (req, res, next) => {
         const kode = req.params.kode
         const jmldata = await Mpertanyaan.count({

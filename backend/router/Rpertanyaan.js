@@ -6,6 +6,7 @@ const { validationRequest } = require('../validation/validationRequest.js')
 
 router.get('/all', Cpertanyaan.getAll)
 router.get('/byId/:id', Cpertanyaan.getById)
+router.get('/bySoal/:kode', Cpertanyaan.getBySoal)
 router.get('/checkPertanyaan/:kode', Cpertanyaan.getCheckPertanyaan)
 router.post('/tambah', validationPertanyaan, validationRequest, Cpertanyaan.tambah)
 router.put('/edit/:id', Cpertanyaan.edit)
