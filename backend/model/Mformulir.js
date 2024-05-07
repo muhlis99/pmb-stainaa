@@ -164,6 +164,9 @@ const formulir = db.define('formulir', {
     'foto_ijazah': {
         type: DataTypes.TEXT
     },
+    'foto_suket_santri': {
+        type: DataTypes.TEXT
+    },
     'lastId': {
         type: DataTypes.VIRTUAL,
         get() {

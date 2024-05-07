@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize')
+const { Sequelize, DataTypes, Op } = require('sequelize')
 const { desa, kecamatan, kabupaten, provinsi, negara } = require('../model/Mequipment.js')
 const formulir =  require('../model/Mformulir.js')
 const Mapprove = require('../model/Mapprove.js')
@@ -7,11 +7,73 @@ const fs = require('fs')
 
 module.exports = {
     getAllCheck : async (req, res, next) => {
-        await formulir.findAll().
+        const currentPage = parseInt(req.query.page) || 1
+        const perPage = parseInt(req.query.perPage) || 10
+        const search = req.query.search || ""
+        const offset = (currentPage - 1) * perPage
+        const totalPage = await formulir.count({
+            where: {
+                [Op.or]: [
+                    {
+                        id: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        token: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        nama: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        email: {
+                            [Op.like]: `%${search}%`
+                        }
+                    }
+                ]
+            }
+        })
+        const totalItems = Math.ceil(totalPage / perPage)
+        await formulir.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        id: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        token: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        nama: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        email: {
+                            [Op.like]: `%${search}%`
+                        }
+                    }
+                ]
+            },
+            offset: offset,
+            limit: perPage,
+            order: [
+                ["id", "DESC"]
+            ]
+        }).
             then(async result => {
                 const dataAll = result.map(el => {
                     return {
                         nama : el.nama,
+                        token : el.token,
                         alamat : el.jalan,
                         tempatLahir : el.tempat_lahir,
                         jenkel : el.jenis_kelamin,
@@ -24,7 +86,11 @@ module.exports = {
                 })
                 res.status(201).json({
                     message: "Data success",
-                    data: dataAll
+                    data: dataAll,
+                    total_data: totalPage,
+                    per_page: perPage,
+                    current_page: currentPage,
+                    total_page: totalItems
                 })
             }).catch(err => {
                 console.log(err)
@@ -444,12 +510,42 @@ module.exports = {
             })
         }
         // ---------------- end foto ijazah --------------//
+        let fileNameFotoSuketSantri = ""
+        if (formulirUse.foto_suket_santri === "") {
+            const file = req.files.foto_suket_santri
+            if (!file) return res.status(400).json({ message: "foto suket santri tidak boleh kosong" })
+            const fileSize = file.data.length
+            const ext = path.extname(file.name)
+            fileNameFotoSuketSantri = "foto_suket_santri" + kode + file.md5 + ext
+            const allowedType = ['.png', '.jpg', '.jpeg']
+            if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto suket santri yang anda upload tidak valid" })
+            if (fileSize > 5000000) return res.status(422).json({ msg: "file foto suket santri yang anda upload tidak boleh lebih dari 5 mb" })
+            file.mv(`./tmp_pmb/suketSantri/${fileNameFotoSuketSantri}`, (err) => {
+                if (err) return res.status(500).json({ message: err.message })
+            })
+        } else {
+            const file = req.files.foto_suket_santri
+            if (!file) return res.status(400).json({ message: "foto suket santri tidak boleh kosong" })
+            const fileSize = file.data.length
+            const ext = path.extname(file.name)
+            fileNameFotoSuketSantri = "foto_suket_santri" + kode + file.md5 + ext
+            const allowedType = ['.png', '.jpg', '.jpeg']
+            if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ message: "file foto suket santri yang anda upload tidak valid" })
+            if (fileSize > 5000000) return res.status(422).json({ message: "file foto suket santri yang anda upload tidak boleh lebih dari 5 mb" })
+            const filepath = `./tmp_pmb/suketSantri/${formulirUse.foto_suket_santri}`
+            fs.unlinkSync(filepath)
+            file.mv(`./tmp_pmb/suketSantri/${fileNameFotoSuketSantri}`, (err) => {
+                if (err) return res.status(500).json({ message: err.message })
+            })
+        }
+        // ---------------- end foto suketSantri --------------//
         try {
             await formulir.update({
                 foto_diri: fileNameFotoDiri,
                 foto_kk: fileNameFotoKK,
                 foto_ktp: fileNameFotoKtp,
                 foto_ijazah: fileNameFotoIjazah,
+                foto_suket_santri : fileNameFotoSuketSantri
             }, {
                 where: {
                     token: kode
