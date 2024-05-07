@@ -2,8 +2,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Registrasi from "./pages/user/otentikasi/Registrasi"
 import Login from "./pages/user/otentikasi/Login"
 import VerifyKode from "./pages/user/otentikasi/VerifyKode"
-import Dashboard from "./pages/user/dashboard/Dashboard"
 import Forgot from "./pages/user/otentikasi/Forgot"
+import VerifikasiReset from "./pages/user/otentikasi/VerifikasiReset"
+import ResetPassword from "./pages/user/otentikasi/ResetPassword"
+
+import Dashboard from "./pages/user/dashboard/Dashboard"
 import CekFormulir from "./pages/user/formulir/CekFormulir"
 import Form1 from "./pages/user/formulir/Form1"
 import Form2 from "./pages/user/formulir/Form2"
@@ -12,6 +15,7 @@ import Form4 from "./pages/user/formulir/Form4"
 import Form5 from "./pages/user/formulir/Form5"
 import DetailFormulir from "./pages/user/formulir/DetailFormulir"
 import TransaksiPembayaran from "./pages/user/pembayaran/TransaksiPembayaran"
+
 import Home from "./pages/admin/dashboard/Home"
 import InformasiSeleksi from "./pages/user/seleksi/InformasiSeleksi"
 import FormSeleksi from "./pages/user/seleksi/FormSeleksi"
@@ -26,6 +30,9 @@ import HasilSeleksiList from "./pages/admin/hasilSeleksi/HasilSeleksiList"
 import DetailHasilSeleksi from "./pages/admin/hasilSeleksi/DetailHasilSeleksi"
 import Approve from "./pages/admin/approve/Approve"
 import DetailApprove from "./pages/admin/approve/DetailApprove"
+import ListMahasiswa from "./pages/admin/dataInformasi/ListMahasiswa"
+import KirimInformasi from "./pages/admin/dataInformasi/KirimInformasi"
+import DataUser from "./pages/admin/dataUser/DataUser"
 
 function App() {
   return (
@@ -36,6 +43,9 @@ function App() {
           <Route path="/verifyKode" element={<VerifyKode />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgotpassword" element={<Forgot />} />
+          <Route path="/verifikasiKode" element={<VerifikasiReset />} />
+          <Route path="/resetPassword" element={<ResetPassword />} />
+
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cekdetaildata" element={<CekFormulir />} />
           <Route path="/formulir1" element={<Form1 />} />
@@ -60,6 +70,9 @@ function App() {
           <Route path="/detailhasilSeleksi" element={<DetailHasilSeleksi />} />
           <Route path="/approve" element={<Approve />} />
           <Route path="/detailapprove" element={<DetailApprove />} />
+          <Route path="/informasi" element={<ListMahasiswa />} />
+          <Route path="/detailInformasi" element={<KirimInformasi />} />
+          <Route path="/users" element={<DataUser />} />
         </Routes>
       </BrowserRouter>
     </>

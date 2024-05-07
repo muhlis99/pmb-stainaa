@@ -5,12 +5,20 @@ import { getMe } from "../../../features/authSlice"
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import moment from "moment"
+import ReactPaginate from "react-paginate"
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
+import { SlOptions } from "react-icons/sl"
 
 const TransaksiList = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { isError, user } = useSelector((state) => state.auth)
     const [Mahasiswa, setMahasiswa] = useState([])
+    const [page, setPage] = useState(0)
+    const [perPage, setperPage] = useState(0)
+    const [pages, setPages] = useState(0)
+    const [rows, setrows] = useState(0)
+    const [keyword, setKeyword] = useState("")
 
     useEffect(() => {
         if (isError) {
@@ -24,15 +32,32 @@ const TransaksiList = () => {
 
     useEffect(() => {
         getMahasiswa()
-    }, [])
+    }, [page, keyword])
 
     const getMahasiswa = async () => {
         try {
-            const response = await axios.get('v1/transaksi/allTransaksiMhs')
+            const response = await axios.get(`v1/transaksi/allTransaksiMhs?page=${page}&search=${keyword}`)
             setMahasiswa(response.data.data)
+            setPage(response.data.current_page)
+            setrows(response.data.total_data)
+            setPages(response.data.total_page)
+            setperPage(response.data.per_page)
         } catch (error) {
 
         }
+    }
+
+    const pageCount = Math.ceil(rows / perPage)
+
+    const changePage = (event) => {
+        const newOffset = (event.selected + 1)
+        setPage(newOffset)
+    }
+
+    const cariData = (e) => {
+        e.preventDefault()
+        setKeyword(e ? e.target.value : "")
+        setPage(0)
     }
 
     return (
@@ -51,6 +76,11 @@ const TransaksiList = () => {
                     <div className="col-md-12">
                         <div className="card">
                             <div className="card-body p-3">
+                                <div className="row mb-2">
+                                    <div className="col-md-12">
+                                        <input type="text" className='w-auto form-control form-control-sm float-end' placeholder='Cari' onChange={cariData} />
+                                    </div>
+                                </div>
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className="table-responsive">
@@ -66,50 +96,55 @@ const TransaksiList = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {Mahasiswa.map((item, index) => (
-                                                        <tr key={item.id}>
-                                                            <td>{index + 1}</td>
-                                                            <td className='text-capitalize'>{item.nama}</td>
-                                                            <td className='text-capitalize'>{item.tempat_lahir}</td>
-                                                            <td className='text-capitalize'>{moment(item.tanggal_lahir).format('DD MMMM YYYY')}</td>
-                                                            <td className='text-capitalize'>{item.jenis_kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
-                                                            <td>
-                                                                <Link to="/cektransaksi" state={{ token: item.token }} className='btn btn-sm btn-info'>Cek Transaksi</Link>
+                                                    {Mahasiswa.length == 0 ?
+                                                        <tr>
+                                                            <td align='center' colSpan={6}>
+                                                                Tidak ada data!
                                                             </td>
                                                         </tr>
-                                                    ))}
+                                                        :
+                                                        Mahasiswa.map((item, index) => (
+                                                            <tr key={item.id}>
+                                                                <td>{(page - 1) * 10 + index + 1}</td>
+                                                                <td className='text-capitalize'>{item.nama}</td>
+                                                                <td className='text-capitalize'>{item.tempat_lahir}</td>
+                                                                <td className='text-capitalize'>{moment(item.tanggal_lahir).format('DD MMMM YYYY')}</td>
+                                                                <td className='text-capitalize'>{item.jenis_kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
+                                                                <td>
+                                                                    <Link to="/cektransaksi" state={{ token: item.token }} className='btn btn-sm btn-info'>Cek Transaksi</Link>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
-                                {/* <div className="row mt-3">
-                                    <div className="col-lg-12 col-md-12 col-12">
-                                        <nav>
-                                            <ul className="pagination justify-content-center mb-0">
-                                                <li className="page-item disabled">
-                                                    <a className="page-link mx-1 rounded" href="#">
-
-                                                    </a>
-                                                </li>
-                                                <li className="page-item">
-                                                    <a className="page-link mx-1 rounded" href="#">1</a>
-                                                </li>
-                                                <li className="page-item">
-                                                    <a className="page-link mx-1 rounded" href="#">2</a>
-                                                </li>
-                                                <li className="page-item">
-                                                    <a className="page-link mx-1 rounded" href="#">3</a>
-                                                </li>
-                                                <li className="page-item">
-                                                    <a className="page-link mx-1 rounded" href="#">
-
-                                                    </a>
-                                                </li>
-                                            </ul>
+                                <div className="row mt-3">
+                                    <div className="col-md-12">
+                                        <nav aria-label='...'>
+                                            <ReactPaginate
+                                                className='pagination pagination-sm justify-content-center'
+                                                breakLabel={<SlOptions />}
+                                                previousLabel={<FaArrowLeft />}
+                                                pageCount={pageCount}
+                                                onPageChange={changePage}
+                                                nextLabel={<FaArrowRight />}
+                                                breakClassName={"page-item"}
+                                                pageClassName={"page-item"}
+                                                previousClassName={"page-item"}
+                                                nextClassName={"page-item"}
+                                                activeClassName={"page-item active"}
+                                                previousLinkClassName={"page-link"}
+                                                nextLinkClassName={"page-link"}
+                                                breakLinkClassName={"page-link"}
+                                                pageLinkClassName={"page-link"}
+                                                activeLinkClassName={""}
+                                                disabledLinkClassName={""}
+                                            />
                                         </nav>
                                     </div>
-                                </div> */}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -5,12 +5,20 @@ import { getMe } from "../../../features/authSlice"
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import ReactPaginate from "react-paginate"
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
+import { SlOptions } from "react-icons/sl"
 
 const PembayaranList = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { isError, user } = useSelector((state) => state.auth)
     const [Pembayaran, setPembayaran] = useState([])
+    const [page, setPage] = useState(0)
+    const [perPage, setperPage] = useState(0)
+    const [pages, setPages] = useState(0)
+    const [rows, setrows] = useState(0)
+    const [keyword, setKeyword] = useState("")
     const [idPembayaran, setIdPembayaran] = useState('')
     const [jumlahPembayaran, setJumlahPembayaran] = useState('')
     const [minimalPembayaran, setMinimalPembayaran] = useState('')
@@ -32,7 +40,7 @@ const PembayaranList = () => {
 
     useEffect(() => {
         getDataPembayaran()
-    }, [])
+    }, [page, keyword])
 
     useEffect(() => {
         getPembayaranById()
@@ -40,11 +48,28 @@ const PembayaranList = () => {
 
     const getDataPembayaran = async () => {
         try {
-            const response = await axios.get('v1/pembayaran/all')
+            const response = await axios.get(`v1/pembayaran/all?page=${page}&search=${keyword}`)
             setPembayaran(response.data.data)
+            setPage(response.data.current_page)
+            setrows(response.data.total_data)
+            setPages(response.data.total_page)
+            setperPage(response.data.per_page)
         } catch (error) {
 
         }
+    }
+
+    const pageCount = Math.ceil(rows / perPage)
+
+    const changePage = (event) => {
+        const newOffset = (event.selected + 1)
+        setPage(newOffset)
+    }
+
+    const cariData = (e) => {
+        e.preventDefault()
+        setKeyword(e ? e.target.value : "")
+        setPage(0)
     }
 
     const getPembayaranById = async () => {
@@ -278,39 +303,84 @@ const PembayaranList = () => {
                     <div className="col-md-12">
                         <div className="card">
                             <div className="card-body p-3">
-                                <div className='mb-2'>
-                                    <button onClick={modalAddOpen} className='btn btn-sm btn-success'>Tambah Data</button>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <div className="row">
+                                            <div className="col-lg-9 col-md-6 col-sm-12 mb-2">
+                                                <button onClick={modalAddOpen} className='btn btn-sm btn-success'>Tambah Data</button>
+                                            </div>
+                                            <div className="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                                <div className="col-auto">
+                                                    <input type="text" className='form-control form-control-sm float-end' placeholder='Cari' onChange={cariData} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="table-responsive">
-                                    <table className="table table-sm table-bordered text-nowrap mb-0 table-centered">
-                                        <thead>
-                                            <tr>
-                                                <th className='py-2'>NO</th>
-                                                <th className='py-2'>Biaya Pendaftaran</th>
-                                                <th className='py-2'>Minimal Pembayaran</th>
-                                                <th className='py-2'>Jumlah Angsuran</th>
-                                                <th className='py-2'>Tahun</th>
-                                                <th className='py-2'>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {Pembayaran.map((item, index) => (
-                                                <tr key={item.id_pembayaran}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.jumlah_pembayaran}</td>
-                                                    <td>{item.minimal_pembayaran}</td>
-                                                    <td>{item.jumlah_ansuran} Kali</td>
-                                                    <td>{item.tahun}</td>
-                                                    <td>
-                                                        <div className="d-flex gap-2">
-                                                            <button onClick={() => modalEditOpen(item.id_pembayaran)} className='btn btn-sm btn-warning'>Edit</button>
-                                                            <button className='btn btn-sm btn-danger' onClick={() => hapusPembayaran(item.id_pembayaran)}>Hapus</button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <div className="table-responsive">
+                                            <table className="table table-sm table-bordered text-nowrap mb-0 table-centered">
+                                                <thead>
+                                                    <tr>
+                                                        <th className='py-2'>NO</th>
+                                                        <th className='py-2'>Biaya Pendaftaran</th>
+                                                        <th className='py-2'>Minimal Pembayaran</th>
+                                                        <th className='py-2'>Jumlah Angsuran</th>
+                                                        <th className='py-2'>Tahun</th>
+                                                        <th className='py-2'>Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {Pembayaran.length == 0 ?
+                                                        <tr>
+                                                            <td align='center' colSpan={6}>Tidak ada data!</td>
+                                                        </tr>
+                                                        :
+                                                        Pembayaran.map((item, index) => (
+                                                            <tr key={item.id_pembayaran}>
+                                                                <td>{(page - 1) * 10 + index + 1}</td>
+                                                                <td>{item.jumlah_pembayaran}</td>
+                                                                <td>{item.minimal_pembayaran}</td>
+                                                                <td>{item.jumlah_ansuran} Kali</td>
+                                                                <td>{item.tahun}</td>
+                                                                <td>
+                                                                    <div className="d-flex gap-2">
+                                                                        <button onClick={() => modalEditOpen(item.id_pembayaran)} className='btn btn-sm btn-warning'>Edit</button>
+                                                                        <button className='btn btn-sm btn-danger' onClick={() => hapusPembayaran(item.id_pembayaran)}>Hapus</button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row mt-3">
+                                    <div className="col-md-12">
+                                        <nav aria-label='...'>
+                                            <ReactPaginate
+                                                className='pagination pagination-sm justify-content-center'
+                                                breakLabel={<SlOptions />}
+                                                previousLabel={<FaArrowLeft />}
+                                                pageCount={pageCount}
+                                                onPageChange={changePage}
+                                                nextLabel={<FaArrowRight />}
+                                                breakClassName={"page-item"}
+                                                pageClassName={"page-item"}
+                                                previousClassName={"page-item"}
+                                                nextClassName={"page-item"}
+                                                activeClassName={"page-item active"}
+                                                previousLinkClassName={"page-link"}
+                                                nextLinkClassName={"page-link"}
+                                                breakLinkClassName={"page-link"}
+                                                pageLinkClassName={"page-link"}
+                                                activeLinkClassName={""}
+                                                disabledLinkClassName={""}
+                                            />
+                                        </nav>
+                                    </div>
                                 </div>
                             </div>
                         </div>

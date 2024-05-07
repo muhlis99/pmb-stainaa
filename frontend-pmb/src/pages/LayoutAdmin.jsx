@@ -5,6 +5,7 @@ import avatar from "../assets/userAvatar.png"
 import { LogOut, reset } from "../features/authSlice"
 import { useDispatch, useSelector } from "react-redux"
 import Swal from 'sweetalert2'
+import { FaBullhorn, FaCheckDouble, FaEdit, FaRegMoneyBillAlt, FaUsers, FaWpforms } from 'react-icons/fa'
 
 const LayoutAdmin = ({ children }) => {
     const dispatch = useDispatch()
@@ -42,27 +43,27 @@ const LayoutAdmin = ({ children }) => {
             <div id="db-wrapper" className={toggle ? 'toggled' : ''}>
                 <nav className="navbar-vertical navbar">
                     <div className="vh-100" data-simplebar>
-                        <Link className="navbar-brand d-flex align-items-center" style={{ fontSize: '20px', fontWeight: '600' }}>
+                        <Link to="/home" className="navbar-brand d-flex align-items-center" style={{ fontSize: '20px', fontWeight: '600' }}>
                             <img src={logo} alt="" width="33" className="d-inline-block align-text-top" />
                             <span className='ms-2'>PMB STAINAA</span>
                         </Link>
                         <ul className="navbar-nav flex-column" id="sideNavbar">
                             <li className="nav-item">
-                                <Link className="nav-link ">
+                                <Link to="/home" className="nav-link ">
                                     <i className="nav-icon fe fe-home me-2"></i>
                                     Dashboard
                                 </Link>
                             </li>
                             <li className="nav-item">
                                 <Link to="/dataFormulir" className="nav-link">
-                                    <i className="nav-icon fe fe-home me-2"></i>
+                                    <FaWpforms className='nav-icon me-2' />
                                     Data Formulir
                                 </Link>
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link " href="#" data-bs-toggle="collapse" data-bs-target="#navPembayaran"
                                     aria-expanded="false" aria-controls="navPembayaran">
-                                    <i className="nav-icon fe fe-home me-2"></i>
+                                    <FaRegMoneyBillAlt className="nav-icon me-2" />
                                     Pembayaran
                                 </a>
                                 <div id="navPembayaran" className="collapse" data-bs-parent="#sideNavbar">
@@ -79,7 +80,7 @@ const LayoutAdmin = ({ children }) => {
                             <li className="nav-item">
                                 <a className="nav-link " href="#" data-bs-toggle="collapse" data-bs-target="#navSeleksi"
                                     aria-expanded="false" aria-controls="navSeleksi">
-                                    <i className="nav-icon fe fe-home me-2"></i>
+                                    <FaEdit className='nav-icon me-2' />
                                     Seleksi
                                 </a>
                                 <div id="navSeleksi" className="collapse" data-bs-parent="#sideNavbar">
@@ -95,14 +96,25 @@ const LayoutAdmin = ({ children }) => {
                             </li>
                             <li className="nav-item">
                                 <Link to="/approve" className="nav-link">
-                                    <i className="nav-icon fe fe-home me-2"></i>
+                                    <FaCheckDouble className='nav-icon me-2' />
                                     Approve
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/informasi" className="nav-link">
+                                    <FaBullhorn className='nav-icon me-2' />
+                                    Informasi
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/users" className="nav-link">
+                                    <FaUsers className='nav-icon me-2' />
+                                    User
                                 </Link>
                             </li>
                         </ul>
                     </div>
                 </nav>
-
                 <main id='page-content'>
                     <div className="header">
                         <nav className="navbar-default navbar navbar-expand-lg">

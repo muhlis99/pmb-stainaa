@@ -17,6 +17,7 @@ const InformasiSeleksi = () => {
     const [durasi, setDurasi] = useState('')
     const [idPendaftar, setIdPendaftar] = useState('')
     const [statusPembayaran, setStatusPembayaran] = useState('')
+    const [statusSeleksi, setStatusSeleksi] = useState('')
 
     useEffect(() => {
         if (isError) {
@@ -59,6 +60,7 @@ const InformasiSeleksi = () => {
             if (idPendaftar) {
                 const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
                 setStatusPembayaran(response.data.data.status_pembayaran)
+                setStatusSeleksi(response.data.data.status_seleksi)
             }
         } catch (error) {
 
@@ -130,11 +132,11 @@ const InformasiSeleksi = () => {
                     <div className="col-md-12">
                         <div className="card">
                             <div className="card-body text-center">
-                                <h4>Jawablah semua perntanyaan-pertanyaan seleksi dengan benar</h4>
+                                <h4>{statusSeleksi == 'selesai' ? 'Anda telah menyelesaikan seleksi, silakan tunggu informasi lebih lanjut' : 'Jawablah semua perntanyaan-pertanyaan seleksi dengan benar'}</h4>
                             </div>
                             <div className="col-md-12">
                                 <div className="row">
-                                    <div className="col-md-8">
+                                    <div className={statusSeleksi == 'selesai' ? 'col-md-12' : 'col-md-8'}>
                                         <div className="row">
                                             <div className="col-md-12 d-flex justify-content-center">
                                                 <div className="d-flex gap-5">
@@ -150,19 +152,21 @@ const InformasiSeleksi = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 mb-2 d-flex justify-content-center align-items-center">
-                                        {idSeleksi == '' ?
-                                            <button className="btn btn-success btn-sm" onClick={tambahSeleksi}>Mulai</button>
-                                            :
-                                            <Link to="/formseleksi" state={{ waktuNow: new Date() }} className="btn btn-success btn-sm" >Lanjutkan</Link>
-                                        }
-                                    </div>
+                                    {statusSeleksi == 'selesai' ? "" :
+                                        <div className="col-md-4 mb-2 d-flex justify-content-center align-items-center">
+                                            {idSeleksi == '' ?
+                                                <button className="btn btn-success btn-sm" onClick={tambahSeleksi}>Mulai</button>
+                                                :
+                                                <Link to="/formseleksi" state={{ waktuNow: new Date() }} className="btn btn-success btn-sm" >Lanjutkan</Link>
+                                            }
+                                        </div>
+                                    }
                                 </div>
                                 <div className="row my-3">
-                                    <div className="col-sm-4 text-center">
+                                    <div className="col-lg-6 col-md-6 col-sm-12 text-center">
                                         <h5>Tanggal : {moment().format('DD MMM YYYY')}</h5>
                                     </div>
-                                    <div className="col-sm-4 text-center">
+                                    <div className="col-lg-6 col-md-6 col-sm-12 text-center">
                                         <h5>Waktu yang dihabiskan : {durasi == '' ? '0 menit' : durasi}</h5>
                                     </div>
                                 </div>
