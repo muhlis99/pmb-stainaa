@@ -22,13 +22,11 @@ const TransaksiPembayaran = () => {
     const [status, setStatus] = useState('')
     const [totalBayar, setTotalBayar] = useState('')
     const [accountingTransaksi, setAccountingTransaksi] = useState('')
+    const [minimalBayar, setMinimalBayar] = useState('')
+    const [accountMinimal, setAccountMinimal] = useState('')
+    const [biaya, setBiaya] = useState('')
+    const [accountBiaya, setAccountBiaya] = useState('')
     const [jumlahAngsuran, setJumlahAngsuran] = useState('')
-    const [biodata, setBiodata] = useState([])
-    const [desa, setDesa] = useState('')
-    const [kecamatan, setKecamatan] = useState('')
-    const [kabupaten, setKabupaten] = useState('')
-    const [provinsi, setProvinsi] = useState('')
-    const [today, setToday] = useState('')
     const [statusDownload, setStatusDownload] = useState('')
     const [idPembayaran, setIdPembayaran] = useState('')
     const [transaksiKe, setTransaksiKe] = useState('')
@@ -39,10 +37,7 @@ const TransaksiPembayaran = () => {
     const [prevKwitansi, setPrevKwitansi] = useState('')
     const [idPendaftar, setIdPendaftar] = useState('')
     const [statusFormulir, setStatusFormulir] = useState('')
-    const [minimalBayar, setMinimalBayar] = useState('')
-    const [accountMinimal, setAccountMinimal] = useState('')
-    const [biaya, setBiaya] = useState('')
-    const [accountBiaya, setAccountBiaya] = useState('')
+
 
     useEffect(() => {
         if (isError) {
@@ -78,26 +73,12 @@ const TransaksiPembayaran = () => {
         currencyIdr()
     }, [totalBayar])
 
-    useEffect(() => {
-        getDate()
-    }, [])
-
-    useEffect(() => {
-        getDataDiri()
-    }, [user])
-
-    useEffect(() => {
-        getDesa()
-        getKecamatan()
-        getKabupaten()
-        getProvinsi()
-    }, [biodata])
-
     const getStatusDownload = async () => {
         try {
             if (user) {
                 const response = await axios.get(`v1/transaksi/buktiPendaftaran/${user.data.token}`)
                 setStatusDownload(response.data.data)
+                console.log('status download :', response.data.data);
             }
         } catch (error) {
 
@@ -165,78 +146,13 @@ const TransaksiPembayaran = () => {
         e.preventDefault()
         try {
             await axios.post(`v1/transaksi/tambah`, {
-                kode: biodata.token,
+                kode: user.data.token,
                 id_pembayaran: idPembayaran
             }).then(function () {
                 handleGeneratePdf()
                 getStatusDownload()
                 getTransaksi()
             })
-        } catch (error) {
-
-        }
-    }
-
-    const getDate = () => {
-        const today = new Date()
-        const month = today.getMonth() + 1
-        const year = today.getFullYear()
-        const date = today.getDate()
-        const namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-        setToday(`${date} ${namaBulan[month]} ${year}`)
-        setTanggalTansaksi(moment().format('YYYY-MM-DD'))
-    }
-
-    const getDataDiri = async () => {
-        try {
-            if (user) {
-                const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
-                setBiodata(response.data.data)
-            }
-        } catch (error) {
-
-        }
-    }
-
-    const getDesa = async () => {
-        try {
-            if (biodata.desa) {
-                const response = await axios.get(`v1/equipment/desa/getByCode/${biodata.desa}`)
-                setDesa(response.data.data.nama_desa)
-            }
-        } catch (error) {
-
-        }
-    }
-
-    const getKecamatan = async () => {
-        try {
-            if (biodata.kecamatan) {
-                const response = await axios.get(`v1/equipment/kecamatan/getByCode/${biodata.kecamatan}`)
-                setKecamatan(response.data.data.nama_kecamatan)
-            }
-        } catch (error) {
-
-        }
-    }
-
-    const getKabupaten = async () => {
-        try {
-            if (biodata.kabupaten) {
-                const response = await axios.get(`v1/equipment/kabupaten/getByCode/${biodata.kabupaten}`)
-                setKabupaten(response.data.data.nama_kabupaten)
-            }
-        } catch (error) {
-
-        }
-    }
-
-    const getProvinsi = async () => {
-        try {
-            if (biodata.provinsi) {
-                const response = await axios.get(`v1/equipment/provinsi/getByCode/${biodata.provinsi}`)
-                setProvinsi(response.data.data.nama_provinsi)
-            }
         } catch (error) {
 
         }
@@ -368,15 +284,6 @@ const TransaksiPembayaran = () => {
         } catch (error) {
 
         }
-    }
-
-    const waktuHabis = () => {
-        Swal.fire({
-            title: 'Gagal',
-            text: 'Pembayaran anda melebihi batas akhir pembayaran',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-        })
     }
 
     return (
@@ -547,11 +454,8 @@ const TransaksiPembayaran = () => {
                                         <div className="col-md-2 d-flex align-items-center">
                                             {item.status_tombol == '1' ?
                                                 ""
-                                                : item.status_tombol == '0' ?
-                                                    <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
-                                                    : item.tenggat_pembayaran == moment().format('YYYY-MM-DD') ?
-                                                        <button className='btn btn-sm btn-info' onClick={waktuHabis} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
-                                                        : ''
+                                                :
+                                                <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
                                             }
                                         </div>
                                     </div>
