@@ -20,6 +20,7 @@ router.use('/seeImage/pmb/ijazah', express.static(path.join('./tmp_pmb/ijazah'))
 router.use('/seeImage/pmb/kk', express.static(path.join('./tmp_pmb/kk')))
 router.use('/seeImage/pmb/ktp', express.static(path.join('./tmp_pmb/ktp')))
 router.use('/seeImage/pmb/diri', express.static(path.join('./tmp_pmb/diri')))
+router.use('/seeImage/pmb/suketSantri', express.static(path.join('./tmp_pmb/suketSantri')))
 
 
 module.exports = router
