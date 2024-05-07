@@ -132,12 +132,12 @@ module.exports = {
             let transporter = nodemailer.createTransport({
                 service: "gmail",
                 auth: {
-                    user: "muhammadbwi13@gmail.com",
-                    pass: "xzhltcpsznbllacw",
+                    user: "stainaabanyuwangi@gmail.com",
+                    pass: "2597750595",
                 }
             })
             await transporter.sendMail({
-                from: 'muhammadbwi13@gmail.com',
+                from: 'stainaabanyuwangi@gmail.com',
                 to: `${email}`,
                 subject: "Atur Ulang Kata Kunci Apliaksi Mahasiswa STAINAA",
                 text: 'jangan disebarakan pada orang lain',
