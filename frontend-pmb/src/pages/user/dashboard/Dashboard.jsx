@@ -55,7 +55,7 @@ const Dashboard = () => {
                         <div className="card mb-2">
                             <div className="card-body">
                                 <h4>Selamat datang di PMB STAINAA</h4>
-                                <span>Silakan lengkapi selesaikan data pendaftaran sebagaimana berikut</span>
+                                <span>Silakan selesaikan data pendaftaran sebagaimana berikut</span>
                                 <ol>
                                     <li>Lengkapi data formulir meliputi data diri, data alamat, data orang tua, data wali serta berkas pendaftaran.</li>
                                     <li>Langkah selanjutnya yaitu melakukan pembayaran biaya pendaftaran.</li>

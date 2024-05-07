@@ -48,7 +48,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="navbar navbar-expand-lg border">
+            <nav className="navbar navbar-expand-lg">
                 <div className="container px-0">
                     <Link className="navbar-brand" style={{ fontSize: '28px', fontWeight: '700' }}>
                         <img src={logo} alt="" width="33" height="33" className="d-inline-block align-text-top" />
