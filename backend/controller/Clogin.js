@@ -1,6 +1,7 @@
 const user = require('../model/Mregistrasi.js')
 const argon = require('argon2')
 const nodemailer = require('nodemailer')
+const smtpTransport = require('nodemailer-smtp-transport')
 
 module.exports = {
     login: async (req, res, next) => {
@@ -63,13 +64,13 @@ module.exports = {
         })
         if (!emailUse) return res.status(404).json({ message: "Tidak dapat menemukan akun email anda" })
         let testAccount = await nodemailer.createTestAccount()
-        let transporter = nodemailer.createTransport({
+        let transporter = nodemailer.createTransport(smtpTransport({
             service: "gmail",
             auth: {
                 user: "stainaabanyuwangi@gmail.com",
-                pass: "kmmohoedyaopgekt",
+                pass: "kmmo hoed yaop gekt",
             }
-        })
+        }))
 
         try {
             await user.update({
@@ -89,7 +90,7 @@ module.exports = {
             await transporter.sendMail({
                 from: 'stainaabanyuwangi@gmail.com',
                 to: `${email}`,
-                subject: "",
+                subject: "kode verifikasi pmb stainaa",
                 text: 'jangan disebarakan pada orang lain',
                 html: `<div class="card" style="width: 60%;>
                             <div class="card-body">
@@ -111,7 +112,6 @@ module.exports = {
 
         } catch (err) {
             console.log(err);
-            // next(err)
         }
     },
 

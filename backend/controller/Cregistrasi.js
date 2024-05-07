@@ -3,7 +3,7 @@ const Mapprove = require('../model/Mapprove.js')
 const {Sequelize,Op} =  require('sequelize')
 const argon = require('argon2')
 const nodemailer = require('nodemailer')
-
+const smtpTransport = require('nodemailer-smtp-transport')
 
 module.exports = {
     getAll : async (req, res, next) => {
@@ -129,13 +129,13 @@ module.exports = {
                 }
             })
             let testAccount = await nodemailer.createTestAccount()
-            let transporter = nodemailer.createTransport({
+            let transporter = nodemailer.createTransport(smtpTransport({
                 service: "gmail",
                 auth: {
                     user: "stainaabanyuwangi@gmail.com",
                     pass: "kmmohoedyaopgekt",
                 }
-            })
+            }))
             await transporter.sendMail({
                 from: 'stainaabanyuwangi@gmail.com',
                 to: `${email}`,

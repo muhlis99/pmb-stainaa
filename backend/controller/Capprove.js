@@ -9,6 +9,7 @@ const MtahunAjaran = require('../model/tahunAjaranModel.js')
 const {Sequelize,Op} =  require('sequelize')
 const argon = require('argon2')
 const nodemailer = require('nodemailer')
+const smtpTransport = require('nodemailer-smtp-transport')
 const path = require('path')
 const fs = require('fs')
 const QRCode = require("qrcode");
@@ -363,13 +364,13 @@ module.exports = {
             status: "aktif"
         }).then(async result => {
             let testAccount = await nodemailer.createTestAccount()
-            let transporter = nodemailer.createTransport({
+            let transporter = nodemailer.createTransport(smtpTransport({
                 service: "gmail",
                 auth: {
                     user: "stainaabanyuwangi@gmail.com",
                     pass: "kmmohoedyaopgekt",
                 }
-            })
+            }))
             await transporter.sendMail({
                 from: 'stainaabanyuwangi@gmail.com',
                 to: `${dataMhs.email}`,
