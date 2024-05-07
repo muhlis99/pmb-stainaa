@@ -39,6 +39,9 @@ module.exports = {
         })
         const totalItems = Math.ceil(totalPage / perPage)
         await Mapprove.findAll({
+            include : [{
+                model : Mformulir
+            }],
             where: {
                 [Op.or]: [
                     {
