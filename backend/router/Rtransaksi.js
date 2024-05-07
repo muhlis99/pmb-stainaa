@@ -18,6 +18,7 @@ router.put('/tambahTransaksi/:id', Ctransaksi.tambahTransaksi)
 router.get('/allTransaksiMhs', Ctransaksi.gtAllTransaksiMhs)
 router.get('/checkTransaksi/:kode', Ctransaksi.checkTransaksi)
 router.put('/editTenggatPembayaran/:id', Ctransaksi.editTenggatPembayaran)
+router.put('/validatePembayaran/:id', Ctransaksi.validatePembayaran)
 
 
 

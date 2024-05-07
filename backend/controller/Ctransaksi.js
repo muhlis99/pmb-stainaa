@@ -134,14 +134,20 @@ module.exports = {
     getTotalPembayaran : async (req, res, next) => {
         const kode = req.params.kode
         const date =  new Date().getFullYear()
-        const data = await formulir.findOne({where:{token:kode}})
+        const dataUse = await formulir.findOne({where:{token:kode}})
+        if(!dataUse) return res.status(401).json({message : "data not found"})
         const totalPembayaran = await pembayaran.findOne({
             where:{
                 tahun:date,
                 status : "aktif"
             }
         })
-        const jumlahBayar = await transaksi.sum("nominal",{where:{token:kode}})
+        const jumlahBayar = await transaksi.sum("nominal",{
+            where:{
+                token:kode, 
+                status_transaksi : "selesai"
+            }
+        })
         let status = ""
         if (jumlahBayar === null ) {
             status = "belum bayar"
@@ -154,9 +160,10 @@ module.exports = {
             message : "data success",
             data : [{
                 transaksi : [{
-                    nama : data.nama,
-                    email : data.email,
-                    jenkel : data.jenis_kelamin
+                    nama : dataUse.nama,
+                    token : dataUse.token,
+                    email : dataUse.email,
+                    jenkel : dataUse.jenis_kelamin
                 }],
                 statusPembayaran : status,
                 jumlahBayar : jumlahBayar,
@@ -178,7 +185,12 @@ module.exports = {
 
     tenggatPembayaranHabis : async (req, res, next) => {
         const id = req.params.id
-        const dataUse = await transaksi.findOne({where:{id_transaksi:id}})
+        const dataUse = await transaksi.findOne({
+            where:{
+                id_transaksi:id,
+                status_transaksi : "belum"
+            }
+        })
         const date = new Date().toLocaleDateString('en-CA')
         const tenggat_pembayaran = dataUse.tenggat_pembayaran
         if (date >= tenggat_pembayaran) {
@@ -212,7 +224,8 @@ module.exports = {
             tenggat_pembayaran : tenggat,
             bukti_transaksi : "",
             status_tombol : "0",
-            status_transaksi : "belum"
+            status_transaksi : "belum",
+            keterangan : ""
         }).then(result => {
             res.status(201).json({
                 message: "Data transaksi success",
@@ -239,7 +252,8 @@ module.exports = {
             tenggat_pembayaran : tenggat,
             bukti_transaksi : "",
             status_tombol : "0",
-            status_transaksi : "belum"
+            status_transaksi : "belum",
+            keterangan : ""
         }).then(result => {
             res.status(201).json({
                 message: "Data transaksi success",
@@ -287,24 +301,7 @@ module.exports = {
             })
         }
 
-        const date =  new Date().getFullYear()
-        const totalPembayaran = await pembayaran.findOne({
-            where:{
-                tahun:date,
-                status :"aktif"
-            }
-        })
-        const jumlahBayar = await transaksi.sum("nominal",{where:{token:transaksiUse.token}}) 
-        const totalJumlahBayarMHs = parseFloat(jumlahBayar) + parseFloat(nominal)
-        if (totalPembayaran.jumlah_pembayaran <= totalJumlahBayarMHs) {
-            await Mapprove.update({
-                status_pembayaran : "selesai"
-            }, {
-                where : {
-                    token : transaksiUse.token
-                }
-            })
-        }
+        
         try {
             await transaksi.update({
                 bukti_transaksi: buktiTransaksi,
@@ -312,7 +309,7 @@ module.exports = {
                 nominal: nominal,
                 tanggal_transaksi: tanggal_transaksi,
                 status_tombol : "1",
-                status_transaksi : "selesai"
+                status_transaksi : "proses"
             }, {
                 where: {
                     id_transaksi: id
@@ -338,7 +335,12 @@ module.exports = {
                 status : "aktif"
             }
         })
-        const jumlahBayar = await transaksi.sum("nominal",{where:{token:kode}})
+        const jumlahBayar = await transaksi.sum("nominal",{
+            where:{
+                token:kode,
+                status_transaksi : "selesai"
+            }
+        })
         let status = ""
         if (jumlahBayar === null ) {
             status = "belum bayar"
@@ -369,6 +371,61 @@ module.exports = {
             res.status(201).json({
                 message: "Data transaksi success"
             })
+        }).
+        catch(err => {
+            console.log(err)
+        })
+    },
+
+    validatePembayaran : async (req, res, next) => {
+        const id = req.params.id
+        const {status, ket} = req.body
+        const dataUse = await transaksi.findOne({where : {
+            id_transaksi:id,
+            status_transaksi : "proses"
+        }})
+        if(!dataUse) return res.json({message:"data not found"})
+        await transaksi.update({
+            keterangan : ket,
+            status_transaksi : status
+        }, {
+            where : {
+                id_transaksi : id,
+                status_transaksi : "proses"
+            }
+        }).then(async result => {
+            if (status == "selesai") {
+                const date =  new Date().getFullYear()
+                const totalPembayaran = await pembayaran.findOne({
+                    where:{
+                        tahun:date,
+                        status :"aktif"
+                    }
+                })
+                const jumlahBayar = await transaksi.sum("nominal",{
+                    where:{
+                        token:dataUse.token,
+                        status_transaksi : "selesai"
+                    }
+                }) 
+                const totalJumlahBayarMHs = parseFloat(jumlahBayar) + parseFloat(dataUse.nominal)
+                if (totalPembayaran.jumlah_pembayaran <= totalJumlahBayarMHs) {
+                    await Mapprove.update({
+                        status_pembayaran : "selesai"
+                    }, {
+                        where : {
+                            token : dataUse.token
+                        }
+                    })
+                }
+                res.status(201).json({
+                    message: "Data transaksi success"
+                })
+            } else {
+                res.status(201).json({
+                    message: "Data transaksi success"
+                })
+            }
         }).
         catch(err => {
             console.log(err)

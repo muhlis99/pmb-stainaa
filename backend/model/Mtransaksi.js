@@ -35,11 +35,14 @@ const transaksi = db.define('transaksi', {
     },
     'status_transaksi': {
         type: DataTypes.ENUM,
-        values: ['selesai','belum']
+        values: ['selesai','belum','proses','ditolak']
     },
     'status_tombol': {
         type: DataTypes.ENUM,
         values: ['1','0']
+    },
+    'keterangan': {
+        type: DataTypes.TEXT
     }
 }, {
     tableName: 'tb_pmb_transaksi_pembayaran',
