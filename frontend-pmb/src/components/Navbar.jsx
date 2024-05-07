@@ -12,6 +12,9 @@ const Navbar = () => {
     const navigate = useNavigate()
     const { user } = useSelector((state) => state.auth)
     const [nama, setNama] = useState('')
+    const [idPendaftar, setIdPendaftar] = useState('')
+    const [dataForm, setDataForm] = useState('')
+    const [dataPembayaran, setDataPembayaran] = useState('')
 
     const logOut = () => {
         Swal.fire({
@@ -35,11 +38,28 @@ const Navbar = () => {
         getByToken()
     }, [user])
 
+    useEffect(() => {
+        getStatus()
+    }, [idPendaftar])
+
     const getByToken = async () => {
         try {
             if (user) {
                 const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
                 setNama(response.data.data.nama)
+                setIdPendaftar(response.data.data.id)
+            }
+        } catch (error) {
+
+        }
+    }
+
+    const getStatus = async () => {
+        try {
+            if (idPendaftar) {
+                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
+                setDataForm(response.data.data.status_formulir)
+                setDataPembayaran(response.data.data.status_pembayaran)
             }
         } catch (error) {
 
@@ -114,14 +134,22 @@ const Navbar = () => {
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/pembayaran" className='nav-link fw-bold fs-4'>
-                                    Pembayaran
-                                </Link>
+                                {dataForm == 'belum' ?
+                                    <Link to="#" className='nav-link fw-bold fs-4'>Pembayaran</Link>
+                                    :
+                                    <Link to="/pembayaran" className='nav-link fw-bold fs-4'>Pembayaran</Link>
+                                }
                             </li>
                             <li className="nav-item">
-                                <Link to='/infoseleksi' className='nav-link fw-bold fs-4'>
-                                    Seleksi
-                                </Link>
+                                {dataPembayaran == 'belum' ?
+                                    <Link to='#' className='nav-link fw-bold fs-4'>
+                                        Seleksi
+                                    </Link>
+                                    :
+                                    <Link to='/infoseleksi' className='nav-link fw-bold fs-4'>
+                                        Seleksi
+                                    </Link>
+                                }
                             </li>
                         </ul>
                     </div>

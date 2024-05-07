@@ -5,6 +5,8 @@ import { getMe } from "../../../features/authSlice"
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { FallingLines } from 'react-loader-spinner'
+import { FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt } from "react-icons/fa"
+import { RiParentFill } from "react-icons/ri"
 import Swal from 'sweetalert2'
 
 const Form1 = () => {
@@ -188,10 +190,73 @@ const Form1 = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="row mb-3">
+                            <div className="col-xl-12 col-md-12 col-sm-12">
+                                <div className="row justify-content-center mb-5">
+                                    <div className="timeline-point done">
+                                        <FaHandPointer className='text-light' size={45} />
+                                    </div>
+                                    <div className="timeline-space">
+                                    </div>
+                                    <div className="timeline-point">
+                                        <FaMapMarkedAlt className='text-light' size={45} />
+                                    </div>
+                                    <div className="timeline-space">
+                                    </div>
+                                    <div className="timeline-point">
+                                        <RiParentFill className='text-light' size={45} />
+                                    </div>
+                                    <div className="timeline-space ">
+                                    </div>
+                                    <div className="timeline-point">
+                                        <i className="fas fa-envelope fa-4x"></i>
+                                        <FaHands className='text-light' size={45} />
+                                    </div>
+                                    <div className="timeline-space ">
+                                    </div>
+                                    <div className="timeline-point">
+                                        <i className="fas fa-check fa-4x"></i>
+                                        <FaFileAlt className='text-light' size={45} />
+                                    </div>
+                                </div>
+                                <div className="row justify-content-center">
+                                    <div className="titleplace">
+                                        Melengkapi Data Diri
+                                    </div>
+                                    <div className="titlespace">
+
+                                    </div>
+                                    <div className="titleplace">
+                                        Mengisi Data Alamat
+                                    </div>
+                                    <div className="titlespace">
+
+                                    </div>
+                                    <div className="titleplace">
+                                        Mengisi Data Orang Tua
+                                    </div>
+                                    <div className="titlespace">
+
+                                    </div>
+                                    <div className="titleplace">
+                                        Mengisi Data Wali
+                                    </div>
+                                    <div className="titlespace">
+
+                                    </div>
+                                    <div className="titleplace">
+                                        Melengkapi Berkas
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div className="row">
                             <div className="col-md-12">
                                 <form autoComplete='off' onSubmit={simpanForm1}>
                                     <div className="card">
+                                        <div className="card-header py-2">
+                                            <h4 className="card-title mt-2">Formulir Detail Diri</h4>
+                                        </div>
                                         <div className="card-body">
                                             <div className="row">
                                                 <div className="col-md-3 mb-3">

@@ -3,12 +3,10 @@ import LayoutUser from '../../LayoutUser'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
 import { useNavigate, Link } from 'react-router-dom'
-import noProfil from "../../../assets/foto.svg"
 import { FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt } from "react-icons/fa"
 import { RiParentFill } from "react-icons/ri"
 import axios from 'axios'
 import "./timeline.css"
-// import "./style.bundle.css"
 
 const CekFormulir = () => {
     const dispatch = useDispatch()
@@ -161,7 +159,7 @@ const CekFormulir = () => {
                 </div>
                 <div className='row'>
                     <div className="col-xl-12 col-md-12 col-sm-12">
-                        <Link className='btn btn-sm btn-primary'>Mulai</Link>
+                        <Link to="/formulir1" state={{ token: user.data.token }} className='btn btn-sm btn-primary'>Mulai</Link>
                     </div>
                 </div>
             </div>
