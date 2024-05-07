@@ -147,7 +147,7 @@ const LayoutAdmin = ({ children }) => {
                                             <div className="dropdown-divider"></div>
                                             <ul className="list-unstyled">
                                                 <li>
-                                                    <a className="dropdown-item" onClick={logOut}>
+                                                    <a className="dropdown-item cursor-pointer" onClick={logOut}>
                                                         <i className="fe fe-power me-2"></i>
                                                         Sign Out
                                                     </a>

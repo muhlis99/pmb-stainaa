@@ -17,8 +17,10 @@ const KirimInformasi = () => {
     const { isError, user } = useSelector((state) => state.auth)
     const [biodata, setBiodata] = useState([])
     const [DataInformasi, setDataInformasi] = useState([])
+    const [idInformasi, setIdInformasi] = useState("")
     const [judul, setJudul] = useState('')
     const [isiInformasi, setIsiInformasi] = useState('')
+    const [modalTitle, setModalTitle] = useState("")
 
     useEffect(() => { console.log(location.state.token) }, [location])
 
@@ -36,6 +38,10 @@ const KirimInformasi = () => {
         getBiodataByToken()
         getDataInformasi()
     }, [location])
+
+    useEffect(() => {
+        getInformasiById()
+    }, [idInformasi])
 
     const getBiodataByToken = async () => {
         try {
@@ -56,12 +62,14 @@ const KirimInformasi = () => {
     }
 
     const modalOpen = () => {
+        setModalTitle("Kirim")
         openModal.current.click()
     }
 
     const modalClose = () => {
         setJudul()
         setIsiInformasi()
+        setIdInformasi()
         closeModal.current.click()
     }
 
@@ -104,15 +112,71 @@ const KirimInformasi = () => {
         }
     }
 
+    const modalEditOpen = (e) => {
+        setIdInformasi(e)
+        setModalTitle("Edit")
+        openModal.current.click()
+    }
+
+    const getInformasiById = async () => {
+        try {
+            if (idInformasi) {
+                const response = await axios.get(`v1/informasi/byId/${idInformasi}`)
+                setJudul(response.data.data.judul)
+                setIsiInformasi(response.data.data.isi)
+            }
+        } catch (error) {
+
+        }
+    }
+
+    const editPesan = async (e) => {
+        e.preventDefault()
+        try {
+            if (judul == '') {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Judul tidak boleh kosong',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                })
+            } else if (isiInformasi == '') {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Informasi tidak boleh kosong',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                })
+            } else {
+                await axios.put(`v1/informasi/edit/${idInformasi}`, {
+                    judul: judul,
+                    isi: isiInformasi
+                }).then(function (response) {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: response.data.message,
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6'
+                    }).then(() => {
+                        getDataInformasi()
+                        modalClose()
+                    })
+                })
+            }
+        } catch (error) {
+
+        }
+    }
+
     return (
         <LayoutAdmin>
             <button type="button" class="btn btn-primary d-none" ref={openModal} data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
             <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
-                        <form autoComplete='off' onSubmit={kirimPesan}>
+                        <form autoComplete='off' onSubmit={modalTitle == 'Tambah' ? kirimPesan : editPesan}>
                             <div className="modal-header">
-                                <h5 className="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                <h5 className="modal-title" id="staticBackdropLabel">{modalTitle} Informasi</h5>
                                 <button type="button" className="btn-close d-none" ref={closeModal} data-bs-dismiss="modal" aria-label="Close"></button>
                                 <button type="button" className="btn-close" onClick={modalClose} aria-label="Close"></button>
                             </div>
@@ -140,7 +204,7 @@ const KirimInformasi = () => {
                     <div className="col-lg-12 col-md-12 col-12">
                         <div className="border-bottom pb-3 mb-3 d-lg-flex justify-content-between align-items-center">
                             <div className="mb-3 mb-lg-0">
-                                <h1 className="mb-0 h2 fw-bold">Informasi</h1>
+                                <h1 className="mb-0 h2 fw-bold">Informasi {idInformasi}</h1>
                             </div>
                         </div>
                     </div>
@@ -199,10 +263,20 @@ const KirimInformasi = () => {
                                 </div>
                                 <div className="row">
                                     {DataInformasi.map((item) => (
-                                        <div key={item.id_infomasi} className="col-lg-4 col-md-4 col-sm-12">
+                                        <div key={item.id_informasi} className="col-lg-4 col-md-4 col-sm-12">
                                             <div className="card shadow-lg h-100">
                                                 <div className="card-header py-1">
-                                                    <h5 className='card-title mt-2'>{item.judul}</h5>
+                                                    <div className="row">
+                                                        <div className="col-sm-6">
+                                                            <h5 className='card-title mt-2'>{item.judul}</h5>
+                                                        </div>
+                                                        <div className='col-sm-6'>
+                                                            <div className='float-end mt-1'>
+                                                                <button onClick={() => modalEditOpen(item.id_informasi)} className="btn btn-sm btn-warning">Edit</button>
+                                                                <button className="btn btn-sm btn-danger ms-1">Hapus</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div className="card-body py-0">
                                                     <div className='mb-2'>

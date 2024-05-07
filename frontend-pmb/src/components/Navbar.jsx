@@ -48,7 +48,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="navbar navbar-expand-lg">
+            <nav className="navbar navbar-expand-lg border">
                 <div className="container px-0">
                     <Link className="navbar-brand" style={{ fontSize: '28px', fontWeight: '700' }}>
                         <img src={logo} alt="" width="33" height="33" className="d-inline-block align-text-top" />
@@ -80,7 +80,7 @@ const Navbar = () => {
                                     <div className="dropdown-divider"></div>
                                     <ul className="list-unstyled">
                                         <li>
-                                            <a className="dropdown-item" onClick={logOut}>
+                                            <a className="dropdown-item cursor-pointer" onClick={logOut}>
                                                 <i className="fe fe-power me-2"></i>
                                                 Sign Out
                                             </a>
@@ -104,22 +104,22 @@ const Navbar = () => {
                     <div className="collapse navbar-collapse" id="navbar-default">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <Link to="/dashboard" className='nav-link'>
+                                <Link to="/dashboard" className='nav-link fw-bold fs-4'>
                                     Dashboard
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/cekdetaildata" className='nav-link'>
+                                <Link to="/cekdetaildata" className='nav-link fw-bold fs-4'>
                                     Formulir
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/pembayaran" className='nav-link'>
+                                <Link to="/pembayaran" className='nav-link fw-bold fs-4'>
                                     Pembayaran
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link to='/infoseleksi' className='nav-link'>
+                                <Link to='/infoseleksi' className='nav-link fw-bold fs-4'>
                                     Seleksi
                                 </Link>
                             </li>
