@@ -5,7 +5,7 @@ import { getMe } from "../../../features/authSlice"
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import jsPDF from "jspdf"
-import kop from "../../../assets/stainaa.png"
+import logo from "../../../assets/stainaa.png"
 import Swal from 'sweetalert2'
 import moment from 'moment'
 
@@ -22,13 +22,11 @@ const TransaksiPembayaran = () => {
     const [status, setStatus] = useState('')
     const [totalBayar, setTotalBayar] = useState('')
     const [accountingTransaksi, setAccountingTransaksi] = useState('')
+    const [minimalBayar, setMinimalBayar] = useState('')
+    const [accountMinimal, setAccountMinimal] = useState('')
+    const [biaya, setBiaya] = useState('')
+    const [accountBiaya, setAccountBiaya] = useState('')
     const [jumlahAngsuran, setJumlahAngsuran] = useState('')
-    const [biodata, setBiodata] = useState([])
-    const [desa, setDesa] = useState('')
-    const [kecamatan, setKecamatan] = useState('')
-    const [kabupaten, setKabupaten] = useState('')
-    const [provinsi, setProvinsi] = useState('')
-    const [today, setToday] = useState('')
     const [statusDownload, setStatusDownload] = useState('')
     const [idPembayaran, setIdPembayaran] = useState('')
     const [transaksiKe, setTransaksiKe] = useState('')
@@ -39,10 +37,7 @@ const TransaksiPembayaran = () => {
     const [prevKwitansi, setPrevKwitansi] = useState('')
     const [idPendaftar, setIdPendaftar] = useState('')
     const [statusFormulir, setStatusFormulir] = useState('')
-    const [minimalBayar, setMinimalBayar] = useState('')
-    const [accountMinimal, setAccountMinimal] = useState('')
-    const [biaya, setBiaya] = useState('')
-    const [accountBiaya, setAccountBiaya] = useState('')
+
 
     useEffect(() => {
         if (isError) {
@@ -69,10 +64,6 @@ const TransaksiPembayaran = () => {
     }, [user])
 
     useEffect(() => {
-        getStatusFormulir()
-    }, [idPendaftar])
-
-    useEffect(() => {
         getTransaksi()
         getTotalPembayaran()
         getStatusDownload()
@@ -82,38 +73,12 @@ const TransaksiPembayaran = () => {
         currencyIdr()
     }, [totalBayar])
 
-    useEffect(() => {
-        getDate()
-    }, [])
-
-    useEffect(() => {
-        getDataDiri()
-    }, [user])
-
-    useEffect(() => {
-        getDesa()
-        getKecamatan()
-        getKabupaten()
-        getProvinsi()
-    }, [biodata])
-
-    const getStatusFormulir = async () => {
-        try {
-            if (idPendaftar) {
-                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
-                setStatusFormulir(response.data.data.status_formulir)
-                console.log(response.data.data.status_formulir);
-            }
-        } catch (error) {
-
-        }
-    }
-
     const getStatusDownload = async () => {
         try {
             if (user) {
                 const response = await axios.get(`v1/transaksi/buktiPendaftaran/${user.data.token}`)
                 setStatusDownload(response.data.data)
+                console.log('status download :', response.data.data);
             }
         } catch (error) {
 
@@ -181,78 +146,13 @@ const TransaksiPembayaran = () => {
         e.preventDefault()
         try {
             await axios.post(`v1/transaksi/tambah`, {
-                kode: biodata.token,
+                kode: user.data.token,
                 id_pembayaran: idPembayaran
             }).then(function () {
                 handleGeneratePdf()
                 getStatusDownload()
                 getTransaksi()
             })
-        } catch (error) {
-
-        }
-    }
-
-    const getDate = () => {
-        const today = new Date()
-        const month = today.getMonth() + 1
-        const year = today.getFullYear()
-        const date = today.getDate()
-        const namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-        setToday(`${date} ${namaBulan[month]} ${year}`)
-        setTanggalTansaksi(moment().format('YYYY-MM-DD'))
-    }
-
-    const getDataDiri = async () => {
-        try {
-            if (user) {
-                const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
-                setBiodata(response.data.data)
-            }
-        } catch (error) {
-
-        }
-    }
-
-    const getDesa = async () => {
-        try {
-            if (biodata.desa) {
-                const response = await axios.get(`v1/equipment/desa/getByCode/${biodata.desa}`)
-                setDesa(response.data.data.nama_desa)
-            }
-        } catch (error) {
-
-        }
-    }
-
-    const getKecamatan = async () => {
-        try {
-            if (biodata.kecamatan) {
-                const response = await axios.get(`v1/equipment/kecamatan/getByCode/${biodata.kecamatan}`)
-                setKecamatan(response.data.data.nama_kecamatan)
-            }
-        } catch (error) {
-
-        }
-    }
-
-    const getKabupaten = async () => {
-        try {
-            if (biodata.kabupaten) {
-                const response = await axios.get(`v1/equipment/kabupaten/getByCode/${biodata.kabupaten}`)
-                setKabupaten(response.data.data.nama_kabupaten)
-            }
-        } catch (error) {
-
-        }
-    }
-
-    const getProvinsi = async () => {
-        try {
-            if (biodata.provinsi) {
-                const response = await axios.get(`v1/equipment/provinsi/getByCode/${biodata.provinsi}`)
-                setProvinsi(response.data.data.nama_provinsi)
-            }
         } catch (error) {
 
         }
@@ -386,65 +286,6 @@ const TransaksiPembayaran = () => {
         }
     }
 
-    const downloadHabis = () => {
-        Swal.fire({
-            title: 'Download Gagal',
-            text: 'Anda telah mendownload bukti pendaftaran',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-        })
-    }
-
-    const waktuHabis = () => {
-        Swal.fire({
-            title: 'Gagal',
-            text: 'Pembayaran anda melebihi batas akhir pembayaran',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-        })
-    }
-
-    const formulirBelum = () => {
-        Swal.fire({
-            title: 'Download Gagal',
-            text: 'Anda belum menyelesaikan pengisian formulir',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-
-        })
-    }
-
-    const tableStyle = {
-        image: {
-            width: '597px'
-        },
-        wrap: {
-            width: '100%',
-            fontFamily: "TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif",
-            background: '#ffffff',
-            color: '#000000',
-            paddingTop: '10px'
-        },
-        title: {
-            fontSize: '12px',
-            margin: 'auto',
-        },
-        grid: {
-            display: 'grid',
-            gridTemplateColumns: 'auto auto',
-            width: '97%',
-            margin: 'auto'
-        },
-        gridItem: {
-            fontSize: '12px',
-            fontFamily: "TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif",
-        },
-        uraian: {
-            width: '80%',
-            margin: 'auto'
-        }
-    }
-
     return (
         <LayoutUser>
             <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -496,12 +337,10 @@ const TransaksiPembayaran = () => {
                         <div className="card shadow">
                             <div className="card-body p-5">
                                 <h5>Sebelum melakukan transaksi pembayaran pendaftaran, anda harus mendownload terlebih dahulu bukti pendaftaran.</h5>
-                                {statusFormulir == 'belum' ?
-                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={formulirBelum}>Download</button>
-                                    : statusDownload == 'belum' ?
-                                        <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
-                                        :
-                                        <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadHabis}>Download</button>
+                                {statusDownload == 'belum' ?
+                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
+                                    :
+                                    <button className='btn btn-sm btn-info float-end mt-4'>Download</button>
                                 }
                             </div>
                         </div>
@@ -578,7 +417,7 @@ const TransaksiPembayaran = () => {
                                     :
                                     <div className="row">
                                         <div className='col-md-12'>
-                                            <button className='btn btn-sm btn-info float-end' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Angsuran</button>
+                                            <button className='btn btn-sm btn-info float-end' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Transaksi</button>
                                         </div>
                                     </div>
                                 }
@@ -615,11 +454,8 @@ const TransaksiPembayaran = () => {
                                         <div className="col-md-2 d-flex align-items-center">
                                             {item.status_tombol == '1' ?
                                                 ""
-                                                : item.status_tombol == '0' ?
-                                                    <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
-                                                    : item.tenggat_pembayaran == moment().format('YYYY-MM-DD') ?
-                                                        <button className='btn btn-sm btn-info' onClick={waktuHabis} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
-                                                        : ''
+                                                :
+                                                <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
                                             }
                                         </div>
                                     </div>
@@ -628,21 +464,8 @@ const TransaksiPembayaran = () => {
                         ))}
                     </div>
                 </div>
-                <div className="row">
-                    <div className='d-none'>
-                        <div ref={templateRef}>
-                            <div style={tableStyle.wrap}>
-                                <div style={tableStyle.grid} className='border-bottomm-3'>
-                                    <div style={tableStyle.gridItem}>
-                                        <img src={kop} alt="" width={50} />
-                                    </div>
-                                    <div style={tableStyle.gridItem}>
-                                        <h4>KARTU BUKTI PENDAFTARAN MAHASISWA BARU</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div className="row" ref={templateRef}>
+
                 </div>
             </div>
         </LayoutUser>
