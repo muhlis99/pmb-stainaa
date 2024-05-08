@@ -40,7 +40,8 @@ module.exports = {
         const totalItems = Math.ceil(totalPage / perPage)
         await Mapprove.findAll({
             include : [{
-                model : Mformulir
+                model : Mformulir,
+                attributes : ["nama","tanggal_lahir", "tempat_lahir","email"]
             }],
             where: {
                 [Op.or]: [
