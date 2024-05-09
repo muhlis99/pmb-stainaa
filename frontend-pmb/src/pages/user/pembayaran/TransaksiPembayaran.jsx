@@ -6,14 +6,19 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import jsPDF from "jspdf"
 import logo from "../../../assets/stainaa.png"
+import noimage from "../../../assets/noimage.svg"
 import Swal from 'sweetalert2'
 import moment from 'moment'
+import 'moment-timezone'
 
 const TransaksiPembayaran = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const templateRef = useRef(null)
+    const openModal = useRef()
     const closeModal = useRef()
+    const openModalImage = useRef()
+    const closeModalImage = useRef()
     const { isError, user } = useSelector((state) => state.auth)
     const [Transaksi, setTransaksi] = useState([])
     const [nama, setNama] = useState('')
@@ -36,8 +41,13 @@ const TransaksiPembayaran = () => {
     const [tanggalTransaksi, setTanggalTansaksi] = useState('')
     const [prevKwitansi, setPrevKwitansi] = useState('')
     const [idPendaftar, setIdPendaftar] = useState('')
-    const [statusFormulir, setStatusFormulir] = useState('')
+    const [namabuktiTransaksi, setNamaBuktiTransaksi] = useState('')
+    const [buktiPrevTransaksi, setbuktiPrevTransaksi] = useState('')
 
+    useEffect(() => {
+        const date = moment().tz('Asia/Jakarta').format('YYYY-MM-DD')
+        setTanggalTansaksi(date)
+    }, [])
 
     useEffect(() => {
         if (isError) {
@@ -73,12 +83,16 @@ const TransaksiPembayaran = () => {
         currencyIdr()
     }, [totalBayar])
 
+    useEffect(() => {
+        seeBuktiPembayaran()
+    }, [namabuktiTransaksi])
+
     const getStatusDownload = async () => {
         try {
             if (user) {
                 const response = await axios.get(`v1/transaksi/buktiPendaftaran/${user.data.token}`)
                 setStatusDownload(response.data.data)
-                console.log('status download :', response.data.data);
+                // console.log('status download :', response.data.data);
             }
         } catch (error) {
 
@@ -159,9 +173,17 @@ const TransaksiPembayaran = () => {
     }
 
     const modalShow = async (e) => {
+        openModal.current.click()
         const response = await axios.get(`v1/transaksi/byId/${e}`)
         setTransaksiKe(response.data.data.pembayaran_ke)
         setIdTransaksi(response.data.data.id_transaksi)
+    }
+
+    const modalHide = () => {
+        setNominal()
+        setKwitansi()
+        setPrevKwitansi()
+        closeModal.current.click()
     }
 
     const loadBukti = (e) => {
@@ -172,51 +194,56 @@ const TransaksiPembayaran = () => {
 
     const simpanTransaksiPertama = async (e) => {
         e.preventDefault()
-        const formData = new FormData()
-        formData.append("nominal", nominal)
-        formData.append("tanggal_transaksi", tanggalTransaksi)
-        formData.append("bukti_transaksi", kwitansi)
         try {
-            if (nominal < minimalBayar) {
+            let nomi = parseInt(nominal)
+            let minim = parseInt(minimalBayar)
+            if (nomi < minim) {
                 Swal.fire({
                     title: 'Transaksi gagal',
-                    text: `Pembayaran pertama harus ${accountMinimal}`,
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (nominal == '') {
-                Swal.fire({
-                    title: 'Transaksi gagal',
-                    text: 'Nominal Tidak Boleh Kosong',
+                    text: `pembayaran harus ${accountMinimal}`,
                     icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
-            } else if (kwitansi == '') {
-                Swal.fire({
-                    title: 'Transaksi gagal',
-                    text: 'Bukti Transaksi tidak boleh kosong',
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6'
-                })
             } else {
-                await axios.put(`v1/transaksi/tambahTransaksi/${idTransaksi}`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                }).then(function (response) {
+                const formData = new FormData()
+                formData.append("nominal", nominal)
+                formData.append("tanggal_transaksi", tanggalTransaksi)
+                formData.append("bukti_transaksi", kwitansi)
+                if (nominal == '') {
                     Swal.fire({
-                        title: response.data.message,
-                        icon: "success"
-                    }).then(() => {
-                        getStatusDownload()
-                        getTotalPembayaran()
-                        getTransaksi()
-                        setNominal('')
-                        setKwitansi('')
-                        setPrevKwitansi('')
-                        closeModal.current.click()
-                    });
-                })
+                        title: 'Transaksi gagal',
+                        text: 'Nominal Tidak Boleh Kosong',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    })
+                } else if (kwitansi == '') {
+                    Swal.fire({
+                        title: 'Transaksi gagal',
+                        text: 'Bukti Transaksi tidak boleh kosong',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6'
+                    })
+                } else {
+                    await axios.put(`v1/transaksi/tambahTransaksi/${idTransaksi}`, formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        }
+                    }).then(function (response) {
+                        Swal.fire({
+                            title: response.data.message,
+                            icon: "success"
+                        }).then(() => {
+                            getStatusDownload()
+                            getTotalPembayaran()
+                            getTransaksi()
+                            setNominal('')
+                            setKwitansi('')
+                            setPrevKwitansi('')
+                            modalHide()
+                        });
+                    })
+                }
+
             }
         } catch (error) {
 
@@ -225,11 +252,11 @@ const TransaksiPembayaran = () => {
 
     const simpanTransaksi = async (e) => {
         e.preventDefault()
-        const formData = new FormData()
-        formData.append("nominal", nominal)
-        formData.append("tanggal_transaksi", tanggalTransaksi)
-        formData.append("bukti_transaksi", kwitansi)
         try {
+            const formData = new FormData()
+            formData.append("nominal", nominal)
+            formData.append("tanggal_transaksi", tanggalTransaksi)
+            formData.append("bukti_transaksi", kwitansi)
             if (nominal == '') {
                 Swal.fire({
                     title: 'Transaksi gagal',
@@ -260,7 +287,7 @@ const TransaksiPembayaran = () => {
                         setNominal('')
                         setKwitansi('')
                         setPrevKwitansi('')
-                        closeModal.current.click()
+                        modalHide()
                     });
                 })
             }
@@ -286,21 +313,54 @@ const TransaksiPembayaran = () => {
         }
     }
 
+    const modalImageOpen = (e) => {
+        openModalImage.current.click()
+        setNamaBuktiTransaksi(e)
+    }
+
+    const modalImageClose = () => {
+        closeModalImage.current.click()
+        setbuktiPrevTransaksi()
+        setNamaBuktiTransaksi()
+    }
+
+    const seeBuktiPembayaran = async () => {
+        try {
+            if (namabuktiTransaksi) {
+                await axios.get(`v1/transaksi/seeImage/BuktiPembayaran/${namabuktiTransaksi}`, {
+                    responseType: "arraybuffer"
+                }).then((response) => {
+                    const base64 = btoa(
+                        new Uint8Array(response.data).reduce(
+                            (data, byte) => data + String.fromCharCode(byte),
+                            ''
+                        )
+                    )
+                    setbuktiPrevTransaksi(base64)
+                })
+            }
+        } catch (error) {
+
+        }
+    }
+
     return (
         <LayoutUser>
+            <button type="button" className="btn btn-primary d-none" ref={openModal} data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
             <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <form onSubmit={transaksiKe == 1 ? simpanTransaksiPertama : simpanTransaksi}>
                             <div className="modal-header">
                                 <h5 className="modal-title" id="staticBackdropLabel">Transaksi ke {transaksiKe}</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" ref={closeModal}></button>
+                                <button type="button" className="btn-close d-none" data-bs-dismiss="modal" aria-label="Close" ref={closeModal}></button>
+                                <button type="button" className="btn-close" onClick={modalHide} aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
                                 <div className="row">
                                     <div className="col-md-12 mb-3">
                                         <label htmlFor="nominal" className="form-label">Nominal Transaksi</label>
-                                        <input type="number" id="nominal" className="form-control form-control-sm" name="nominal" placeholder="Nominal Transakti" value={nominal} onChange={(e) => setNominal(e.target.value)} />
+                                        <input type="number" id="nominal" className="form-control form-control-sm" name="nominal" placeholder="Nominal Transakti" value={nominal || ""} onChange={(e) => setNominal(e.target.value)} />
                                     </div>
                                     <div className="col-md-12 mb-3">
                                         <label htmlFor="bukti" className="form-label">Bukti Transaksi</label>
@@ -322,6 +382,27 @@ const TransaksiPembayaran = () => {
                     </div>
                 </div>
             </div>
+
+            <button type="button" className="btn btn-primary d-none" ref={openModalImage} data-bs-toggle="modal" data-bs-target="#modalImage"></button>
+            <div className="modal fade" id="modalImage" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="staticBackdropLabel">Bukti Pembayaran</h5>
+                            <button type="button" className="btn-close d-none" ref={closeModalImage} data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" onClick={modalImageClose} aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            {buktiPrevTransaksi == '' ?
+                                <img src={noimage} width={450} alt="" />
+                                :
+                                <img src={`data:;base64,${buktiPrevTransaksi}`} width={450} alt="" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="container">
                 <div className="row">
                     <div className="col-lg-12 col-md-12 col-12">
@@ -332,7 +413,7 @@ const TransaksiPembayaran = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="row">
+                <div className="row">
                     <div className="col-md-4 mb-2">
                         <div className="card shadow">
                             <div className="card-body p-5">
@@ -360,7 +441,7 @@ const TransaksiPembayaran = () => {
                             </div>
                         </div>
                     </div>
-                </div> */}
+                </div>
                 <div className="row mt-3">
                     <div className="col-md-12">
                         <div className="card">
@@ -451,11 +532,12 @@ const TransaksiPembayaran = () => {
                                             <h5>Status Transaksi</h5>
                                             <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi}</span>
                                         </div>
-                                        <div className="col-md-2 d-flex align-items-center">
+                                        <div className="col-md-2">
+                                            <h5>Aksi</h5>
                                             {item.status_tombol == '1' ?
-                                                ""
+                                                <button className='btn btn-sm btn-primary' onClick={() => modalImageOpen(item.bukti_transaksi)}>Bukti Transaksi</button>
                                                 :
-                                                <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)} data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload Bukti</button>
+                                                <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)}>Upload Bukti</button>
                                             }
                                         </div>
                                     </div>
