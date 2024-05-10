@@ -51,7 +51,7 @@ const FormSeleksi = () => {
                     setIdSeleksi(response.data.data.id_seleksi)
                 }
             } catch (error) {
-
+                console.log(error.response);
             }
         }
 
