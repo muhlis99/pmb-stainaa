@@ -122,9 +122,9 @@ const Approve = () => {
                                                         ))}
                                                 </tbody>
                                             </table> */}
-                                                <table class="table mb-0 text-nowrap table-sm table-hover table-centered">
-                                                    <thead class="">
-                                                        <tr>
+                                            <table className="table mb-0 text-nowrap table-sm table-hover table-centered">
+                                                <thead className="">
+                                                    <tr>
                                                         <th className='py-2'>No</th>
                                                         <th className='py-2'>Nama</th>
                                                         <th className='py-2'>Formulir</th>
@@ -133,9 +133,9 @@ const Approve = () => {
                                                         <th className='py-2'>Tanggal</th>
                                                         <th className='py-2'>Approve</th>
                                                         <th className='py-2'>Aksi</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
                                                     {Approve.length == 0 ?
                                                         <tr>
                                                             <td align='center' colSpan={8}>
@@ -148,31 +148,31 @@ const Approve = () => {
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
                                                                 <td>{item.formulirs[0].nama}</td>
                                                                 <td>
-                                                                    {item.formulir == "belum"?
-                                                                    <span className="badge bg-warning">Pending</span>
-                                                                    :<span className="badge bg-success">Completed</span>}
+                                                                    {item.formulir == "belum" ?
+                                                                        <span className="badge bg-warning">Pending</span>
+                                                                        : <span className="badge bg-success">Completed</span>}
                                                                 </td>
                                                                 <td>
-                                                                    {item.status_pembayaran == "belum"?
-                                                                    <span className="badge bg-warning">Pending</span>
-                                                                    :<span className="badge bg-success">Completed</span>}
-                                                                    </td>
+                                                                    {item.status_pembayaran == "belum" ?
+                                                                        <span className="badge bg-warning">Pending</span>
+                                                                        : <span className="badge bg-success">Completed</span>}
+                                                                </td>
                                                                 <td>
-                                                                    {item.status_seleksi == "belum"?
-                                                                    <span className="badge bg-warning">Pending</span>
-                                                                    :<span className="badge bg-success">Completed</span>}
-                                                                    </td>
-                                                                <td >{item.tanggal_approve == ""? 
-                                                                    <div class="d-flex align-items-center">
-                                                                        <div class="icon-shape icon-sm rounded-3 border p-1">
-                                                                            <i class="fe fe-clock fs-3"></i>
+                                                                    {item.status_seleksi == "belum" ?
+                                                                        <span className="badge bg-warning">Pending</span>
+                                                                        : <span className="badge bg-success">Completed</span>}
+                                                                </td>
+                                                                <td >{item.tanggal_approve == "" ?
+                                                                    <div className="d-flex align-items-center">
+                                                                        <div className="icon-shape icon-sm rounded-3 border p-1">
+                                                                            <i className="fe fe-clock fs-3"></i>
                                                                         </div>
                                                                     </div>
-                                                                :moment(item.tanggal_approve).format('DD MMMM YYYY')}</td>
+                                                                    : moment(item.tanggal_approve).format('DD MMMM YYYY')}</td>
                                                                 <td >
-                                                                    {item.status == "tidak"?
-                                                                    <span className="badge bg-warning">Pending</span>
-                                                                    :<span className="badge bg-success">Completed</span>}
+                                                                    {item.status == "tidak" ?
+                                                                        <span className="badge bg-warning">Pending</span>
+                                                                        : <span className="badge bg-success">Completed</span>}
 
                                                                 </td>
                                                                 <td>
@@ -180,8 +180,8 @@ const Approve = () => {
                                                                 </td>
                                                             </tr>
                                                         ))}
-                                                    </tbody>
-                                                </table>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
