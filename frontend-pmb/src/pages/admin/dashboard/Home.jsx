@@ -113,14 +113,7 @@ const Home = () => {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-xl-3 col-lg-6 col-md-12 col-12">
-                        <div className="card mb-4">
-                            <div className="card-body">
-                                <h6 className="mb-1">Selamat Datang. Anda dapat mengelola dan memonitoring Pendaftaran Mahasiswa Baru STAINAA</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xl-3 col-lg-6 col-md-12 col-12">
+                    <div className="col-xl-4 col-lg-6 col-md-12 col-12">
                         <div className="card mb-4">
                             <div className="card-body">
                                 <div className="d-flex align-items-center justify-content-between mb-3 lh-1">
@@ -135,7 +128,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xl-3 col-lg-6 col-md-12 col-12">
+                    <div className="col-xl-4 col-lg-6 col-md-12 col-12">
                         <div className="card mb-4">
                             <div className="card-body">
                                 <div className="d-flex align-items-center justify-content-between mb-3 lh-1">
@@ -150,7 +143,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xl-3 col-lg-6 col-md-12 col-12">
+                    <div className="col-xl-4 col-lg-6 col-md-12 col-12">
                         <div className="card mb-4">
                             <div className="card-body">
                                 <div className="d-flex align-items-center justify-content-between mb-3 lh-1">

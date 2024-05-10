@@ -12,7 +12,6 @@ const DetailForm = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { isError, user } = useSelector((state) => state.auth)
-    // const [Approve, setApprove] = useState([])
     const [biodata, setBiodata] = useState([])
     const [jalurPendaftaran, setJalurPendaftaran] = useState("")
     const [jenisPendaftaran, setJenisPendaftaran] = useState("")

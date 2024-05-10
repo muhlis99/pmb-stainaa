@@ -74,7 +74,7 @@ const Dashboard = () => {
                                             <FaCalendarAlt /> {moment(item.tanggal).format('DD MMMM YYYY')}
                                         </span>
                                     </div>
-                                    <p>{item.isi.substr(0, 114)}<em className='cursor-pointer'>...Selengkapnya</em></p>
+                                    <p>{item.isi}</p>
                                 </div>
                             </div>
                         ))}

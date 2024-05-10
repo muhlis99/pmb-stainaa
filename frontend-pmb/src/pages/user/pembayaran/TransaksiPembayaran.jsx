@@ -5,7 +5,7 @@ import { getMe } from "../../../features/authSlice"
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import jsPDF from "jspdf"
-import logo from "../../../assets/stainaa.png"
+import kop from "../../../assets/kop.png"
 import noimage from "../../../assets/noimage.svg"
 import Swal from 'sweetalert2'
 import moment from 'moment'
@@ -44,7 +44,7 @@ const TransaksiPembayaran = () => {
     const [idPendaftar, setIdPendaftar] = useState('')
     const [namabuktiTransaksi, setNamaBuktiTransaksi] = useState('')
     const [buktiPrevTransaksi, setbuktiPrevTransaksi] = useState('')
-
+    const [biodata, setBiodata] = useState([])
     useEffect(() => {
         const date = moment().tz('Asia/Jakarta').format('YYYY-MM-DD')
         setTanggalTansaksi(date)
@@ -66,6 +66,7 @@ const TransaksiPembayaran = () => {
                 if (user) {
                     const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
                     setIdPendaftar(response.data.data.id)
+                    setBiodata(response.data.data)
                 }
             } catch (error) {
 
@@ -98,6 +99,58 @@ const TransaksiPembayaran = () => {
         } catch (error) {
 
         }
+    }
+
+    const tableStyle = {
+        image: {
+            width: '597px'
+        },
+        wrap: {
+            width: '600px',
+            fontFamily: "Arial, Helvetica, sans-serif",
+            background: '#ffffff',
+            color: '#000000'
+        },
+        title: {
+            fontSize: '12px',
+            margin: 'auto',
+        },
+        grid: {
+            display: 'grid',
+            gridTemplateColumns: 'auto auto',
+            width: '80%',
+            margin: 'auto',
+            fontSize: '10px'
+        },
+        gridItem: {
+            fontSize: '10px',
+        },
+        table: {
+            fontSize: '8px',
+            margin: 'auto',
+            width: '80%',
+            border: '1px solid black',
+            borderCollapse: 'collapse'
+        },
+        tr: {
+        },
+        td: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse',
+            fontWeight: 'bold'
+        },
+        td2: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse'
+        },
+        tdMakul: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse',
+            wordSpacing: '2px'
+        },
     }
 
     const getTransaksi = async () => {
@@ -142,8 +195,8 @@ const TransaksiPembayaran = () => {
 
     const handleGeneratePdf = () => {
         const doc = new jsPDF({
-            format: 'a6',
-            orientation: 'landscape',
+            format: 'a4',
+            orientation: 'potrait',
             unit: 'pt',
         })
 
@@ -547,8 +600,65 @@ const TransaksiPembayaran = () => {
                         ))}
                     </div>
                 </div>
-                <div className="row" ref={templateRef}>
+                <div className="row mt-3 d-none">
+                    <div ref={templateRef}>
+                        <div style={tableStyle.wrap}>
+                            <img src={kop} alt="kop" style={tableStyle.image} />
 
+                            <div style={tableStyle.grid} className='mb-3 mt-3'>
+                                <div style={tableStyle.gridItem}>
+                                    <h4 className='fw-bold'>NO. Pendaftaran : {user && user.data.token}</h4>
+                                    <table cellPadding={5}>
+                                        <tbody>
+                                            <tr>
+                                                <td><span>NIK</span></td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodata.nik}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nama</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{nama}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tempat/Tanggal Lahir</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodata.tempat_lahir}, {biodata.tanggal_lahir}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jenis Kelamin</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tanggal Daftar</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodata.tanggal_daftar}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style={tableStyle.gridItem}>
+                                    <div className='border mt-5 text-center algn-items-center' style={{ width: '135px', height: '160px' }}>
+                                        <h6 style={{ marginTop: '70px' }}>4x6</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={tableStyle.grid}>
+                                <div>
+                                    <p style={{ textAlign: 'justify', textJustify: 'inter-word' }}>Selamat! Anda telah berhasil mendaftar pada seleksi Mahasiswa Baru Sekolah Tinggi Nurul Abror Al-Robbaniyin
+                                        Alasbuluh Wongsorejo Banyuwangi.</p>
+
+                                    <span style={{ textAlign: 'justify', textJustify: 'inter-word' }}>
+                                        Silakan menyampaikan dokumen persyaratan dalam bentuk hardcopy ke</span>
+                                    <ol>
+                                        <li>LK SMK NAA (untuk melakukan pembayaran).</li>
+                                        <li>Panitia PMB STAINAA (untuk melakukan registrasi ulang).</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </LayoutUser>

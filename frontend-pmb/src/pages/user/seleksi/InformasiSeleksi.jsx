@@ -19,6 +19,7 @@ const InformasiSeleksi = () => {
     const [statusPembayaran, setStatusPembayaran] = useState('')
     const [statusSeleksi, setStatusSeleksi] = useState('')
     const [tombolMulai, setTombolMulai] = useState(false)
+    const [tanggal, setTanggal] = useState("")
 
     useEffect(() => {
         if (isError) {
@@ -87,6 +88,7 @@ const InformasiSeleksi = () => {
                 setIdSeleksi(response.data.data.id_seleksi)
                 setPenyelesaian(response.data.data.total_selesai)
                 setDurasi(response.data.data.total_durasi)
+                setTanggal(response.data.data.tanggal_akhir)
                 setBelum(response.data.data.total_belum)
                 setBenar(response.data.data.total_benar)
                 setSalah(response.data.data.total_salah)
@@ -190,7 +192,35 @@ const InformasiSeleksi = () => {
                                 </div>
                             </div>
                             :
-                            ""
+                            <div className="card">
+                                <div className="card-body">
+                                    <div className="row">
+                                        <div className="col-xl-12 col-md-12 col-sm-12 text-center mb-4">
+                                            <h4>
+                                                Anda telah menyelesaikan seleksi masuk sebagai mahasiswa baru STAINAA, silakan tunggu informasi lebih lanjut
+                                            </h4>
+                                        </div>
+                                        <div className="col-xl-12 col-md-12 col-sm-12 d-flex gap-5 justify-content-center">
+                                            <div className='text-center'>
+                                                <h3 className='display-5'>Total Soal</h3>
+                                                <h3 className='display-3 mt-3'>{totalSoal}</h3>
+                                            </div>
+                                            <div className='text-center'>
+                                                <h3 className='display-5'>Total Selesai</h3>
+                                                <h3 className='display-3 mt-3'>{penyelesaian}</h3>
+                                            </div>
+                                        </div>
+                                        <div className="col-xl-12 col-md-12 col-sm-12 d-flex justify-content-evenly mt-4">
+                                            <div className=''>
+                                                <h5>Tanggal : {moment(tanggal).format('DD MMMM YYYY')}</h5>
+                                            </div>
+                                            <div className=''>
+                                                <h5>Durasi : {durasi}</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </div>
                 </div>
