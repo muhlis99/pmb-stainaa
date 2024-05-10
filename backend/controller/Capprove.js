@@ -3,9 +3,11 @@ const Mformulir = require('../model/Mformulir.js')
 const Mmahasiswa = require('../model/mahasiswaModel.js')
 const MhistoryMhs = require('../model/historyMahasiswaModel.js')
 const Mprodi = require('../model/Mprodi.js')
+const MseleksiProdi = require('../model/MseleksiProdi.js')
 const Msemester = require('../model/semesterModel.js')
 const MloginMhs = require('../model/loginModel.js')
 const MtahunAjaran = require('../model/tahunAjaranModel.js')
+const Mregistrasi = require('../model/Mregistrasi.js')
 const {Sequelize,Op} =  require('sequelize')
 const argon = require('argon2')
 const nodemailer = require('nodemailer')
@@ -198,7 +200,7 @@ module.exports = {
         }
         
         let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
-        const {token, prodi, semester} = req.body
+        const {token, semester} = req.body
         const date = new Date().toLocaleDateString('en-CA')
         await Mapprove.update({
             tanggal_approve : date,
@@ -209,7 +211,8 @@ module.exports = {
             }
         })
         const dataSemester = await Msemester.findOne({where:{id_semester:semester}})
-        const dataProdi = await Mprodi.findOne({where:{id_prodi:prodi}})
+        const dataSeleksiProdi = await MseleksiProdi.findOne({where:{token:token}})
+        const dataProdi = await Mprodi.findOne({where : {id_prodi : dataSeleksiProdi.prodi_seleksi_admin}})
         const dataMhs = await Mformulir.findOne({where:{token:token}})
 
         const dateM = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
@@ -367,6 +370,14 @@ module.exports = {
             code_prodi: dataProdi.code_prodi,
             status: "aktif"
         }).then(async result => {
+            await Mregistrasi.update({
+                status : "tidak"
+            }, {
+                where : {
+                    token : token
+                }
+            })
+
             let testAccount = await nodemailer.createTestAccount()
             let transporter = nodemailer.createTransport(smtpTransport({
                 service: "gmail",
