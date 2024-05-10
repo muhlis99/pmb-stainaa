@@ -168,13 +168,40 @@ const KirimInformasi = () => {
         }
     }
 
+    const hapusInformasi = (infoId) => {
+        Swal.fire({
+            title: "Yakin untuk menghapus?",
+            text: 'Anda tidak dapat mengembalikan ini',
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(
+                    `v1/informasi/hapus/${infoId}`
+                ).then(function (response) {
+                    Swal.fire({
+                        title: "Terhapus",
+                        text: response.data.message,
+                        icon: "success"
+                    }).then(() => {
+                        getDataInformasi()
+                    })
+                })
+            }
+        })
+    }
+
     return (
         <LayoutAdmin>
-            <button type="button" class="btn btn-primary d-none" ref={openModal} data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
+            <button type="button" className="btn btn-primary d-none" ref={openModal} data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
             <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
-                        <form autoComplete='off' onSubmit={modalTitle == 'Tambah' ? kirimPesan : editPesan}>
+                        <form autoComplete='off' onSubmit={modalTitle == 'Kirim' ? kirimPesan : editPesan}>
                             <div className="modal-header">
                                 <h5 className="modal-title" id="staticBackdropLabel">{modalTitle} Informasi</h5>
                                 <button type="button" className="btn-close d-none" ref={closeModal} data-bs-dismiss="modal" aria-label="Close"></button>
@@ -204,7 +231,7 @@ const KirimInformasi = () => {
                     <div className="col-lg-12 col-md-12 col-12">
                         <div className="border-bottom pb-3 mb-3 d-lg-flex justify-content-between align-items-center">
                             <div className="mb-3 mb-lg-0">
-                                <h1 className="mb-0 h2 fw-bold">Informasi {idInformasi}</h1>
+                                <h1 className="mb-0 h2 fw-bold">Informasi</h1>
                             </div>
                         </div>
                     </div>
@@ -212,6 +239,9 @@ const KirimInformasi = () => {
                 <div className="row">
                     <div className="col-lg-12 col-md-12 col-sm-12">
                         <div className="card">
+                            <div className="card-header py-2">
+                                <Link to="/informasi" className='btn btn-sm btn-danger'>Kembali</Link>
+                            </div>
                             <div className="card-body">
                                 <div className="row">
                                     <div className='col-lg-6 col-md-6 col-sm-12'>
@@ -273,7 +303,7 @@ const KirimInformasi = () => {
                                                         <div className='col-sm-6'>
                                                             <div className='float-end mt-1'>
                                                                 <button onClick={() => modalEditOpen(item.id_informasi)} className="btn btn-sm btn-warning">Edit</button>
-                                                                <button className="btn btn-sm btn-danger ms-1">Hapus</button>
+                                                                <button onClick={() => hapusInformasi(item.id_informasi)} className="btn btn-sm btn-danger ms-1">Hapus</button>
                                                             </div>
                                                         </div>
                                                     </div>
