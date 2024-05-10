@@ -190,18 +190,18 @@ module.exports = {
         const isiPengumunan = `selamat anda telah menyelesaikan proses pengisian formulis\n\
                             peserta mahasiswa baru, adapun rincian nya sebagaiman berikut\n\
                             data diri
-                            1. nama : ${dataUse.formulirs[0].nama}\n\
-                            2. tempat lahir : ${dataUse.formulirs[0].tempat_lahir}\n\
-                            3. jenis kelamin : ${dataUse.formulirs[0].jenis_kelamin}\n\
+                            1. nama : ${dataUse.formulirs[0].nama}\n\<br>
+                            2. tempat lahir : ${dataUse.formulirs[0].tempat_lahir}\n\<br>
+                            3. jenis kelamin : ${dataUse.formulirs[0].jenis_kelamin}\n\<br>
                             nilai seleksi\n\
-                            1. soal keseluruhan : ${dataUse.total_soal}\n\
-                            2. soal diselesaikan : ${dataUse.total_selesai}\n\
-                            3. soal belum : ${dataUse.total_belum}\n\
-                            4. jawaban benar : ${dataUse.total_benar}\n\
-                            5. jawaban salah : ${dataUse.total_salah}\n\
-                            6. tanggal mulai : ${dataUse.tanggal_mulai}\n\
-                            7. tanggal selesai : ${dataUse.tanggal_akhir}\n\
-                            8. durasi penyelesaian : ${dataUse.totsl_durasi}\n\
+                            1. soal keseluruhan : ${dataUse.total_soal}\n\<br>
+                            2. soal diselesaikan : ${dataUse.total_selesai}\n\<br>
+                            3. soal belum : ${dataUse.total_belum}\n\<br>
+                            4. jawaban benar : ${dataUse.total_benar}\n\<br>
+                            5. jawaban salah : ${dataUse.total_salah}\n\<br>
+                            6. tanggal mulai : ${dataUse.tanggal_mulai}\n\<br>
+                            7. tanggal selesai : ${dataUse.tanggal_akhir}\n\<br>
+                            8. durasi penyelesaian : ${dataUse.totsl_durasi}\n\<br>
                             dari hasil count total score yang anda dapatkan ${dataUse.score}\n\
                             demikian yang dapat kami sampaikan, terikasih semuanya :) :)`
         await informasi.create({
