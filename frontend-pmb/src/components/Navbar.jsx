@@ -69,89 +69,81 @@ const Navbar = () => {
     return (
         <>
             <nav className="navbar navbar-expand-lg">
-                <div className="container px-0">
-                    <Link className="navbar-brand" style={{ fontSize: '28px', fontWeight: '700' }}>
-                        <img src={logo} alt="" width="33" height="33" className="d-inline-block align-text-top" />
-                        <span className='ms-2'>PMB STAINAA</span>
+                <div className="container">
+                    <Link className="navbar-brand d-flex align-items-center">
+                        <img src={logo} alt="" width="33" height="33" className="d-inline-block" />
+                        <span className='ms-2 display-6'>PMB STAINAA</span>
                     </Link>
-                    <div className="ms-auto d-flex align-items-center">
-                        <ul className="navbar-nav navbar-right-wrap d-flex nav-top-wrap ms-2">
-                            <li className="dropdown ms-2">
-                                <a className="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <div className="avatar avatar-md avatar-indicators avatar-online">
-                                        <img alt="avatar" src={avatar}
-                                            className="rounded-circle" />
-                                    </div>
-                                </a>
-                                <div className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
-                                    <div className="dropdown-item">
-                                        <div className="d-flex">
-                                            <div className="avatar avatar-md avatar-indicators avatar-online">
-                                                <img alt="avatar" src={avatar}
-                                                    className="rounded-circle" />
-                                            </div>
-                                            <div className="ms-3 lh-1">
-                                                <h5 className="mb-1">{nama}</h5>
-                                                {user && <p className="mb-0">{user.data.email}</p>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="dropdown-divider"></div>
-                                    <ul className="list-unstyled">
-                                        <li>
-                                            <a className="dropdown-item cursor-pointer" onClick={logOut}>
-                                                <i className="fe fe-power me-2"></i>
-                                                Sign Out
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <button className="navbar-toggler collapsed ms-2" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbar-default" aria-controls="navbar-default" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span className="icon-bar top-bar mt-0"></span>
-                        <span className="icon-bar middle-bar"></span>
-                        <span className="icon-bar bottom-bar"></span>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
                     </button>
-                </div>
-            </nav>
-            <nav className="navbar navbar-expand-lg navbar-default py-0 py-lg-2">
-                <div className="container px-0">
-                    <div className="collapse navbar-collapse" id="navbar-default">
-                        <ul className="navbar-nav">
+                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav ms-5 me-auto mb-2 mb-lg-0 gap-5">
                             <li className="nav-item">
-                                <Link to="/dashboard" className='nav-link fw-bold fs-4'>
+                                <Link to="/dashboard" className='nav-link fs-4'>
                                     Dashboard
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/cekdetaildata" className='nav-link fw-bold fs-4'>
+                                <Link to="/cekdetaildata" className='nav-link fs-4'>
                                     Formulir
                                 </Link>
                             </li>
                             <li className="nav-item">
                                 {dataForm == 'belum' ?
-                                    <Link to="#" className='nav-link fw-bold fs-4'>Pembayaran</Link>
+                                    <Link to="#" className='nav-link fs-4'>Pembayaran</Link>
                                     :
-                                    <Link to="/pembayaran" className='nav-link fw-bold fs-4'>Pembayaran</Link>
+                                    <Link to="/pembayaran" className='nav-link fs-4'>Pembayaran</Link>
                                 }
                             </li>
                             <li className="nav-item">
                                 {dataPembayaran == 'belum' ?
-                                    <Link to='#' className='nav-link fw-bold fs-4'>
+                                    <Link to='#' className='nav-link fs-4'>
                                         Seleksi
                                     </Link>
                                     :
-                                    <Link to='/infoseleksi' className='nav-link fw-bold fs-4'>
+                                    <Link to='/infoseleksi' className='nav-link fs-4'>
                                         Seleksi
                                     </Link>
                                 }
                             </li>
                         </ul>
+                        <div className="ms-auto d-flex align-items-center">
+                            <ul className="navbar-nav navbar-right-wrap d-flex nav-top-wrap ms-2">
+                                <li className="dropdown ms-2">
+                                    <a className="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <div className="avatar avatar-md avatar-indicators avatar-online">
+                                            <img alt="avatar" src={avatar}
+                                                className="rounded-circle" />
+                                        </div>
+                                    </a>
+                                    <div className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+                                        <div className="dropdown-item">
+                                            <div className="d-flex">
+                                                <div className="avatar avatar-md avatar-indicators avatar-online">
+                                                    <img alt="avatar" src={avatar}
+                                                        className="rounded-circle" />
+                                                </div>
+                                                <div className="ms-3 lh-1">
+                                                    <h5 className="mb-1">{nama}</h5>
+                                                    {user && <p className="mb-0">{user.data.email}</p>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="dropdown-divider"></div>
+                                        <ul className="list-unstyled">
+                                            <li>
+                                                <a className="dropdown-item cursor-pointer" onClick={logOut}>
+                                                    <i className="fe fe-power me-2"></i>
+                                                    Sign Out
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </nav>

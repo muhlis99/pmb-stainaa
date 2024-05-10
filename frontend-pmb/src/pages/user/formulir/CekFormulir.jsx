@@ -162,9 +162,9 @@ const CekFormulir = () => {
                                 <div className='row'>
                                     <div className="col-xl-12 col-md-12 col-sm-12 d-flex justify-content-center">
                                         {statusFormulir == 'belum' ?
-                                            <Link to="/formulir1" state={{ token: user.data.token }} className='btn btn-sm btn-primary'>Mulai</Link>
+                                            <Link to="/formulir1" state={{ token: token }} className='btn btn-sm btn-primary'>Mulai</Link>
                                             :
-                                            <Link to="/detailformulir" state={{ token: user.data.token }} className='btn btn-sm btn-primary'>Detail</Link>
+                                            <Link to="/detailformulir" state={{ token: token }} className='btn btn-sm btn-primary'>Detail</Link>
                                         }
                                     </div>
                                 </div>

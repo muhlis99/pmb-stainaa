@@ -33,6 +33,7 @@ import DetailApprove from "./pages/admin/approve/DetailApprove"
 import ListMahasiswa from "./pages/admin/dataInformasi/ListMahasiswa"
 import KirimInformasi from "./pages/admin/dataInformasi/KirimInformasi"
 import DataUser from "./pages/admin/dataUser/DataUser"
+import DetailForm from "./pages/admin/dataFormulir/DetailForm"
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
 
           <Route path="/home" element={<Home />} />
           <Route path="/dataFormulir" element={<ListFormulir />} />
+          <Route path="/detailForm" element={<DetailForm />} />
           <Route path="/pembayaranlist" element={<PembayaranList />} />
           <Route path="/transaksi" element={<TransaksiList />} />
           <Route path="/cektransaksi" element={<TransaksiCek />} />

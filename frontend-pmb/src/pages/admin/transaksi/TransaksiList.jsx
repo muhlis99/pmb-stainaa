@@ -108,8 +108,8 @@ const TransaksiList = () => {
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
                                                                 <td className='text-capitalize'>{item.nama}</td>
                                                                 <td className='text-capitalize'>{item.tempat_lahir}</td>
-                                                                <td className='text-capitalize'>{moment(item.tanggal_lahir).format('DD MMMM YYYY')}</td>
-                                                                <td className='text-capitalize'>{item.jenis_kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
+                                                                <td className='text-capitalize'>{item.tanggal_lahir && moment(item.tanggal_lahir).format('DD MMMM YYYY')}</td>
+                                                                <td className='text-capitalize'>{item.jenis_kelamin == 'l' ? 'Laki-Laki' : item.jenis_kelamin == 'p' ? 'Perempuan' : ''}</td>
                                                                 <td>
                                                                     <Link to="/cektransaksi" state={{ token: item.token }} className='btn btn-sm btn-info'>Cek Transaksi</Link>
                                                                 </td>

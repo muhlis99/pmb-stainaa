@@ -73,7 +73,7 @@ const DetailHasilSeleksi = () => {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="card">
-                            <div className="card-header">
+                            <div className="card-header py-2">
                                 <Link to="/hasilSeleksi" className='btn btn-sm btn-danger'>Kembali</Link>
                             </div>
                             <div className="card-body">
@@ -113,6 +113,11 @@ const DetailHasilSeleksi = () => {
                                             <td><h5 className='mb-0'>Skor</h5></td>
                                             <td>&nbsp;:&nbsp;</td>
                                             <td className='py-2'>{seleksi.score}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><h5 className='mb-0'>Status</h5></td>
+                                            <td>&nbsp;:&nbsp;</td>
+                                            <td className='py-2'><span className={`badge ${seleksi.status_info == 0 ? 'bg-danger' : 'bg-success'}`}>{seleksi.status_info == 0 ? 'Belum Diumumkan' : 'Diumumkan'}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
