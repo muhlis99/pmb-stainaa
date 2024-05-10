@@ -37,6 +37,27 @@ module.exports = {
         })
     },
 
+    grafikJenkel : async (req, res, next) => {
+        await Mformulir.findAll({
+            attributes: [
+                [Sequelize.literal('jenis_kelamin'), 'jenkel'],
+                [Sequelize.literal('COUNT(id)'), 'jumlahMahasiswa']
+            ],
+            where: {
+                token: { [Op.ne]: null },
+                tanggal_daftar: { [Op.ne]: null },
+            },
+            group: [[Sequelize.literal('jenis_kelamin')]]
+        }).then(result => {
+            res.status(200).json({
+                message: "total formulir  succes",
+                data: result,
+            })
+        }).catch(err => {
+            console.log(err);
+        })
+    },
+
     informasi : async (req, res, next) => {
         const kode = req.params.kode
         await Minformasi.findAll().then(result => {
