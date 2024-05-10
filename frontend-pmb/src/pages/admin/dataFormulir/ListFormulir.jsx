@@ -126,7 +126,7 @@ const ListFormulir = () => {
                                                         <span className={item.databerkas == 1 ? 'text-info' : 'text-danger'}>{item.databerkas == 1 ? 'Selesai' : 'Belum'}</span>
                                                     </div>
                                                     <div className="pt-2 mt-2">
-                                                        <Link to="" className='btn btn-sm btn-info w-100'>Selengkapnya</Link>
+                                                        <Link to="/detailForm" state={{ token: item.token }} className='btn btn-sm btn-info w-100'>Selengkapnya</Link>
                                                     </div>
                                                 </div>
                                             </div>
@@ -159,72 +159,97 @@ const ListFormulir = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="tab-pane fade" id="tabPaneList" role="tabpanel" aria-labelledby="tabPaneList">
-                    <div className="card">
-                        <div className="card-body p-3">
-                            <div className="row mb-2">
-                                <div className="col-md-3 col-lg-3 col-sm-12 offset-9">
-                                    <input type="text" className='form-control form-control-sm float-end' />
+                            <div className="tab-pane fade" id="tabPaneList" role="tabpanel" aria-labelledby="tabPaneList">
+                                <div className="card">
+                                    <div className="card-body p-3">
+                                        <div className="row mb-2">
+                                            <div className="col-md-12 col-lg-12 col-sm-12">
+                                                <input type="text" className='w-auto form-control form-control-sm float-end' onChange={cariData} placeholder='Cari' />
+                                            </div>
+                                        </div>
+                                        <div className="table-responsive">
+                                            <table className="table table-sm table-bordered text-nowrap mb-0 table-centered">
+                                                <thead>
+                                                    <tr>
+                                                        <th className='py-2'>NO</th>
+                                                        <th className='py-2'>Nama</th>
+                                                        <th className='py-2'>Alamat</th>
+                                                        <th className='py-2'>Tempat Lahir</th>
+                                                        <th className='py-2'>Jenis Kelamin</th>
+                                                        <th className='py-2'>Status Fomulir</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {Formulir.map((item, index) => (
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td className='text-capitalize'>{item.nama}</td>
+                                                            <td className='text-capitalize'>{item.alamat}</td>
+                                                            <td className='text-capitalize'>{item.tempatLahir}</td>
+                                                            <td className='text-capitalize'>{item.jenkel == 'l' ? 'Laki-Laki' : item.jenkel == 'p' ? 'Perempuan' : ''}</td>
+                                                            <td>
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>Data Diri</td>
+                                                                            <td>&nbsp;:&nbsp;</td>
+                                                                            <td>{item.datadiri == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Data Alamat</td>
+                                                                            <td>&nbsp;:&nbsp;</td>
+                                                                            <td>{item.dataalamat == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Data Orang Tua</td>
+                                                                            <td>&nbsp;:&nbsp;</td>
+                                                                            <td>{item.dataortu == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Data Wali</td>
+                                                                            <td>&nbsp;:&nbsp;</td>
+                                                                            <td>{item.datawali == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Data Berkas</td>
+                                                                            <td>&nbsp;:&nbsp;</td>
+                                                                            <td>{item.databerkas == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div className="row mt-3">
+                                            <div className="col-md-12">
+                                                <nav aria-label='...'>
+                                                    <ReactPaginate
+                                                        className='pagination pagination-sm justify-content-center'
+                                                        breakLabel={<SlOptions />}
+                                                        previousLabel={<FaArrowLeft />}
+                                                        pageCount={pageCount}
+                                                        onPageChange={changePage}
+                                                        nextLabel={<FaArrowRight />}
+                                                        breakClassName={"page-item"}
+                                                        pageClassName={"page-item"}
+                                                        previousClassName={"page-item"}
+                                                        nextClassName={"page-item"}
+                                                        activeClassName={"page-item active"}
+                                                        previousLinkClassName={"page-link"}
+                                                        nextLinkClassName={"page-link"}
+                                                        breakLinkClassName={"page-link"}
+                                                        pageLinkClassName={"page-link"}
+                                                        activeLinkClassName={""}
+                                                        disabledLinkClassName={""}
+                                                    />
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="table-responsive">
-                                <table className="table table-sm table-bordered text-nowrap mb-0 table-centered">
-                                    <thead>
-                                        <tr>
-                                            <th className='py-2'>NO</th>
-                                            <th className='py-2'>Nama</th>
-                                            <th className='py-2'>Alamat</th>
-                                            <th className='py-2'>Tempat Lahir</th>
-                                            <th className='py-2'>Jenis Kelamin</th>
-                                            <th className='py-2'>Status Fomulir</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Formulir.map((item, index) => (
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td className='text-capitalize'>{item.nama}</td>
-                                                <td className='text-capitalize'>{item.alamat}</td>
-                                                <td className='text-capitalize'>{item.tempatLahir}</td>
-                                                <td className='text-capitalize'>{item.jenkel == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
-                                                <td>
-                                                    <table>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Data Diri</td>
-                                                                <td>&nbsp;:&nbsp;</td>
-                                                                <td>{item.datadiri == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Data Alamat</td>
-                                                                <td>&nbsp;:&nbsp;</td>
-                                                                <td>{item.dataalamat == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Data Orang Tua</td>
-                                                                <td>&nbsp;:&nbsp;</td>
-                                                                <td>{item.dataortu == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Data Wali</td>
-                                                                <td>&nbsp;:&nbsp;</td>
-                                                                <td>{item.datawali == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Data Berkas</td>
-                                                                <td>&nbsp;:&nbsp;</td>
-                                                                <td>{item.databerkas == 1 ? <span className="badge bg-success badge-sm">Sudah</span> : <span className="badge bg-danger badge-sm">Belum</span>}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>

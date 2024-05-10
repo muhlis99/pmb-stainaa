@@ -39,6 +39,11 @@ const DetailApprove = () => {
     const [fotoIjazah, setfotoIjazah] = useState('')
     const [fotoKk, setfotoKk] = useState('')
     const [fotoSuket, setfotoSuket] = useState('')
+    const [desa, setDesa] = useState("")
+    const [kecamatan, setKecamatan] = useState("")
+    const [kabupaten, setKabupaten] = useState("")
+    const [provinsi, setProvinsi] = useState("")
+    const [negara, setNegara] = useState("")
 
     useEffect(() => {
         if (isError) {
@@ -93,6 +98,11 @@ const DetailApprove = () => {
         try {
             const response = await axios.get(`v1/formulir/getByToken/${location.state.token}`)
             setBiodata(response.data.data)
+            setNegara(response.data.data.negaras[0].nama_negara)
+            setProvinsi(response.data.data.provinsis[0].nama_provinsi)
+            setKabupaten(response.data.data.kabupatens[0].nama_kabupaten)
+            setKecamatan(response.data.data.kecamatans[0].nama_kecamatan)
+            setDesa(response.data.data.desas[0].nama_desa)
         } catch (error) {
 
         }
@@ -535,7 +545,7 @@ const DetailApprove = () => {
                                                         <tr>
                                                             <td><h5>Desa</h5></td>
                                                             <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.desa}</h5></td>
+                                                            <td><h5>{desa}</h5></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -546,22 +556,22 @@ const DetailApprove = () => {
                                                         <tr>
                                                             <td><h5>Kecamatan</h5></td>
                                                             <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.kecamatan}</h5></td>
+                                                            <td><h5>{kecamatan}</h5></td>
                                                         </tr>
                                                         <tr>
                                                             <td><h5>Kabupaten</h5></td>
                                                             <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.kabupaten}</h5></td>
+                                                            <td><h5>{kabupaten}</h5></td>
                                                         </tr>
                                                         <tr>
                                                             <td><h5>Provinsi</h5></td>
                                                             <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.provinsi}</h5></td>
+                                                            <td><h5>{provinsi}</h5></td>
                                                         </tr>
                                                         <tr>
                                                             <td><h5>Negara</h5></td>
                                                             <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.negara}</h5></td>
+                                                            <td><h5>{negara}</h5></td>
                                                         </tr>
                                                         <tr>
                                                             <td><h5>Transportasi</h5></td>
@@ -801,6 +811,7 @@ const DetailApprove = () => {
                                         </div>
                                     </div>
                                 </div>
+
                                 <div className="card shadow-lg mb-3">
                                     <div className="card-body">
                                         <div className="row">
