@@ -179,7 +179,7 @@ module.exports = {
         })
         if (!dataPost) {
             return res.status(404).json({
-                message: "kode yang anda masukkan salah"
+                message: "kode yang anda masukkan salah dan silahkan check kembali kode OTP di kontak masuk email atau spam email"
             })
         }
         await registrasi.update({
