@@ -23,6 +23,7 @@ const Home = () => {
     const { isError, user } = useSelector((state) => state.auth)
     const [Grafik, setGrafik] = useState([])
     const [jumlah, setJumlah] = useState([])
+    const [jenis, setJenis] = useState([])
 
     useEffect(() => {
         if (isError) {
@@ -36,6 +37,7 @@ const Home = () => {
 
     useEffect(() => {
         getDataGrafik()
+        getDataJenis()
     }, [])
 
     useEffect(() => {
@@ -46,6 +48,15 @@ const Home = () => {
         try {
             const response = await axios.get(`v1/home/grafik`)
             setGrafik(response.data.data)
+        } catch (error) {
+
+        }
+    }
+
+    const getDataJenis = async () => {
+        try {
+            const response = await axios.get(`v1/home/grafikJenkel`)
+            setJenis(response.data.data)
         } catch (error) {
 
         }
@@ -64,7 +75,15 @@ const Home = () => {
         item.tahun
     ))
 
+    const label = jenis.map(item => (
+        item.jenkel == 'l' ? 'Laki-Laki' : item.jenkel == 'p' ? 'Perempuan' : 'Tidak diketahui'
+    ))
+
     const Jumlah = Grafik.map(item => (
+        item.jumlahMahasiswa
+    ))
+
+    const Jumlahnya = jenis.map(item => (
         item.jumlahMahasiswa
     ))
 
@@ -96,6 +115,20 @@ const Home = () => {
                 borderWidth: 2,
                 borderRadius: 5,
                 data: Jumlah,
+            },
+        ]
+    }
+
+    const datas = {
+        labels: label,
+        datasets: [
+            {
+                label: 'Gender',
+                backgroundColor: "rgb(3, 103, 252, 0.7)",
+                borderColor: "rgb(28, 118, 253)",
+                borderWidth: 2,
+                borderRadius: 5,
+                data: Jumlahnya,
             },
         ]
     }
@@ -162,11 +195,21 @@ const Home = () => {
                 <div className="row">
                     <div className="col-xl-6 col-md-12 col-sm-12">
                         <div className="card">
-                            <div className="card-header">
-                                <span>Jumlah Pendaftaran Pertahun</span>
+                            <div className="card-header py-2">
+                                <span className='card-title'>Jumlah Pendaftaran Pertahun</span>
                             </div>
                             <div className="card-body">
                                 <Bar options={options} data={data} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-xl-6 col-md-12 col-sm-12">
+                        <div className="card">
+                            <div className="card-header py-2">
+                                <span className='card-title'>Jumlah sesuai gender</span>
+                            </div>
+                            <div className="card-body">
+                                <Bar options={options} data={datas} />
                             </div>
                         </div>
                     </div>
