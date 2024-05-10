@@ -233,10 +233,10 @@ module.exports = {
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
         await formulir.update({
             nik: nik,
-            nama: nama,
+            nama: nama.toUpperCase(),
             no_kk: no_kk,
             jenis_kelamin: jenis_kelamin,
-            tempat_lahir: tempat_lahir,
+            tempat_lahir: tempat_lahir.toUpperCase(),
             tanggal_lahir: tanggal_lahir,
             email: email,
             no_hp: no_hp,
@@ -273,8 +273,8 @@ module.exports = {
         })
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
         await formulir.update({
-            jalan: jalan,
-            dusun: dusun,
+            jalan: jalan.toUpperCase(),
+            dusun: dusun.toUpperCase(),
             rt: rt,
             rw: rw,
             kode_pos: kode_pos,
@@ -316,13 +316,13 @@ module.exports = {
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
         await formulir.update({
             nik_ayah: nik_ayah,
-            nama_ayah: nama_ayah,
+            nama_ayah: nama_ayah.toUpperCase(),
             tanggal_lahir_ayah: tanggal_lahir_ayah,
             pekerjaan_ayah: pekerjaan_ayah,
             penghasilan_ayah: penghasilan_ayah,
             pendidikan_ayah: pendidikan_ayah,
             nik_ibu: nik_ibu,
-            nama_ibu: nama_ibu,
+            nama_ibu: nama_ibu.toUpperCase(),
             tanggal_lahir_ibu: tanggal_lahir_ibu,
             pekerjaan_ibu: pekerjaan_ibu,
             penghasilan_ibu: penghasilan_ibu,
@@ -356,7 +356,7 @@ module.exports = {
         if (!formulirUse) return res.status(401).json({ message: "Data formulir tidak ditemukan" })
         await formulir.update({
             nik_wali: nik_wali,
-            nama_wali: nama_wali,
+            nama_wali: nama_wali.toUpperCase(),
             tanggal_lahir_wali: tanggal_lahir_wali,
             pekerjaan_wali: pekerjaan_wali,
             penghasilan_wali: penghasilan_wali,

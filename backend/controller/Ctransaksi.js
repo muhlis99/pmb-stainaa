@@ -218,10 +218,17 @@ module.exports = {
         let now = new Date();
         let nextDay = new Date(now.setDate(now.getDate() + 7))
         const tenggat = nextDay.toLocaleDateString('en-CA') 
-        const {kode,id_pembayaran} = req.body
+        const {kode,tahun} = req.body
+        const tahunPembayaran =  await pembayaran.findOne({
+            where : {
+                tahun : tahun,
+                status : "aktif"
+            }
+        })
+        if(!tahunPembayaran) return res.status(401).json({message:"data not found"})
         await transaksi.create({
             kode_transaksi : "",
-            id_pembayaran : id_pembayaran,
+            id_pembayaran : tahunPembayaran.id_pembayaran,
             token : kode,
             pembayaran_ke : "1",
             nominam : "000",
@@ -243,13 +250,20 @@ module.exports = {
     },
 
     tambahAnsuran : async (req, res, next) => {
-        const {kode,id_pembayaran, tanggal_transaksi, pembayaran_ke} = req.body
+        const {kode,tahun, tanggal_transaksi, pembayaran_ke} = req.body
         let now = new Date(tanggal_transaksi);
         let nextDay = new Date(now.setDate(now.getDate() + 7))
         const tenggat = nextDay.toLocaleDateString('en-CA') 
+        const tahunPembayaran =  await pembayaran.findOne({
+            where : {
+                tahun : tahun,
+                status : "aktif"
+            }
+        })
+        if(!tahunPembayaran) return res.status(401).json({message:"data not found"})
         await transaksi.create({
             kode_transaksi : "",
-            id_pembayaran : id_pembayaran,
+            id_pembayaran : tahunPembayaran.id_pembayaran,
             token : kode,
             pembayaran_ke : pembayaran_ke,
             nominam : "000",

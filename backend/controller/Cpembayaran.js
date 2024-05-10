@@ -67,7 +67,8 @@ module.exports = {
                             [Op.like]: `%${search}%`
                         }
                     }
-                ]
+                ],
+                status : "aktif"
             },
             offset: offset,
             limit: perPage,
