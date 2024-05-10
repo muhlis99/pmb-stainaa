@@ -70,6 +70,7 @@ const HasilSeleksiList = () => {
                 icon: "success",
                 confirmButtonColor: '#3085d6'
             }).then(() => {
+                axios.put(`v1/seleksi/umumkan/${seleksiId}`)
                 getHasilSeleksi()
             })
         })
@@ -116,6 +117,7 @@ const HasilSeleksiList = () => {
                                                         <th className='py-2'>Nama</th>
                                                         <th className='py-2'>Skor</th>
                                                         <th className='py-2'>Durasi Waktu</th>
+                                                        <th className='py-2'>Penyelesaian</th>
                                                         <th className='py-2'>Status</th>
                                                         <th className='py-2'>Aksi</th>
                                                     </tr>
@@ -123,7 +125,7 @@ const HasilSeleksiList = () => {
                                                 <tbody>
                                                     {HasilSeleksi.length == 0 ?
                                                         <tr>
-                                                            <td align='center' colSpan={6}>
+                                                            <td align='center' colSpan={7}>
                                                                 Tidak ada data!
                                                             </td>
                                                         </tr>
@@ -141,12 +143,15 @@ const HasilSeleksiList = () => {
                                                                         <span className='badge bg-danger'>Belum Selesai</span>
                                                                     }
                                                                 </td>
+                                                                <td>
+                                                                    <span className={`badge ${item.status_info == 0 ? 'bg-danger' : 'bg-success'}`}>{item.status_info == 0 ? 'Belum Diumumkan' : 'Diumumkan'}</span>
+                                                                </td>
                                                                 <td className='d-flex gap-2'>
                                                                     <Link to="/detailhasilSeleksi" state={{ idSeleksi: item.id_seleksi, token: item.token }} className='btn btn-sm btn-info' >Detail</Link>
                                                                     {item.status_info == 0 ?
                                                                         <button onClick={() => umumkan(item.id_seleksi)} className='btn btn-sm btn-secondary'>Umumkan</button>
                                                                         :
-                                                                        <button onClick={tidak} className='btn btn-sm btn-secondary'>Umumkan</button>
+                                                                        <button disabled className='btn btn-sm btn-secondary'>Umumkan</button>
                                                                     }
                                                                 </td>
                                                             </tr>

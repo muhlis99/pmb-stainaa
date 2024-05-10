@@ -10,6 +10,7 @@ import noimage from "../../../assets/noimage.svg"
 import Swal from 'sweetalert2'
 import moment from 'moment'
 import 'moment-timezone'
+import 'moment/locale/id'
 
 const TransaksiPembayaran = () => {
     const dispatch = useDispatch()
@@ -518,11 +519,11 @@ const TransaksiPembayaran = () => {
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Akhir Pembayaran</h5>
-                                            <span>{moment(item.tenggat_pembayaran).format('DD MMMM YYYY')}</span>
+                                            <span>{moment(item.tenggat_pembayaran).locale('id').format('DD MMMM YYYY')}</span>
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Tanggal Transaksi</h5>
-                                            <span>{item.tanggal_transaksi && moment(item.tanggal_transaksi).format('DD MMMM YYYY')}</span>
+                                            <span>{item.tanggal_transaksi && moment(item.tanggal_transaksi).locale('id').format('DD MMMM YYYY')}</span>
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Nominal Transaksi</h5>

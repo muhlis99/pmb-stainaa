@@ -20,7 +20,14 @@ const FormSeleksi = () => {
     const [idPertanyaan, setIdPertanyaan] = useState('')
     const [pilihanUser, setPilihanUser] = useState('')
     const [minutesDifference, setMinutesDifference] = useState('')
+    const [start, setStart] = useState('')
+    const [menit, setMenit] = useState(0)
+    const [detik, setDetik] = useState(0)
     const location = useLocation()
+
+    useEffect(() => {
+        setStart(location.state.waktuNow)
+    }, [location])
 
     useEffect(() => {
         if (isError) {
@@ -72,6 +79,22 @@ const FormSeleksi = () => {
     useEffect(() => {
         const interval = setInterval(calculateMinutes, 1000) // Perbarui setiap detik
         return () => clearInterval(interval) // Bersihkan interval setelah komponen di-unmount
+    }, [])
+
+    const calculateDifference = () => {
+        const startTime = location.state.waktuNow
+        const endTime = new Date();
+        const differenceInMillis = Math.abs(endTime.getTime() - startTime.getTime());
+        const differenceInSeconds = differenceInMillis / 1000;
+        const minutes = Math.floor(differenceInSeconds / 60);
+        const seconds = Math.floor(differenceInSeconds % 60);
+        setMenit(minutes)
+        setDetik(seconds)
+    }
+
+    useEffect(() => {
+        const interval = setInterval(calculateDifference, 1000); // Perbarui setiap detik
+        return () => clearInterval(interval); // Bersihkan interval setelah komponen di-unmount
     }, [])
 
     const getPertanyaan = async () => {
@@ -202,7 +225,9 @@ const FormSeleksi = () => {
                                 <div className='row'>
                                     <div className="col-md-12">
                                         <Link className='btn btn-sm btn-danger' to='/infoseleksi'>Keluar</Link>
-                                        <span className='float-end'>{minutesDifference}</span>
+                                        <div className='border float-end py-1 px-2 rounded'>
+                                            <span>{menit}m {detik}s</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -219,7 +244,7 @@ const FormSeleksi = () => {
                                         <div className="row">
                                             {Perntanyaan.map((item) => (
                                                 <div key={item.id_pertanyaan} className="col-md-12 py-3">
-                                                    <h4>{item.pertanyaan}</h4>
+                                                    <h4>{page}. {item.pertanyaan}</h4>
                                                     <ul className='list-group'>
                                                         <li className='list-group-item border-0'>
                                                             <button className={`btn btn-sm ${pilihanUser == 'a' ? 'btn-secondary' : 'btn-outline-secondary'}`} onClick={() => jawabanPilihanUser('a')}>A</button>
