@@ -23,6 +23,46 @@ module.exports = {
         })
     },
 
+    getProdiByToken : async (req, res, next) => {
+        const kode = req.params.kode
+        await MseleksiProdi.findOne({
+            include : [{
+                attributes : ["token","nama","email","tempat_lahir"],
+                model : Mformulir
+            }, {
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodiprimer"
+            },{
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodisekunder"
+            },{
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodiseleksiadmin"
+            }],
+            where: {
+                token: kode,
+            }
+        }).
+            then(result => {
+                if (!result) {
+                    return res.status(404).json({
+                        message: "Data  Tidak Ditemukan",
+                        data: null
+                    })
+                }
+                res.status(201).json({
+                    message: "Data  Ditemukan",
+                    data: result
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
+    },
+
     pemilihanProdiByid : async (req, res, next) => {
         const id = req.params.id
         await MseleksiProdi.findOne({
@@ -31,7 +71,16 @@ module.exports = {
                 model : Mformulir
             }, {
                 model : Mprodi,
-                attributes : ["nama_prodi", "code_prodi"]
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodiprimer"
+            },{
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodisekunder"
+            },{
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodiseleksiadmin"
             }],
             where: {
                 id_seleksi_prodi: id,
@@ -54,14 +103,49 @@ module.exports = {
             })
     },
 
+    seleksiProdi : async (req, res, next) => {
+        const id = req.params.id
+        const prodiUse = await Mprodi.findOne({
+            where : {
+                id_prodi : id,
+                status : "aktif"
+            }
+        })
+        if(!prodiUse) return res.status(401).json({message :"data not found"})
+        await Mprodi.findOne({
+            where : {
+                id_prodi : {
+                    [Op.notIn] : [id]
+                }
+            }
+        }).
+        then(result => {
+            if (!result) {
+                return res.status(404).json({
+                    message: "Data  Tidak Ditemukan",
+                    data: null
+                })
+            }
+            res.status(201).json({
+                message: "Data  Ditemukan",
+                data: result
+            })
+        }).
+        catch(err => {
+            console.log(err)
+        })
+    },
+
     pemilihanProdi : async (req, res, next) => {
-        const {token, idProdi,tahun} = req.body
+        const {token, prodiPrimer,prodiSekunder} = req.body
         let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
         await MseleksiProdi.create({
             kode_seleksi_prodi : randomNumber,
             token : token,
-            id_prodi : idProdi,
-            tahun : tahun
+            prodi_primer : prodiPrimer,
+            prodi_sekunder : prodiSekunder,
+            prodi_seleksi_admin : "",
+
         })
         
         await Mapprove.update({
@@ -69,6 +153,31 @@ module.exports = {
         }, {
             where : {
                 token : token
+            }
+        }).then(result => {
+            res.status(201).json({
+                message: "Data seleksi prodi success",
+            })
+        }).
+        catch(err => {
+            next(err)
+        })
+    },
+
+    ketentuanProdiAdmin : async (req, res, next) => {
+        const kode = req.params.kode
+        const prodiUse = await MseleksiProdi.findOne({
+            where : {
+                token : kode
+            }
+        })
+        if(!prodiUse) return res.status(401).json({message : "data not found"})
+        const {prodiSeleksiAdmin} = req.body
+        await MseleksiProdi.update({
+            prodi_seleksi_admin : prodiSeleksiAdmin
+        }, {
+            where : {
+                token : kode
             }
         }).then(result => {
             res.status(201).json({
