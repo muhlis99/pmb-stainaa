@@ -218,7 +218,8 @@ module.exports = {
         const dateM = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
         const date_nim = new Date()
         const t_nim = date_nim.getFullYear().toString().substr(-2)
-        const b_nim = ("0" + (date_nim.getMonth() + 1)).slice(-2)
+        // const b_nim = ("0" + (date_nim.getMonth() + 1)).slice(-2)
+        const b_nim = "09"
         let  kode_prodi_nim = ""
         if (dataProdi.code_prodi == "S1FAIPAI") {
             kode_prodi_nim = "01"
