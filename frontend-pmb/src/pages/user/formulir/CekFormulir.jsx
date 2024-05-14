@@ -3,7 +3,7 @@ import LayoutUser from '../../LayoutUser'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
 import { useNavigate, Link } from 'react-router-dom'
-import { FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt } from "react-icons/fa"
+import { FaCaretRight, FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt } from "react-icons/fa"
 import { RiParentFill } from "react-icons/ri"
 import axios from 'axios'
 import "./timeline.css"
@@ -102,6 +102,17 @@ const CekFormulir = () => {
                         <div className="card">
                             <div className="card-body">
                                 <div className="row justify-content-center mb-5">
+                                    {statusFormulir == 'belum' ?
+                                        <Link to="/formulir1" state={{ token: token }} className={`timeline-point done`}>
+                                            <FaCaretRight className='text-light' size={45} />
+                                        </Link>
+                                        :
+                                        <Link to="/detailformulir" state={{ token: token }} className={`timeline-point done`}>
+                                            <FaCaretRight className='text-light' size={45} />
+                                        </Link>
+                                    }
+                                    <div className="timeline-space">
+                                    </div>
                                     <div className={`timeline-point ${diri == 1 ? 'done' : ''}`}>
                                         <FaHandPointer className='text-light' size={45} />
                                     </div>
@@ -129,6 +140,11 @@ const CekFormulir = () => {
                                     </div>
                                 </div>
                                 <div className="row justify-content-center">
+                                    <div className="titleplace">
+                                        Klik di sini untuk mulai
+                                    </div>
+                                    <div className="titlespace"> </div>
+
                                     <div className="titleplace">
                                         Melengkapi Data Diri
                                     </div>
@@ -158,22 +174,11 @@ const CekFormulir = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="card-footer">
-                                <div className='row'>
-                                    <div className="col-xl-12 col-md-12 col-sm-12 d-flex justify-content-center">
-                                        {statusFormulir == 'belum' ?
-                                            <Link to="/formulir1" state={{ token: token }} className='btn btn-sm btn-primary'>Mulai</Link>
-                                            :
-                                            <Link to="/detailformulir" state={{ token: token }} className='btn btn-sm btn-primary'>Detail</Link>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </LayoutUser>
+        </LayoutUser >
     )
 }
 

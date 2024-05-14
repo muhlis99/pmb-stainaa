@@ -90,48 +90,50 @@ const ListFormulir = () => {
                                     </div>
                                 </div>
                                 <div className="row">
-                                    {Formulir.map((item, index) => (
-                                        <div key={index} className="col-xl-3 col-lg-6 col-md-6 col-12">
-                                            <div className="card mb-4">
-                                                <div className="card-body">
-                                                    <div className="text-center">
-                                                        <h4 className="mb-0 text-capitalize">{item.nama}</h4>
-                                                        <p className="mb-0">
-                                                            {item.jenkel == 'l' ? <IoIosMale className='me-1 fs-6' /> : <IoIosFemale className='me-1 fs-6' />}
-                                                            {item.jenkel == 'l' ? 'Laki-Laki' : 'Perempuan'}
-                                                        </p>
-                                                        <p className="mb-0 text-capitalize">
-                                                            <i className="fe fe-map-pin me-1 fs-6"></i>
-                                                            {item.tempatLahir}
-                                                        </p>
-                                                    </div>
-                                                    <div className="d-flex justify-content-between border-bottom py-2 mt-4">
-                                                        <span>Data Diri</span>
-                                                        <span className={item.datadiri == 1 ? 'text-info' : 'text-danger'}>{item.datadiri == 1 ? 'Selesai' : 'Belum'}</span>
-                                                    </div>
-                                                    <div className="d-flex justify-content-between border-bottom py-2">
-                                                        <span>Data Alamat</span>
-                                                        <span className={item.dataalamat == 1 ? 'text-info' : 'text-danger'}>{item.dataalamat == 1 ? 'Selesai' : 'Belum'}</span>
-                                                    </div>
-                                                    <div className="d-flex justify-content-between border-bottom py-2">
-                                                        <span>Data Orang Tua</span>
-                                                        <span className={item.dataortu == 1 ? 'text-info' : 'text-danger'}>{item.dataortu == 1 ? 'Selesai' : 'Belum'}</span>
-                                                    </div>
-                                                    <div className="d-flex justify-content-between border-bottom py-2">
-                                                        <span>Data Wali</span>
-                                                        <span className={item.datawali == 1 ? 'text-info' : 'text-danger'}>{item.datawali == 1 ? 'Selesai' : 'Belum'}</span>
-                                                    </div>
-                                                    <div className="d-flex justify-content-between pt-2">
-                                                        <span>Data Berkas</span>
-                                                        <span className={item.databerkas == 1 ? 'text-info' : 'text-danger'}>{item.databerkas == 1 ? 'Selesai' : 'Belum'}</span>
-                                                    </div>
-                                                    <div className="pt-2 mt-2">
-                                                        <Link to="/detailForm" state={{ token: item.token }} className='btn btn-sm btn-info w-100'>Selengkapnya</Link>
+                                    {Formulir.length == 0 ?
+                                        '' :
+                                        Formulir.map((item, index) => (
+                                            <div key={index} className="col-xl-3 col-lg-6 col-md-6 col-12">
+                                                <div className="card mb-4">
+                                                    <div className="card-body">
+                                                        <div className="text-center">
+                                                            <h4 className="mb-0 text-capitalize">{item.nama == '' ? 'Tidak ada nama' : item.nama}</h4>
+                                                            <p className="mb-0">
+                                                                {item.jenkel == 'l' ? <IoIosMale className='me-1 fs-6' /> : <IoIosFemale className='me-1 fs-6' />}
+                                                                {item.jenkel == 'l' ? 'Laki-Laki' : 'Perempuan'}
+                                                            </p>
+                                                            <p className="mb-0 text-capitalize">
+                                                                <i className="fe fe-map-pin me-1 fs-6"></i>
+                                                                {item.tempatLahir}
+                                                            </p>
+                                                        </div>
+                                                        <div className="d-flex justify-content-between border-bottom py-2 mt-4">
+                                                            <span>Data Diri</span>
+                                                            <span className={item.datadiri == 1 ? 'text-info' : 'text-danger'}>{item.datadiri == 1 ? 'Selesai' : 'Belum'}</span>
+                                                        </div>
+                                                        <div className="d-flex justify-content-between border-bottom py-2">
+                                                            <span>Data Alamat</span>
+                                                            <span className={item.dataalamat == 1 ? 'text-info' : 'text-danger'}>{item.dataalamat == 1 ? 'Selesai' : 'Belum'}</span>
+                                                        </div>
+                                                        <div className="d-flex justify-content-between border-bottom py-2">
+                                                            <span>Data Orang Tua</span>
+                                                            <span className={item.dataortu == 1 ? 'text-info' : 'text-danger'}>{item.dataortu == 1 ? 'Selesai' : 'Belum'}</span>
+                                                        </div>
+                                                        <div className="d-flex justify-content-between border-bottom py-2">
+                                                            <span>Data Wali</span>
+                                                            <span className={item.datawali == 1 ? 'text-info' : 'text-danger'}>{item.datawali == 1 ? 'Selesai' : 'Belum'}</span>
+                                                        </div>
+                                                        <div className="d-flex justify-content-between pt-2">
+                                                            <span>Data Berkas</span>
+                                                            <span className={item.databerkas == 1 ? 'text-info' : 'text-danger'}>{item.databerkas == 1 ? 'Selesai' : 'Belum'}</span>
+                                                        </div>
+                                                        <div className="pt-2 mt-2">
+                                                            <Link to="/detailForm" state={{ token: item.token }} className='btn btn-sm btn-info w-100'>Selengkapnya</Link>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                                 <div className="row mt-2">
                                     <div className="col-md-12">

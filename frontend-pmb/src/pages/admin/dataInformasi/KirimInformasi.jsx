@@ -14,6 +14,8 @@ const KirimInformasi = () => {
     const location = useLocation()
     const openModal = useRef()
     const closeModal = useRef()
+    const openModalDetail = useRef()
+    const closeModalDetail = useRef()
     const { isError, user } = useSelector((state) => state.auth)
     const [biodata, setBiodata] = useState([])
     const [DataInformasi, setDataInformasi] = useState([])
@@ -21,6 +23,7 @@ const KirimInformasi = () => {
     const [judul, setJudul] = useState('')
     const [isiInformasi, setIsiInformasi] = useState('')
     const [modalTitle, setModalTitle] = useState("")
+    const [tanggal, setTanggal] = useState("")
 
     useEffect(() => { console.log(location.state.token) }, [location])
 
@@ -124,6 +127,7 @@ const KirimInformasi = () => {
                 const response = await axios.get(`v1/informasi/byId/${idInformasi}`)
                 setJudul(response.data.data.judul)
                 setIsiInformasi(response.data.data.isi)
+                setTanggal(response.data.data.tanggal)
             }
         } catch (error) {
 
@@ -195,6 +199,19 @@ const KirimInformasi = () => {
         })
     }
 
+    const modalDetailOpen = (e) => {
+        setIdInformasi(e)
+        openModalDetail.current.click()
+    }
+
+    const modalDetailClose = () => {
+        setJudul()
+        setIsiInformasi()
+        setIdInformasi()
+        setTanggal()
+        closeModalDetail.current.click()
+    }
+
     return (
         <LayoutAdmin>
             <button type="button" className="btn btn-primary d-none" ref={openModal} data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
@@ -226,6 +243,32 @@ const KirimInformasi = () => {
                     </div>
                 </div>
             </div>
+
+            <button type="button" className="btn btn-primary d-none" ref={openModalDetail} data-bs-toggle="modal" data-bs-target="#cekInformasi"></button>
+            <div className="modal fade" id="cekInformasi" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="staticBackdropLabel">{judul}</h5>
+                            <button type="button" className="btn-close d-none" ref={closeModalDetail} data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" onClick={modalDetailClose} aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div className='mb-2'>
+                                        <span>
+                                            <FaCalendarAlt /> {moment(tanggal).format('DD MMMM YYYY')}
+                                        </span>
+                                    </div>
+                                    <p>{isiInformasi}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <section className="container-fluid p-4">
                 <div className="row">
                     <div className="col-lg-12 col-md-12 col-12">
@@ -255,7 +298,7 @@ const KirimInformasi = () => {
                                                 <tr>
                                                     <td><h5>Jenis Kelamin</h5></td>
                                                     <td>&nbsp;:&nbsp;</td>
-                                                    <td>{biodata.jenis_kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
+                                                    <td>{biodata.jenis_kelamin == 'l' ? 'Laki-Laki' : biodata.jenis_kelamin == 'p' ? 'Perempuan' : ''}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -271,7 +314,7 @@ const KirimInformasi = () => {
                                                 <tr>
                                                     <td><h5>Tanggal Lahir</h5></td>
                                                     <td>&nbsp;:&nbsp;</td>
-                                                    <td className='text-capitalize'>{moment(biodata.tanggal_lahir).format('DD MMMM YYYY')}</td>
+                                                    <td className='text-capitalize'>{biodata.tanggal_lahir && moment(biodata.tanggal_lahir).format('DD MMMM YYYY')}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -285,12 +328,10 @@ const KirimInformasi = () => {
                 <div className="row mt-3">
                     <div className="col-md-12">
                         <div className="card">
+                            <div className="card-header py-2">
+                                <button className='btn btn-sm btn-success' onClick={modalOpen}>Tambah Info</button>
+                            </div>
                             <div className="card-body">
-                                <div className="row mb-2">
-                                    <div className="col-md-12">
-                                        <button className='btn btn-sm btn-success' onClick={modalOpen}>Kirimkan Info</button>
-                                    </div>
-                                </div>
                                 <div className="row">
                                     {DataInformasi.map((item) => (
                                         <div key={item.id_informasi} className="col-lg-4 col-md-4 col-sm-12">
@@ -314,7 +355,7 @@ const KirimInformasi = () => {
                                                             <FaCalendarAlt /> {moment(item.tanggal).format('DD MMMM YYYY')}
                                                         </span>
                                                     </div>
-                                                    <p>{item.isi.substr(0, 114)}<em className='cursor-pointer'>...Selengkapnya</em></p>
+                                                    <p>{item.isi.substr(0, 114)}<em className='cursor-pointer' onClick={() => modalDetailOpen(item.id_informasi)}>...Selengkapnya</em></p>
                                                 </div>
                                             </div>
                                         </div>
