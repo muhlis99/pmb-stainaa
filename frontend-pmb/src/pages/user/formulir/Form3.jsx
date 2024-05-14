@@ -389,7 +389,7 @@ const Form3 = () => {
                                             </div>
                                             <div className="col-md-8 mb-3">
                                                 <label htmlFor="namaAyah" className="form-label">Nama Ayah</label>
-                                                <input type="text" id="namaAyah" className="form-control form-control-sm" name="namaAyah" placeholder="Nama Ayah" value={namaAyah} onChange={(e) => setNamaAyah(e.target.value)} />
+                                                <input type="text" id="namaAyah" className="form-control form-control-sm text-uppercase" name="namaAyah" placeholder="Nama Ayah" value={namaAyah} onChange={(e) => setNamaAyah(e.target.value)} />
                                             </div>
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="tanggalLahirAyah" className="form-label">Tanggal Lahir</label>
@@ -447,7 +447,7 @@ const Form3 = () => {
                                             </div>
                                             <div className="col-md-8 mb-3">
                                                 <label htmlFor="namaIbu" className="form-label">Nama Ibu</label>
-                                                <input type="text" id="namaIbu" className="form-control form-control-sm" name="namaIbu" placeholder="Nama Ibu" value={namaIbu} onChange={(e) => setNamaIbu(e.target.value)} />
+                                                <input type="text" id="namaIbu" className="form-control form-control-sm text-uppercase" name="namaIbu" placeholder="Nama Ibu" value={namaIbu} onChange={(e) => setNamaIbu(e.target.value)} />
                                             </div>
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="tanggalLahirIbu" className="form-label">Tanggal Lahir</label>

@@ -132,9 +132,8 @@ const Form1 = () => {
 
     const simpanForm1 = async (e) => {
         e.preventDefault()
-        // setLoading(true)
+        setLoading(true)
         try {
-            console.log(nik.length)
             if (nik == '') {
                 Swal.fire({
                     title: 'Error',
@@ -247,57 +246,48 @@ const Form1 = () => {
                     icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
-            } else if (nisp == '') {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Jeni Pendaftaran tidak boleh kosong',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (jenisp == '') {
+            }  else if (jenisp == '') {
                 Swal.fire({
                     title: 'Error',
                     text: 'Jenis Pendaftaran tidak boleh kosong',
                     icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
+            } else {
+                setLoading(false)
+                await axios.put(`v1/formulir/form1/${location.state.token}`, {
+                    nik: nik,
+                    no_kk: kk,
+                    no_kps: nokps,
+                    nisn: nisn,
+                    npwp: npwp,
+                    nama: nama,
+                    tahun: thn,
+                    bulan: bln,
+                    tanggal: tgl,
+                    tempat_lahir: tmp,
+                    jenis_kelamin: jenkel,
+                    jalur_pendaftaran: jalurp,
+                    jenis_pendaftaran: jenisp,
+                    email: email,
+                    no_hp: nohp,
+                    no_telepon: notelp,
+                    penerima_kps: pkps
+                }).then(function (response) {
+                    setLoading(false)
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: response.data.message,
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6'
+                    }).then(() => {
+                        navigate('/formulir2', { state: { token: location.state.token } })
+                    })
+                })
             }
-
-
-            setLoading(false)
-
-            // await axios.put(`v1/formulir/form1/${location.state.token}`, {
-            //     nik: nik,
-            //     no_kk: kk,
-            //     no_kps: nokps,
-            //     nisn: nisn,
-            //     npwp: npwp,
-            //     nama: nama,
-            //     tahun: thn,
-            //     bulan: bln,
-            //     tanggal: tgl,
-            //     tempat_lahir: tmp,
-            //     jenis_kelamin: jenkel,
-            //     jalur_pendaftaran: jalurp,
-            //     jenis_pendaftaran: jenisp,
-            //     email: email,
-            //     no_hp: nohp,
-            //     no_telepon: notelp,
-            //     penerima_kps: pkps
-            // }).then(function (response) {
-            //     setLoading(false)
-            //     Swal.fire({
-            //         title: 'Berhasil',
-            //         text: response.data.message,
-            //         icon: 'success',
-            //         confirmButtonColor: '#3085d6'
-            //     }).then(() => {
-            //         navigate('/formulir2', { state: { token: location.state.token } })
-            //     })
-            // })
         } catch (error) {
             setLoading(false)
-            console.log(error.response.data)
+            console.log(error)
         }
     }
 
