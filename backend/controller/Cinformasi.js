@@ -1,5 +1,7 @@
 const informasi =  require('../model/Minformasi.js')
 const Mseleksi = require('../model/Mseleksi.js')
+const Mprodi = require('../model/Mprodi.js')
+const MseleksiProdi = require('../model/MseleksiProdi.js')
 const Mformulir = require('../model/Mformulir.js')
 const {Sequelize,Op, where} =  require('sequelize')
 
@@ -185,25 +187,35 @@ module.exports = {
     umumkanSeleksi : async (req, res, next) => {
         const id = req.params.id
         const dataUse = await Mseleksi.findOne({include:[{model:Mformulir}],where:{id_seleksi:id}})
+        const seleksiProdi = await MseleksiProdi.findOne({
+            include : [{
+                attributes : ["token","nama","email","tempat_lahir"],
+                model : Mformulir
+            }, {
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodiprimer"
+            },{
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodisekunder"
+            },{
+                model : Mprodi,
+                attributes : ["nama_prodi", "code_prodi"],
+                as : "prodiseleksiadmin"
+            }],
+            where: {
+                token: dataUse.formulirs[0].token,
+            }
+        })
         const date = new Date().toLocaleDateString('en-CA')
         if(!dataUse) return res.json({message:"data not found"})
-        const isiPengumunan = `selamat anda telah menyelesaikan proses pengisian formulis\n\
-                            peserta mahasiswa baru, adapun rincian nya sebagaiman berikut\n\
-                            data diri
-                            1. nama : ${dataUse.formulirs[0].nama}\n\<br>
-                            2. tempat lahir : ${dataUse.formulirs[0].tempat_lahir}\n\<br>
-                            3. jenis kelamin : ${dataUse.formulirs[0].jenis_kelamin}\n\<br>
-                            nilai seleksi\n\
-                            1. soal keseluruhan : ${dataUse.total_soal}\n\<br>
-                            2. soal diselesaikan : ${dataUse.total_selesai}\n\<br>
-                            3. soal belum : ${dataUse.total_belum}\n\<br>
-                            4. jawaban benar : ${dataUse.total_benar}\n\<br>
-                            5. jawaban salah : ${dataUse.total_salah}\n\<br>
-                            6. tanggal mulai : ${dataUse.tanggal_mulai}\n\<br>
-                            7. tanggal selesai : ${dataUse.tanggal_akhir}\n\<br>
-                            8. durasi penyelesaian : ${dataUse.totsl_durasi}\n\<br>
-                            dari hasil count total score yang anda dapatkan ${dataUse.score}\n\
-                            demikian yang dapat kami sampaikan, terikasih semuanya :) :)`
+        const isiPengumunan = `selamat anda telah menyelesaikan pertanyaan dari server PMB STAINAA.&#13;&#10;
+                                peserta mahasiswa baru atas nama ${dataUse.formulirs[0].nama} telah lulus ujian.&#13;&#10;
+                                adapun prodi yang anda pilih
+                                1. prodi utama adalah ${seleksiProdi.prodiprimer[0].nama_prodi}
+                                2. prodi kedua adalah ${seleksiProdi.prodisekunder[0].nama_prodi}
+                                demikian yang dapat kami sampaikan, terimakasih semuanya :) :)`
         await informasi.create({
             judul : "Hasil seleksi soal",
             isi : isiPengumunan,

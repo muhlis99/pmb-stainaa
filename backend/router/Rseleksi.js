@@ -4,8 +4,11 @@ const Cseleksi =  require('../controller/Cseleksi.js')
 
 // pemilihan prodi
 router.get('/prodi', Cseleksi.getProdi)
+router.get('/getProdiByToken/:kode', Cseleksi.getProdiByToken)
 router.get('/pemilihanProdiByid/:id', Cseleksi.pemilihanProdiByid)
+router.get('/seleksiProdi/:id', Cseleksi.seleksiProdi)
 router.post('/pemilihanProdi', Cseleksi.pemilihanProdi)
+router.put('/ketentuanProdiAdmin/:kode', Cseleksi.ketentuanProdiAdmin)
 // user
 router.get('/pageAwal', Cseleksi.getAwal)
 router.get('/byId/:id', Cseleksi.getById)

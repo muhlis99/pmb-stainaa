@@ -15,10 +15,13 @@ const seleksiProdi = db.define('seleksiProdi', {
     'token': {
         type: DataTypes.TEXT
     },
-    'id_prodi': {
+    'prodi_primer': {
         type: DataTypes.TEXT
     },
-    'tahun': {
+    'prodi_sekunder': {
+        type: DataTypes.TEXT,
+    },
+    'prodi_seleksi_admin': {
         type: DataTypes.TEXT,
     }
 }, {
@@ -30,7 +33,13 @@ const seleksiProdi = db.define('seleksiProdi', {
 })
 
 prodi.belongsTo(seleksiProdi, { foreignKey: 'id_prodi' })
-seleksiProdi.hasMany(prodi, { sourceKey: 'id_prodi', foreignKey: 'id_prodi' })
+seleksiProdi.hasMany(prodi, { sourceKey: 'prodi_primer', foreignKey: 'id_prodi', as: "prodiprimer" })
+
+prodi.belongsTo(seleksiProdi, { foreignKey: 'id_prodi' })
+seleksiProdi.hasMany(prodi, { sourceKey: 'prodi_sekunder', foreignKey: 'id_prodi',as: "prodisekunder"  })
+
+prodi.belongsTo(seleksiProdi, { foreignKey: 'id_prodi' })
+seleksiProdi.hasMany(prodi, { sourceKey: 'prodi_seleksi_admin', foreignKey: 'id_prodi', as: "prodiseleksiadmin"})
 
 formuilr.belongsTo(seleksiProdi, { foreignKey: 'token' })
 seleksiProdi.hasMany(formuilr, { sourceKey: 'token', foreignKey: 'token' })
