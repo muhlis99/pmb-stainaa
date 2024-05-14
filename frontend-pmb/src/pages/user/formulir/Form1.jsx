@@ -247,7 +247,7 @@ const Form1 = () => {
                     icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
-            } el    nisp == '') {
+            } else if (nisp == '') {
                 Swal.fire({
                     title: 'Error',
                     text: 'Jeni Pendaftaran tidak boleh kosong',
