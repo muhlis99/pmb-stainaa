@@ -480,9 +480,10 @@ const TransaksiPembayaran = () => {
                             <div className="card-body p-5">
                                 <h5>Sebelum melakukan transaksi pembayaran pendaftaran, anda harus mendownload terlebih dahulu bukti pendaftaran.</h5>
                                 {statusDownload == 'belum' ?
-                                    <button className='btn btn-sm btn-info float-end mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
+                                    <button className='btn btn-sm btn-info  mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
                                     :
-                                    <button className='btn btn-sm btn-info float-end mt-4'>Download</button>
+                                    <span className='text text-center text-success'>selesai mendownload bukti pendaftaran</span>
+                                    // <button className='btn btn-sm btn-info  mt-4'>Download</button>
                                 }
                             </div>
                         </div>
