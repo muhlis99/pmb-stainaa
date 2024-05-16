@@ -140,9 +140,15 @@ const CekFormulir = () => {
                                     </div>
                                 </div>
                                 <div className="row justify-content-center">
+                                    {statusFormulir == "belum" ? 
                                     <div className="titleplace">
                                         Klik di sini untuk mulai
                                     </div>
+                                    :
+                                    <div className="titleplace">
+                                        Klik di sini untuk lihat detail
+                                    </div>
+                                    }
                                     <div className="titlespace"> </div>
 
                                     <div className="titleplace">

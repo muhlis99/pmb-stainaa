@@ -40,6 +40,9 @@ const TransaksiPembayaran = () => {
     const [nominal, setNominal] = useState('')
     const [kwitansi, setKwitansi] = useState('')
     const [tanggalTransaksi, setTanggalTansaksi] = useState('')
+    // tambahan -- muhllis ---
+    const [tahun, setTahun] = useState('')
+    // end --- muhlis ----
     const [prevKwitansi, setPrevKwitansi] = useState('')
     const [idPendaftar, setIdPendaftar] = useState('')
     const [namabuktiTransaksi, setNamaBuktiTransaksi] = useState('')
@@ -47,8 +50,11 @@ const TransaksiPembayaran = () => {
     const [biodata, setBiodata] = useState([])
     useEffect(() => {
         const date = moment().tz('Asia/Jakarta').format('YYYY-MM-DD')
+        const years = moment().tz('Asia/Jakarta').format('YYYY')
         setTanggalTansaksi(date)
+        setTahun(years)
     }, [])
+
 
     useEffect(() => {
         if (isError) {
@@ -215,7 +221,8 @@ const TransaksiPembayaran = () => {
         try {
             await axios.post(`v1/transaksi/tambah`, {
                 kode: user.data.token,
-                id_pembayaran: idPembayaran
+                // id_pembayaran: idPembayaran
+                tahun : tahun
             }).then(function () {
                 handleGeneratePdf()
                 getStatusDownload()

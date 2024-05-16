@@ -9,6 +9,8 @@ import Swal from 'sweetalert2'
 import "./timeline.css"
 import { FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt } from "react-icons/fa"
 import { RiParentFill } from "react-icons/ri"
+import fileLogo from "../../../assets/01.png"
+
 
 const Form5 = () => {
     const dispatch = useDispatch()
@@ -319,6 +321,7 @@ const Form5 = () => {
                                     <FaFileAlt className='text-light' size={45} />
                                 </div>
                             </div>
+                            
                             <div className="row justify-content-center">
                                 <div className="titleplace">
                                     Melengkapi Data Diri
@@ -359,62 +362,74 @@ const Form5 = () => {
                                     </div>
                                     <div className="card-body">
                                         <div className="row">
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="fotoDiri" className="form-label">Foto Diri</label>
-                                                <div className='text-center mb-2'>
-                                                    {prevFoto ?
-                                                        <img src={prevFoto} alt="" width={150} className='border border-3' />
-                                                        :
-                                                        ""
-                                                    }
+                                            <div className="col-md-8">
+                                                <div className="col-md-8 mb-3">
+                                                    <label htmlFor="fotoDiri" className="form-label">Foto Diri</label>
+                                                    <div className='text-center mb-2'>
+                                                        {prevFoto ?
+                                                            <img src={prevFoto} alt="" width={150} className='border border-3' />
+                                                            :
+                                                            ""
+                                                        }
+                                                    </div>
+                                                    <input type="file" onChange={loadFoto} name="fotoDiri" id="fotoDiri" className='form-control form-control-sm' />
                                                 </div>
-                                                <input type="file" onChange={loadFoto} name="fotoDiri" id="fotoDiri" className='form-control form-control-sm' />
+                                                <div className="col-md-8 mb-3">
+                                                    <label htmlFor="scanKtp" className="form-label">Scan KTP</label>
+                                                    <div className='text-center mb-2'>
+                                                        {prevKtp ?
+                                                            <img src={prevKtp} alt="" width={150} className='border border-3' />
+                                                            :
+                                                            ""
+                                                        }
+                                                    </div>
+                                                    <input type="file" onChange={loadKtp} name="scanKtp" id="scanKtp" className='form-control form-control-sm' />
+                                                </div>
+                                                <div className="col-md-8 mb-3">
+                                                    <label htmlFor="scanKk" className="form-label">Scan Kartu Keluarga</label>
+                                                    <div className='text-center mb-2'>
+                                                        {prevKk ?
+                                                            <img src={prevKk} alt="" width={150} className='border border-3' />
+                                                            :
+                                                            ""
+                                                        }
+                                                    </div>
+                                                    <input type="file" onChange={loadKk} name="scanKk" id="scanKk" className='form-control form-control-sm' />
+                                                </div>
+                                                <div className="col-md-8 mb-3">
+                                                    <label htmlFor="scanIjazah" className="form-label">Scan Ijazah/SKL</label>
+                                                    <div className='text-center mb-2'>
+                                                        {prevIjazah ?
+                                                            <img src={prevIjazah} alt="" width={150} className='border border-3' />
+                                                            :
+                                                            ""
+                                                        }
+                                                    </div>
+                                                    <input type="file" onChange={loadIjazah} name="scanIjazah" id="scanIjazah" className='form-control form-control-sm' />
+                                                </div>
+                                                <div className="col-md-8 mb-3">
+                                                    <label htmlFor="scanSuket" className="form-label">Scan Surat Keterangan Santri Aktif</label>
+                                                    <div className='text-center mb-2'>
+                                                        {prevSuket ?
+                                                            <img src={prevSuket} alt="" width={150} className='border border-3' />
+                                                            :
+                                                            ""
+                                                        }
+                                                    </div>
+                                                    <input type="file" onChange={loadSuket} name="scanSuket" id="scanSuket" className='form-control form-control-sm' />
+                                                </div>
                                             </div>
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="scanKtp" className="form-label">Scan KTP</label>
-                                                <div className='text-center mb-2'>
-                                                    {prevKtp ?
-                                                        <img src={prevKtp} alt="" width={150} className='border border-3' />
-                                                        :
-                                                        ""
-                                                    }
+                                            <div className="col-md-4">
+                                            <div className="col-md-8 mb-3">
+                                                    <label  className="form-label">Keterangan </label>
+                                                    <div className='text-center mb-3'>
+                                                            <img src={fileLogo} alt="" width={250} height={250} className='border border-1' />
+                                                    </div>
+                                                    <span>Berkas yang anda upload tidak boleh lebih dari dari 2 mb dan harap diperhatikan ketajaman foto</span>
                                                 </div>
-                                                <input type="file" onChange={loadKtp} name="scanKtp" id="scanKtp" className='form-control form-control-sm' />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="scanKk" className="form-label">Scan Kartu Keluarga</label>
-                                                <div className='text-center mb-2'>
-                                                    {prevKk ?
-                                                        <img src={prevKk} alt="" width={150} className='border border-3' />
-                                                        :
-                                                        ""
-                                                    }
-                                                </div>
-                                                <input type="file" onChange={loadKk} name="scanKk" id="scanKk" className='form-control form-control-sm' />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="scanIjazah" className="form-label">Scan Ijazah/SKL</label>
-                                                <div className='text-center mb-2'>
-                                                    {prevIjazah ?
-                                                        <img src={prevIjazah} alt="" width={150} className='border border-3' />
-                                                        :
-                                                        ""
-                                                    }
-                                                </div>
-                                                <input type="file" onChange={loadIjazah} name="scanIjazah" id="scanIjazah" className='form-control form-control-sm' />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="scanSuket" className="form-label">Scan Surat Keterangan Santri Aktif</label>
-                                                <div className='text-center mb-2'>
-                                                    {prevSuket ?
-                                                        <img src={prevSuket} alt="" width={150} className='border border-3' />
-                                                        :
-                                                        ""
-                                                    }
-                                                </div>
-                                                <input type="file" onChange={loadSuket} name="scanSuket" id="scanSuket" className='form-control form-control-sm' />
                                             </div>
                                         </div>
+                                        
                                     </div>
                                     <div className="card-footer">
                                         <Link to="/cekdetaildata" className="btn btn-sm btn-danger">Kembali</Link>
