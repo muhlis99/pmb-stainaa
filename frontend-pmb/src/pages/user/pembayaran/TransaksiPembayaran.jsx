@@ -195,12 +195,12 @@ const TransaksiPembayaran = () => {
             if (user) {
                 const checkData = await axios.get(`/v1/transaksi/all/${user.data.token}`)
                 const useData = checkData.data.data.filter((e) => e.tenggat_pembayaran === tanggalTransaksi).map(async e => {
-                    await Promise.all(axios.get(`/v1/transaksi/tenggatPembayaranHabis/${e.id_transaksi}`))
+                    const i = await axios.get(`/v1/transaksi/tenggatPembayaranHabis/${e.id_transaksi}`)
+                    console.log(i);
                 })
 
             }
         } catch (error) {
-            console.log(error);
         }
 
     }
