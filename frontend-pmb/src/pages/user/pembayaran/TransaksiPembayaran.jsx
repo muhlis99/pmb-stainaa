@@ -85,6 +85,7 @@ const TransaksiPembayaran = () => {
         getTransaksi()
         getTotalPembayaran()
         getStatusDownload()
+        getStatusTenggatPembayaran()
     }, [user])
 
     useEffect(() => {
@@ -187,6 +188,21 @@ const TransaksiPembayaran = () => {
         } catch (error) {
 
         }
+    }
+
+    const getStatusTenggatPembayaran = async () => {
+        try {
+            if (user) {
+                const checkData = await axios.get(`/v1/transaksi/all/${user.data.token}`)
+                const useData = checkData.data.data.filter((e) => e.tenggat_pembayaran === tanggalTransaksi).map(async e => {
+                    await Promise.all(axios.get(`/v1/transaksi/tenggatPembayaranHabis/${e.id_transaksi}`))
+                })
+
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
     }
 
     const currencyIdr = () => {
@@ -602,7 +618,7 @@ const TransaksiPembayaran = () => {
                 <div className='row mt-3'>
                     <div className="col-md-12">
                         {Transaksi.map((item, index) => (
-                            <div key={item.id_transaksi} className="card shadow mb-2">
+                            <div div key={item.id_transaksi} className="card shadow mb-2" >
                                 <div className="card-body">
                                     <div className="row">
                                         <div className="col-md-2">
@@ -612,11 +628,11 @@ const TransaksiPembayaran = () => {
                                         <div className="col-md-2">
                                             <h5>Akhir Pembayaran</h5>
                                             <span>{moment(item.tenggat_pembayaran).locale('id').format('DD MMMM YYYY')}</span>
-                                        </div>
-                                        <div className="col-md-2">
                                             <h5>Tanggal Transaksi</h5>
                                             <span>{item.tanggal_transaksi && moment(item.tanggal_transaksi).locale('id').format('DD MMMM YYYY')}</span>
                                         </div>
+                                        {/* <div className="col-md-2">
+                                        </div> */}
                                         <div className="col-md-2">
                                             <h5>Nominal Transaksi</h5>
                                             <span>{item.nominal}</span>
@@ -624,6 +640,12 @@ const TransaksiPembayaran = () => {
                                         <div className="col-md-2">
                                             <h5>Status Transaksi</h5>
                                             <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi}</span>
+                                            <h5>Status</h5>
+                                            <span className='text'>{ }</span>
+                                        </div>
+                                        <div className="col-md-2">
+                                            <h5>Keterangan</h5>
+                                            <span className="">{item.keterangan}</span>
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Aksi</h5>
@@ -700,7 +722,7 @@ const TransaksiPembayaran = () => {
                     </div>
                 </div>
             </div>
-        </LayoutUser>
+        </LayoutUser >
     )
 }
 
