@@ -187,7 +187,7 @@ module.exports = {
         const id = req.params.id
         const dataUse = await transaksi.findOne({
             where:{
-                id_transaksi:id,
+                id_transaksi:[id],
                 status_transaksi : "belum"
             }
         })
