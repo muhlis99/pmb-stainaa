@@ -197,7 +197,7 @@ module.exports = {
         if (date >= tenggat_pembayaran) {
             await transaksi.update({
                 status_tombol : "1",
-                status_transaksi : "selesai"
+                status_transaksi : ""
             },{
                 where : {
                     id_transaksi:id,
