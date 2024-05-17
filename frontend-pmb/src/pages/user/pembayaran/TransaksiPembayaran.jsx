@@ -222,7 +222,7 @@ const TransaksiPembayaran = () => {
             await axios.post(`v1/transaksi/tambah`, {
                 kode: user.data.token,
                 // id_pembayaran: idPembayaran
-                tahun : tahun
+                tahun: tahun
             }).then(function () {
                 handleGeneratePdf()
                 getStatusDownload()
@@ -313,48 +313,79 @@ const TransaksiPembayaran = () => {
 
     const simpanTransaksi = async (e) => {
         e.preventDefault()
-        try {
-            const formData = new FormData()
-            formData.append("nominal", nominal)
-            formData.append("tanggal_transaksi", tanggalTransaksi)
-            formData.append("bukti_transaksi", kwitansi)
-            if (nominal == '') {
-                Swal.fire({
-                    title: 'Transaksi gagal',
-                    text: 'Nominal Tidak Boleh Kosong',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else if (kwitansi == '') {
-                Swal.fire({
-                    title: 'Transaksi gagal',
-                    text: 'Bukti Transaksi tidak boleh kosong',
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6'
-                })
-            } else {
-                await axios.put(`v1/transaksi/tambahTransaksi/${idTransaksi}`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                }).then(function (response) {
+        const checkData = await axios.get(`/v1/transaksi/all/${user.data.token}`)
+        const useData = checkData.data.data.filter((e) => e.pembayaran_ke === "1").map(e => e.status_transaksi)
+        if (useData[0] == "belum") {
+            Swal.fire({
+                title: "diharap menyelesaikan pembayaran pertama terlebih dahulu",
+                icon: "warning"
+            }).then(() => {
+                getStatusDownload()
+                getTotalPembayaran()
+                getTransaksi()
+                setNominal('')
+                setKwitansi('')
+                setPrevKwitansi('')
+                modalHide()
+            });
+        } else if (useData[0] == "proses") {
+            Swal.fire({
+                title: "diharap menyelesaikan pembayaran pertama terlebih dahulu",
+                icon: "warning"
+            }).then(() => {
+                getStatusDownload()
+                getTotalPembayaran()
+                getTransaksi()
+                setNominal('')
+                setKwitansi('')
+                setPrevKwitansi('')
+                modalHide()
+            });
+        } else {
+            try {
+                const formData = new FormData()
+                formData.append("nominal", nominal)
+                formData.append("tanggal_transaksi", tanggalTransaksi)
+                formData.append("bukti_transaksi", kwitansi)
+                if (nominal == '') {
                     Swal.fire({
-                        title: response.data.message,
-                        icon: "success"
-                    }).then(() => {
-                        getStatusDownload()
-                        getTotalPembayaran()
-                        getTransaksi()
-                        setNominal('')
-                        setKwitansi('')
-                        setPrevKwitansi('')
-                        modalHide()
-                    });
-                })
-            }
-        } catch (error) {
+                        title: 'Transaksi gagal',
+                        text: 'Nominal Tidak Boleh Kosong',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    })
+                } else if (kwitansi == '') {
+                    Swal.fire({
+                        title: 'Transaksi gagal',
+                        text: 'Bukti Transaksi tidak boleh kosong',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6'
+                    })
+                } else {
+                    await axios.put(`v1/transaksi/tambahTransaksi/${idTransaksi}`, formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        }
+                    }).then(function (response) {
+                        Swal.fire({
+                            title: response.data.message,
+                            icon: "success"
+                        }).then(() => {
+                            getStatusDownload()
+                            getTotalPembayaran()
+                            getTransaksi()
+                            setNominal('')
+                            setKwitansi('')
+                            setPrevKwitansi('')
+                            modalHide()
+                        });
+                    })
+                }
+            } catch (error) {
 
+            }
         }
+
     }
 
     const tambahTransaksi = async (e) => {
@@ -362,7 +393,7 @@ const TransaksiPembayaran = () => {
             if (user) {
                 await axios.post(`v1/transaksi/tambahAnsuran`, {
                     kode: user.data.token,
-                    id_pembayaran: idPembayaran,
+                    tahun: tahun,
                     pembayaran_ke: e,
                     tanggal_transaksi: tanggalTransaksi
                 }).then(function (response) {
