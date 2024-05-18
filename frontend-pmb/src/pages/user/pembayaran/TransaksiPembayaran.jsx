@@ -194,10 +194,17 @@ const TransaksiPembayaran = () => {
         try {
             if (user) {
                 const checkData = await axios.get(`/v1/transaksi/all/${user.data.token}`)
-                const useData = checkData.data.data.filter((e) => e.tenggat_pembayaran === tanggalTransaksi).map(async e => {
-                    const i = await axios.get(`/v1/transaksi/tenggatPembayaranHabis/${e.id_transaksi}`)
-                    console.log(i);
-                })
+                const useData = checkData.data.data.filter((e) => e.tenggat_pembayaran === tanggalTransaksi && e.status_transaksi === "belum")
+                if (useData === null) {
+                    console.log("null");
+                } else {
+                    useData.map(async (el) =>
+                        await axios.get(`/v1/transaksi/tenggatPembayaranHabis/${el.id_transaksi}`)
+                    )
+                }
+                // .map(async e => {
+                //     await axios.get(`/v1/transaksi/tenggatPembayaranHabis/${e.id_transaksi}`)
+                // })
 
             }
         } catch (error) {
@@ -579,9 +586,9 @@ const TransaksiPembayaran = () => {
                                     </div>
                                     <div className="col-md-8 mt-2">
                                         <div className="row">
-                                            <div className="col-sm-3">
-                                                <h3>Angsuran</h3>
-                                                <h3>{jumlahAngsuran} Kali</h3>
+                                            <div className="col-sm-1">
+                                                {/* <h3>Angsuran</h3>
+                                                <h3>{jumlahAngsuran} Kali</h3> */}
                                             </div>
                                             <div className="col-sm-3">
                                                 <h3>Total Biaya</h3>
@@ -639,9 +646,7 @@ const TransaksiPembayaran = () => {
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Status Transaksi</h5>
-                                            <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi}</span>
-                                            <h5>Status</h5>
-                                            <span className='text'>{ }</span>
+                                            <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi == "" ? "waktu habis" : item.status_transaksi}</span>
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Keterangan</h5>
