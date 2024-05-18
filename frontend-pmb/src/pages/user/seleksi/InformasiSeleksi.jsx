@@ -57,6 +57,7 @@ const InformasiSeleksi = () => {
         getStatusPembayaran()
     }, [idPendaftar])
 
+
     const getStatusPembayaran = async () => {
         try {
             if (idPendaftar) {
@@ -101,22 +102,23 @@ const InformasiSeleksi = () => {
 
     const tambahSeleksi = async () => {
         try {
-            if (statusPembayaran == 'belum') {
-                Swal.fire({
-                    title: 'Seleksi Gagal',
-                    text: 'Anda belum menyelesaikan pembayaran pendaftaran',
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6'
+            // if (statusPembayaran == 'belum') {
+            //     Swal.fire({
+            //         title: 'Seleksi Gagal',
+            //         text: 'Anda belum menyelesaikan pembayaran pendaftaran',
+            //         icon: 'warning',
+            //         confirmButtonColor: '#3085d6'
 
-                })
-            } else {
-                await axios.post('v1/seleksi/tambah', {
-                    token: user && user.data.token,
-                    total_soal: totalSoal
-                }).then(function (response) {
-                    navigate("/formseleksi", { state: { waktuNow: new Date() } })
-                })
-            }
+            //     })
+            // } else {
+            // }
+            await axios.post('v1/seleksi/tambah', {
+                token: user.data.token,
+                // token: user && user.data.token,
+                total_soal: totalSoal
+            }).then(function (response) {
+                navigate("/formseleksi", { state: { waktuNow: new Date() } })
+            })
         } catch (error) {
 
         }
@@ -182,7 +184,7 @@ const InformasiSeleksi = () => {
                                             </div>
                                         </div>
                                         <div className="col-md-4">
-                                            {idPendaftar == '' ?
+                                            {statusSeleksi == 'belum' ?
                                                 <button className={`float-end btn btn-sm btn-primary ${tombolMulai ? '' : 'd-none'}`} onClick={tambahSeleksi}>Lanjut</button>
                                                 :
                                                 <Link to="/formseleksi" state={{ waktuNow: new Date() }} className={`btn btn-sm btn-primary float-end ${tombolMulai ? '' : 'd-none'}`}>Lanjut</Link>

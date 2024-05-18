@@ -13,6 +13,8 @@ const PemilihanProdi = () => {
     const { isError, user } = useSelector((state) => state.auth)
     const [Prodi, setProdi] = useState([])
     const [tahun, setTahun] = useState('')
+    const [prodiSekunder, setProdiSekunder] = useState('')
+    const [prodiPrimer, setProdiPrimer] = useState('')
 
     useEffect(() => {
         if (isError) {
@@ -34,6 +36,23 @@ const PemilihanProdi = () => {
         getAllProdi()
     }, [])
 
+    useEffect(() => {
+        const getProdiByToken = async () => {
+            try {
+                if (user) {
+                    const response = await axios.get(`v1/seleksi/getProdibyToken/${user.data.token}`)
+                    setProdiPrimer(response.data.data.prodi_primer)
+                    setProdiSekunder(response.data.data.prodi_sekunder)
+                }
+            } catch (error) {
+                // console.log(error.response);
+            }
+        }
+
+        getProdiByToken()
+    }, [user])
+
+
     const getAllProdi = async () => {
         try {
             const response = await axios.get(`v1/seleksi/prodi`)
@@ -42,6 +61,8 @@ const PemilihanProdi = () => {
 
         }
     }
+
+
 
     const background = ['text-secondary', 'text-info', 'text-primary', 'text-success', 'text-danger', 'text-warning']
     const ikon = [<FaBook />, <FaBalanceScale />]
@@ -57,12 +78,14 @@ const PemilihanProdi = () => {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya',
                 cancelButtonText: 'Batal'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    axios.post('v1/seleksi/pemilihanProdi', {
-                        token: user && user.data.token,
-                        idProdi: e,
-                        tahun: tahun
+                    const dataProdiSekunder = await axios.get(`/v1/seleksi/seleksiProdi/${e}`)
+                    const prodiSekunder = dataProdiSekunder.data.data.id_prodi
+
+                    await axios.put(`/v1/seleksi/pemilihanProdiUser/${user.data.token}`, {
+                        prodi_primer: e,
+                        prodi_sekunder: prodiSekunder,
                     }).then(function (response) {
                         Swal.fire({
                             title: 'Berhasil',
@@ -70,7 +93,7 @@ const PemilihanProdi = () => {
                             icon: 'success',
                             confirmButtonColor: '#3085d6'
                         }).then(() => {
-                            navigate('/infoseleksi')
+                            navigate(0)
                         })
                     })
                 }
@@ -79,6 +102,23 @@ const PemilihanProdi = () => {
         } catch (error) {
 
         }
+    }
+
+    const done = (e) => {
+        Swal.fire({
+            title: "anda sudah yakin ??",
+            text: 'Pastikan pilihan anda tepat!',
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                navigate('/infoseleksi')
+            }
+        })
     }
 
     return (
@@ -95,16 +135,17 @@ const PemilihanProdi = () => {
                 </div>
                 <div className="row">
                     <div className="col-md-8 offset-2">
+                        <p className='text-center my-4'>pilihlah prodi pertama sesuai keingan anda</p>
                         <div className="row">
                             {Prodi.map((item, index) => (
                                 <div key={item.id_prodi} className="col-md-6">
-                                    <div className="card shadow">
+                                    <div className={`card shadow ${item.id_prodi == prodiPrimer ? "bg-light" : ""}`} style={{ cursor: 'pointer' }} onClick={() => pilihProdi(item.id_prodi)}>
                                         <div className="text-center my-4">
                                             <h1 className={`display-2 ${background[index]} mb-2 fw-bold`}>{ikon[index]}</h1>
-                                            <p className="mb-0">Pendidikan Agama Islam</p>
+                                            <p className="mb-0">{item.nama_prodi}</p>
                                         </div>
                                         <div className='d-flex justify-content-center mb-3'>
-                                            <button className='btn btn-info btn-sm' onClick={() => pilihProdi(item.id_prodi)}><FaCheck /> Pilih</button>
+                                            {/* <button className='btn btn-info btn-sm' onClick={() => pilihProdi(item.id_prodi)}><FaCheck /> Pilih</button> */}
                                         </div>
                                     </div>
                                 </div>
@@ -112,8 +153,42 @@ const PemilihanProdi = () => {
                         </div>
                     </div>
                 </div>
+                <div className="row mt-8">
+                    <div className="col-md-8 offset-2">
+                        <p className='text-center my-4'>opsi prodi anda terpilih sesuai pilihan prodi pertama</p>
+                        <div className="row">
+                            {Prodi.map((item, index) => (
+                                <div key={item.id_prodi} className="col-md-6">
+                                    <div className={`card shadow ${item.id_prodi == prodiSekunder ? "bg-light" : ""}`}>
+                                        <div className="text-center my-4">
+                                            <h1 className={`display-2 ${background[index]} mb-2 fw-bold`}>{ikon[index]}</h1>
+                                            <p className="mb-0">{item.nama_prodi}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {
+                    prodiPrimer == "" ? ""
+                        :
+                        <div className="row mt-8">
+                            <div className="col-md-8 offset-2">
+                                <div className="row">
+                                    <div className="card shadow ">
+                                        <div className="my-4">
+                                            <p className="text-center mb-0">Setelah anda memilih prodi silahkan click tombol dibawah ini untuk menyelesaikan pemilihan prodi</p>
+                                            <button onClick={() => done()} className='btn btn-sm btn-info float offset-5 mt-3'>Selesai</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                }
             </div>
-        </LayoutUser>
+        </LayoutUser >
     )
 }
 
