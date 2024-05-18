@@ -13,21 +13,11 @@ module.exports = {
         const perPage = parseInt(req.query.perPage) || 10
         const search = req.query.search || ""
         const offset = (currentPage - 1) * perPage
-        const totalPage = await formulir.count({
+        const totalPage = await Mapprove.count({
             where: {
                 [Op.or]: [
                     {
-                        id: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
                         token: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
-                        nama: {
                             [Op.like]: `%${search}%`
                         }
                     }
@@ -35,22 +25,16 @@ module.exports = {
             }
         })
         const totalItems = Math.ceil(totalPage / perPage)
-        await formulir.findAll({
+        await Mapprove.findAll({
+            attributes : ["id_approve","token","status_pembayaran"],
+            include : [{
+                model : formulir,
             attributes: ["id", "nama", "token", "tempat_lahir", "tanggal_lahir", "jenis_kelamin"],
+            }],
             where: {
                 [Op.or]: [
                     {
-                        id: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
                         token: {
-                            [Op.like]: `%${search}%`
-                        }
-                    },
-                    {
-                        nama: {
                             [Op.like]: `%${search}%`
                         }
                     }
@@ -59,7 +43,7 @@ module.exports = {
             offset: offset,
             limit: perPage,
             order: [
-                ["id", "DESC"]
+                ["id_approve", "DESC"]
             ]
         }).
             then(result => {
