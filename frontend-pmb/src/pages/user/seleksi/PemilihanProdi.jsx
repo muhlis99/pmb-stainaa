@@ -95,16 +95,34 @@ const PemilihanProdi = () => {
                 </div>
                 <div className="row">
                     <div className="col-md-8 offset-2">
+                        <h4 className='offset-3'>pilihlah prodi pertama sesuai keingan anda</h4>
                         <div className="row">
                             {Prodi.map((item, index) => (
                                 <div key={item.id_prodi} className="col-md-6">
-                                    <div className="card shadow">
+                                    <div className={`card shadow`} style={{ cursor: 'pointer' }} onClick={() => pilihProdi(item.id_prodi)}>
+                                        <div className="text-center my-4">
+                                            <h1 className={`display-2 ${background[index]} mb-2 fw-bold`}>{ikon[index]}</h1>
+                                            <p className="mb-0">{item.nama_prodi}</p>
+                                        </div>
+                                        <div className='d-flex justify-content-center mb-3'>
+                                            {/* <button className='btn btn-info btn-sm' onClick={() => pilihProdi(item.id_prodi)}><FaCheck /> Pilih</button> */}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div className="row mt-8">
+                    <div className="col-md-8 offset-2">
+                        <h4 className='offset-3'>opsi prodi anda terpilih sesuai opsi prodi pertama</h4>
+                        <div className="row">
+                            {Prodi.map((item, index) => (
+                                <div key={item.id_prodi} className="col-md-6">
+                                    <div className="card shadow ">
                                         <div className="text-center my-4">
                                             <h1 className={`display-2 ${background[index]} mb-2 fw-bold`}>{ikon[index]}</h1>
                                             <p className="mb-0">Pendidikan Agama Islam</p>
-                                        </div>
-                                        <div className='d-flex justify-content-center mb-3'>
-                                            <button className='btn btn-info btn-sm' onClick={() => pilihProdi(item.id_prodi)}><FaCheck /> Pilih</button>
                                         </div>
                                     </div>
                                 </div>
