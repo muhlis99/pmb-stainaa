@@ -136,23 +136,42 @@ module.exports = {
         })
     },
 
-    pemilihanProdi : async (req, res, next) => {
-        const {token, prodiPrimer,prodiSekunder} = req.body
+    createProdi : async (req, res, next) => {
+        const {token} = req.body
         let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
         await MseleksiProdi.create({
             kode_seleksi_prodi : randomNumber,
             token : token,
-            prodi_primer : prodiPrimer,
-            prodi_sekunder : prodiSekunder,
+            prodi_primer : "",
+            prodi_sekunder : "",
             prodi_seleksi_admin : "",
+        }).then(result => {
+            res.status(201).json({
+                message: "Data  prodi success",
+            })
+        }).
+        catch(err => {
+            next(err)
+        })
+    },
 
+    pemilihanProdiUser : async (req, res, next) => {
+        const kode = req.params.kode
+        const {prodi_primer, prodi_sekunder} = req.body
+        await MseleksiProdi.update({
+            prodi_primer : prodi_primer,
+            prodi_sekunder : prodi_sekunder,
+        }, {
+            where : {
+                token : kode
+            }
         })
         
         await Mapprove.update({
             status_seleksi : "selesai"
         }, {
             where : {
-                token : token
+                token : kode
             }
         }).then(result => {
             res.status(201).json({
