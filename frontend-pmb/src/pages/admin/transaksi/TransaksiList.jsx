@@ -60,12 +60,11 @@ const TransaksiList = () => {
         setPage(0)
     }
 
-    // const getStatusMahasiswa = (e) => {
-    //     const a = axios.get(`/v1/transaksi/checkTransaksi/${e}`)
-    //     let i = []
-    //     console.log(i);
-    //     // return i.data.status
-    // }
+    const getStatusMahasiswa = (e) => {
+        return "ko"
+        // const a = await axios.get(`/v1/transaksi/checkTransaksi/${e}`)
+        // console.log(a.data.status);
+    }
 
     return (
         <LayoutAdmin>
@@ -99,7 +98,7 @@ const TransaksiList = () => {
                                                         <th className='py-2'>Tempat Lahir</th>
                                                         <th className='py-2'>Tanggal Lahir</th>
                                                         <th className='py-2'>Jenis Kelamin</th>
-                                                        {/* <th className='py-2'>Status Pembayaran</th> */}
+                                                        <th className='py-2'>Status Pembayaran</th>
                                                         <th className='py-2'>Aksi</th>
                                                     </tr>
                                                 </thead>
@@ -118,7 +117,7 @@ const TransaksiList = () => {
                                                                 <td className='text-capitalize'>{item.tempat_lahir}</td>
                                                                 <td className='text-capitalize'>{item.tanggal_lahir && moment(item.tanggal_lahir).format('DD MMMM YYYY')}</td>
                                                                 <td className='text-capitalize'>{item.jenis_kelamin == 'l' ? 'Laki-Laki' : item.jenis_kelamin == 'p' ? 'Perempuan' : ''}</td>
-                                                                {/* <td>{getStatusMahasiswa(item.token)}</td> */}
+                                                                <td>{getStatusMahasiswa(item.token)}</td>
                                                                 <td>
                                                                     <Link to="/cektransaksi" state={{ token: item.token }} className='btn btn-sm btn-info'>Transaksi</Link>
                                                                 </td>
