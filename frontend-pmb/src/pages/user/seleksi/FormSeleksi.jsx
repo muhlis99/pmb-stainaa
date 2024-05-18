@@ -187,6 +187,10 @@ const FormSeleksi = () => {
                             id_seleksi: idSeleksi,
                             jawaban: pilihanUser,
                             durasi: minutesDifference
+                        })
+
+                        axios.post(`/v1/seleksi/createProdi`, {
+                            token: user.data.token
                         }).then(function (response) {
                             Swal.fire({
                                 title: 'Berhasil',
