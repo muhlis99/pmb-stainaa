@@ -390,22 +390,40 @@ const TransaksiCek = () => {
                                                     <td>{moment(item.tenggat_pembayaran).format('DD MMMM YYYY')}</td>
                                                     <td>{item.tanggal_transaksi && moment(item.tanggal_transaksi).format('DD MMMM YYYY')}</td>
                                                     <td>{item.nominal}</td>
-                                                    <td><span className={`badge text-capitalize ${item.status_transaksi == 'selesai' ? 'bg-success' : item.status_transaksi == 'belum' || item.status_transaksi == 'ditolak' ? 'bg-danger' : 'bg-warning' || item.status_transaksi == 'habis' ? 'bg-danger ' : 'bg-warning'}`}>{item.status_transaksi == "habis" ? "waktu habis" : item.status_transaksi}</span></td>
+                                                    <td><span className={`badge text-capitalize ${item.status_transaksi == 'selesai' ? 'bg-success' : item.status_transaksi == 'belum' || item.status_transaksi == 'ditolak' ? 'bg-danger' : 'bg-warning' || item.status_transaksi == 'prosess' ? 'bg-warning ' : 'bg-danger'}`}>{item.status_transaksi == "habis" ? "waktu habis" : item.status_transaksi == "belum" ? "belum bayar" : item.status_transaksi}</span></td>
                                                     <td className='d-flex gap-1'>
                                                         {item.bukti_transaksi != '' ?
                                                             <button onClick={() => openModalImage(item.bukti_transaksi, item.pembayaran_ke)} className='btn btn-sm btn-info' data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat Kwitansi">Kwitansi</button>
                                                             :
-                                                            <button disabled className='btn btn-sm btn-info' data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat Kwitansi">Kwitansi</button>
+                                                            ""
+                                                            // <button disabled className='btn btn-sm btn-info' data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat Kwitansi">Kwitansi</button>
                                                         }
-                                                        {item.status_transaksi == 'belum' || item.status_transaksi == "" ?
-                                                            <button onClick={() => OpenModal(item.id_transaksi, item.tenggat_pembayaran)} className='btn btn-sm btn-warning' data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Edit</button>
+                                                        {item.status_transaksi == 'belum' ?
+                                                            ""
+                                                            // <button onClick={() => OpenModal(item.id_transaksi, item.tenggat_pembayaran)} className='btn btn-sm btn-warning' data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Edit</button>
                                                             :
-                                                            <button disabled className='btn btn-sm btn-warning' data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Edit</button>
+                                                            ""
+                                                            // <button disabled className='btn btn-sm btn-warning' data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Edit</button>
                                                         }
-                                                        {item.status_transaksi == 'belum' || item.status_transaksi == 'selesai' ?
+                                                        {/* {item.status_transaksi == 'selesai' ?
+                                                            <button className='btn btn-sm btn-primary' onClick={() => openModalApprove(item.id_transaksi, item.pembayaran_ke, item.status_transaksi, item.keterangan)} data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Validasi</button>
                                                             <button disabled className='btn btn-sm btn-primary' data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Validasi</button>
                                                             :
+                                                            ""
                                                             <button className='btn btn-sm btn-primary' onClick={() => openModalApprove(item.id_transaksi, item.pembayaran_ke, item.status_transaksi, item.keterangan)} data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Validasi</button>
+                                                        } */}
+                                                        {item.status_transaksi == 'proses' ?
+                                                            <button className='btn btn-sm btn-primary' onClick={() => openModalApprove(item.id_transaksi, item.pembayaran_ke, item.status_transaksi, item.keterangan)} data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Validasi</button>
+                                                            // <button disabled className='btn btn-sm btn-primary' data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Validasi</button>
+                                                            :
+                                                            ""
+                                                            // <button className='btn btn-sm btn-primary' onClick={() => openModalApprove(item.id_transaksi, item.pembayaran_ke, item.status_transaksi, item.keterangan)} data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Validasi</button>
+                                                        }
+                                                        {item.status_transaksi == 'habis' ?
+                                                            <button onClick={() => OpenModal(item.id_transaksi, item.tenggat_pembayaran)} className='btn btn-sm btn-warning' data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Edit</button>
+                                                            :
+                                                            ""
+                                                            // <button disabled className='btn btn-sm btn-warning' data-bs-toggle="tooltip" data-bs-placement="top" title="Set Batas Akhir">Edit</button>
                                                         }
 
                                                     </td>
