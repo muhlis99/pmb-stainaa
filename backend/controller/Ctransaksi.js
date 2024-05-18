@@ -197,7 +197,7 @@ module.exports = {
         if (date >= tenggat_pembayaran) {
             await transaksi.update({
                 status_tombol: "1",
-                status_transaksi: "",
+                status_transaksi: "habis",
                 keterangan : "silahkan anda hubungi panitia PMB"
             }, {
                 where: {
@@ -382,7 +382,8 @@ module.exports = {
         if (!dataUse) return res.json({ message: "data not found" })
         await transaksi.update({
             tenggat_pembayaran: tenggat,
-            status_tombol: "0"
+            status_tombol: "0",
+            status_transaksi : "belum"
         }, {
             where: {
                 id_transaksi: id
