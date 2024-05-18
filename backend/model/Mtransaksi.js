@@ -35,7 +35,7 @@ const transaksi = db.define('transaksi', {
     },
     'status_transaksi': {
         type: DataTypes.ENUM,
-        values: ['selesai','belum','proses','ditolak']
+        values: ['selesai','belum','proses','ditolak','habis']
     },
     'status_tombol': {
         type: DataTypes.ENUM,
