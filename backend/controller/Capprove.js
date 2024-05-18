@@ -136,6 +136,30 @@ module.exports = {
             })
     },
 
+    getByToken : async (req, res, next) => {
+        const kode = req.params.kode
+        await Mapprove.findOne({
+            where: {
+                token: kode,
+            }
+        }).
+            then(getById => {
+                if (!getById) {
+                    return res.status(404).json({
+                        message: "Data Mapprove Tidak Ditemukan",
+                        data: null
+                    })
+                }
+                res.status(201).json({
+                    message: "Data Mapprove Ditemukan",
+                    data: getById
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
+    },
+
     approve : async (req, res, next) => {
         async function createQrCode(dataForQRcode, center_image, width, cwidth) {
             const canvas = createCanvas(width, width)
