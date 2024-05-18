@@ -383,7 +383,8 @@ module.exports = {
         await transaksi.update({
             tenggat_pembayaran: tenggat,
             status_tombol: "0",
-            status_transaksi : "belum"
+            status_transaksi : "belum",
+            keterangan : ""
         }, {
             where: {
                 id_transaksi: id
