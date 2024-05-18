@@ -194,10 +194,14 @@ const TransaksiPembayaran = () => {
         try {
             if (user) {
                 const checkData = await axios.get(`/v1/transaksi/all/${user.data.token}`)
-                const useData = checkData.data.data.filter((e) => e.tenggat_pembayaran === tanggalTransaksi)
-                useData.map(async (el) =>
-                    await axios.get(`/v1/transaksi/tenggatPembayaranHabis/${el.id_transaksi}`)
-                )
+                const useData = checkData.data.data.filter((e) => e.tenggat_pembayaran === tanggalTransaksi && e.status_transaksi === "belum")
+                if (useData === null) {
+                    console.log("null");
+                } else {
+                    useData.map(async (el) =>
+                        await axios.get(`/v1/transaksi/tenggatPembayaranHabis/${el.id_transaksi}`)
+                    )
+                }
                 // .map(async e => {
                 //     await axios.get(`/v1/transaksi/tenggatPembayaranHabis/${e.id_transaksi}`)
                 // })
