@@ -390,7 +390,7 @@ const TransaksiCek = () => {
                                                     <td>{moment(item.tenggat_pembayaran).format('DD MMMM YYYY')}</td>
                                                     <td>{item.tanggal_transaksi && moment(item.tanggal_transaksi).format('DD MMMM YYYY')}</td>
                                                     <td>{item.nominal}</td>
-                                                    <td><span className={`badge text-capitalize ${item.status_transaksi == 'selesai' ? 'bg-success' : item.status_transaksi == 'belum' || item.status_transaksi == 'ditolak' ? 'bg-danger' : 'bg-warning' || item.status_transaksi == '' ? 'bg-danger ' : 'bg-warning'}`}>{item.status_transaksi == "" ? "waktu habis" : item.status_transaksi}</span></td>
+                                                    <td><span className={`badge text-capitalize ${item.status_transaksi == 'selesai' ? 'bg-success' : item.status_transaksi == 'belum' || item.status_transaksi == 'ditolak' ? 'bg-danger' : 'bg-warning' || item.status_transaksi == 'habis' ? 'bg-danger ' : 'bg-warning'}`}>{item.status_transaksi == "habis" ? "waktu habis" : item.status_transaksi}</span></td>
                                                     <td className='d-flex gap-1'>
                                                         {item.bukti_transaksi != '' ?
                                                             <button onClick={() => openModalImage(item.bukti_transaksi, item.pembayaran_ke)} className='btn btn-sm btn-info' data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat Kwitansi">Kwitansi</button>
