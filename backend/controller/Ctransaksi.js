@@ -382,7 +382,7 @@ module.exports = {
         if (!dataUse) return res.json({ message: "data not found" })
         await transaksi.update({
             tenggat_pembayaran: tenggat,
-            status_tombol: tombol
+            status_tombol: "0"
         }, {
             where: {
                 id_transaksi: id
