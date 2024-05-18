@@ -646,7 +646,7 @@ const TransaksiPembayaran = () => {
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Status Transaksi</h5>
-                                            <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi == "" ? "waktu habis" : item.status_transaksi}</span>
+                                            <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi == "habis" ? "waktu habis" : item.status_transaksi}</span>
                                         </div>
                                         <div className="col-md-2">
                                             <h5>Keterangan</h5>
