@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const db = require('../config/database.js')
 const formulir = require('./Mformulir.js')
+const seleksiProdi = require('./MseleksiProdi.js')
 
 const seleksi = db.define('seleksi', {
     'id_seleksi': {
@@ -56,5 +57,7 @@ const seleksi = db.define('seleksi', {
 formulir.belongsTo(seleksi, { foreignKey: 'token' })
 seleksi.hasMany(formulir, { sourceKey: 'token', foreignKey: 'token' })
 
+seleksiProdi.belongsTo(seleksi, { foreignKey: 'token' })
+seleksi.hasMany(seleksiProdi, { sourceKey: 'token', foreignKey: 'token' })
 
 module.exports = seleksi
