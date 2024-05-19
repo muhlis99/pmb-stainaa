@@ -34,6 +34,7 @@ import ListMahasiswa from "./pages/admin/dataInformasi/ListMahasiswa"
 import KirimInformasi from "./pages/admin/dataInformasi/KirimInformasi"
 import DataUser from "./pages/admin/dataUser/DataUser"
 import DetailForm from "./pages/admin/dataFormulir/DetailForm"
+import SeleksiProdi from "./pages/admin/hasilSeleksi/SeleksiProdi"
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
           <Route path="/settingSoal" element={<PertanyaanList />} />
           <Route path="/hasilSeleksi" element={<HasilSeleksiList />} />
           <Route path="/detailhasilSeleksi" element={<DetailHasilSeleksi />} />
+          <Route path="/seleksiProdi" element={<SeleksiProdi />} />
           <Route path="/approve" element={<Approve />} />
           <Route path="/detailapprove" element={<DetailApprove />} />
           <Route path="/informasi" element={<ListMahasiswa />} />

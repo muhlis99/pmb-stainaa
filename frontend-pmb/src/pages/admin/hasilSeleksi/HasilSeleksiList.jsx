@@ -60,35 +60,22 @@ const HasilSeleksiList = () => {
         setPage(0)
     }
 
-    const pemilihanProdi = (e) => {
+    // const umumkan = async (seleksiId) => {
+    //     await axios.post(
+    //         `v1/informasi/umumkanSeleksi/${seleksiId}`
+    //     ).then(function (response) {
+    //         Swal.fire({
+    //             title: "Berhasil Diumumkan",
+    //             text: response.data.message,
+    //             icon: "success",
+    //             confirmButtonColor: '#3085d6'
+    //         }).then(() => {
+    //             axios.put(`v1/seleksi/umumkan/${seleksiId}`)
+    //             getHasilSeleksi()
+    //         })
+    //     })
+    // }
 
-    }
-
-    const umumkan = async (seleksiId) => {
-        await axios.post(
-            `v1/informasi/umumkanSeleksi/${seleksiId}`
-        ).then(function (response) {
-            Swal.fire({
-                title: "Berhasil Diumumkan",
-                text: response.data.message,
-                icon: "success",
-                confirmButtonColor: '#3085d6'
-            }).then(() => {
-                axios.put(`v1/seleksi/umumkan/${seleksiId}`)
-                getHasilSeleksi()
-            })
-        })
-    }
-
-    const tidak = () => {
-        Swal.fire({
-            text: 'Hasil Seleksi telah diumumkan',
-            title: 'Gagal',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6'
-
-        })
-    }
 
     return (
         <LayoutAdmin>
@@ -118,9 +105,9 @@ const HasilSeleksiList = () => {
                                                 <thead>
                                                     <tr>
                                                         <th className='py-2'>No</th>
-                                                        <th className='py-2'>Nama</th>
-                                                        <th className='py-2'>Skor</th>
-                                                        <th className='py-2'>Durasi Waktu</th>
+                                                        <th className='py-2'>identitas</th>
+                                                        <th className='py-2'>seleksi</th>
+                                                        <th className='py-2'>pemilihan prodi</th>
                                                         <th className='py-2'>Penyelesaian</th>
                                                         <th className='py-2'>Status</th>
                                                         <th className='py-2'>Aksi</th>
@@ -137,27 +124,137 @@ const HasilSeleksiList = () => {
                                                         HasilSeleksi.map((item, index) => (
                                                             <tr key={item.id_seleksi}>
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
-                                                                <td>{item.formulirs[0].nama}</td>
-                                                                <td>{item.score}</td>
-                                                                <td>{item.total_durasi}</td>
+                                                                <td>
+                                                                    <table>
+                                                                        <tr>
+                                                                            <td>
+                                                                                nama
+                                                                            </td>
+                                                                            <td>
+                                                                                :
+                                                                            </td>
+                                                                            <td>
+                                                                                {item.formulirs[0].nama}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                tempat lahir
+                                                                            </td>
+                                                                            <td>
+                                                                                :
+                                                                            </td>
+                                                                            <td>
+                                                                                {item.formulirs[0].tempat_lahir}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                email
+                                                                            </td>
+                                                                            <td>
+                                                                                :
+                                                                            </td>
+                                                                            <td>
+                                                                                {item.formulirs[0].email}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                                <td>
+                                                                    <table>
+                                                                        <tr>
+                                                                            <td>
+                                                                                score
+                                                                            </td>
+                                                                            <td>
+                                                                                :
+                                                                            </td>
+                                                                            <td>
+                                                                                {item.score}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                durasi
+                                                                            </td>
+                                                                            <td>
+                                                                                :
+                                                                            </td>
+                                                                            <td>
+                                                                                {item.total_durasi}
+                                                                            </td>
+                                                                        </tr>
+
+                                                                    </table>
+                                                                </td>
+                                                                <td>
+                                                                    <table>
+                                                                        <tr>
+                                                                            <td>
+                                                                                pertama
+                                                                            </td>
+                                                                            <td>
+                                                                                :
+                                                                            </td>
+                                                                            <td>
+                                                                                {item.seleksiProdis[0].prodiprimer[0].nama_prodi}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                kedua
+                                                                            </td>
+                                                                            <td>
+                                                                                :
+                                                                            </td>
+                                                                            <td>
+                                                                                {item.seleksiProdis[0].prodisekunder[0].nama_prodi}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                ket admin
+                                                                            </td>
+                                                                            <td>
+                                                                                :
+                                                                            </td>
+                                                                            <td>
+                                                                                {item.seleksiProdis[0].prodiseleksiadmin[0] == null ? "" : item.seleksiProdis[0].prodiseleksiadmin[0].nama_prodi}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
                                                                 <td>
                                                                     {item.total_soal == item.total_selesai ?
                                                                         <span className='badge bg-success'>Selesai</span>
                                                                         :
-                                                                        <span className='badge bg-danger'>Belum Selesai</span>
+                                                                        <span className='badge bg-danger'>Belum </span>
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    <span className={`badge ${item.status_info == 0 ? 'bg-danger' : 'bg-success'}`}>{item.status_info == 0 ? 'Belum Diumumkan' : 'Diumumkan'}</span>
+                                                                    <span className={`badge ${item.status_info == 0 ? 'bg-danger' : 'bg-success'}`}>{item.status_info == 0 ? 'Belum' : 'Diumumkan'}</span>
                                                                 </td>
-                                                                <td className='d-flex gap-2'>
-                                                                    <Link to="/detailhasilSeleksi" state={{ idSeleksi: item.id_seleksi, token: item.token }} className='btn btn-sm btn-info' >Detail</Link>
-                                                                    {item.status_info == 0 ?
-                                                                        <button onClick={() => umumkan(item.id_seleksi)} className='btn btn-sm btn-secondary'>Umumkan</button>
-                                                                        :
-                                                                        ''
-                                                                        // <button disabled className='btn btn-sm btn-secondary'>Umumkan</button>
-                                                                    }
+                                                                <td>
+                                                                    <table>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <Link to="/detailhasilSeleksi" state={{ idSeleksi: item.id_seleksi, token: item.token }} className='btn btn-sm btn-info' >Detail</Link>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                {item.status_info == 0 ?
+                                                                                    <Link to="/seleksiProdi" state={{ idSeleksi: item.id_seleksi, token: item.token }} className='btn btn-sm btn-secondary' >umumkan</Link>
+
+                                                                                    // <button onClick={() => umumkan(item.id_seleksi)} className='btn btn-sm btn-secondary'>Umumkan</button>
+                                                                                    :
+                                                                                    <button button disabled className='btn btn-sm btn-secondary'>umumkan</button>
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+
                                                                 </td>
                                                             </tr>
                                                         ))}
@@ -196,7 +293,7 @@ const HasilSeleksiList = () => {
                     </div>
                 </div>
             </section>
-        </LayoutAdmin>
+        </LayoutAdmin >
     )
 }
 
