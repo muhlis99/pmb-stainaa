@@ -60,12 +60,6 @@ const TransaksiList = () => {
         setPage(0)
     }
 
-    // const getStatusMahasiswa = (e) => {
-    //     const a = axios.get(`/v1/transaksi/checkTransaksi/${e}`)
-    //     let i = []
-    //     console.log(i);
-    //     // return i.data.status
-    // }
 
     return (
         <LayoutAdmin>
@@ -99,7 +93,7 @@ const TransaksiList = () => {
                                                         <th className='py-2'>Tempat Lahir</th>
                                                         <th className='py-2'>Tanggal Lahir</th>
                                                         <th className='py-2'>Jenis Kelamin</th>
-                                                        {/* <th className='py-2'>Status Pembayaran</th> */}
+                                                        <th className='py-2'>Pembayaran</th>
                                                         <th className='py-2'>Aksi</th>
                                                     </tr>
                                                 </thead>
@@ -112,13 +106,13 @@ const TransaksiList = () => {
                                                         </tr>
                                                         :
                                                         Mahasiswa.map((item, index) => (
-                                                            <tr key={item.id}>
+                                                            <tr key={item.id_approve}>
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
-                                                                <td className='text-capitalize'>{item.nama}</td>
-                                                                <td className='text-capitalize'>{item.tempat_lahir}</td>
-                                                                <td className='text-capitalize'>{item.tanggal_lahir && moment(item.tanggal_lahir).format('DD MMMM YYYY')}</td>
-                                                                <td className='text-capitalize'>{item.jenis_kelamin == 'l' ? 'Laki-Laki' : item.jenis_kelamin == 'p' ? 'Perempuan' : ''}</td>
-                                                                {/* <td>{getStatusMahasiswa(item.token)}</td> */}
+                                                                <td className='text-capitalize'>{item.formulirs[0].nama}</td>
+                                                                <td className='text-capitalize'>{item.formulirs[0].tempat_lahir}</td>
+                                                                <td className='text-capitalize'>{item.formulirs[0].tanggal_lahir && moment(item.formulirs[0].tanggal_lahir).format('DD MMMM YYYY')}</td>
+                                                                <td className='text-capitalize'>{item.formulirs[0].jenis_kelamin == 'l' ? 'Laki-Laki' : item.formulirs[0].jenis_kelamin == 'p' ? 'Perempuan' : ''}</td>
+                                                                <td><span className={`badge text-capitalize ${item.status_pembayaran == 'selesai' ? 'bg-success' : 'bg-danger'}`}>{item.status_pembayaran}</span></td>
                                                                 <td>
                                                                     <Link to="/cektransaksi" state={{ token: item.token }} className='btn btn-sm btn-info'>Transaksi</Link>
                                                                 </td>
@@ -159,7 +153,7 @@ const TransaksiList = () => {
                     </div>
                 </div>
             </section>
-        </LayoutAdmin>
+        </LayoutAdmin >
     )
 }
 
