@@ -336,10 +336,30 @@ module.exports = {
         })
         const totalItems = Math.ceil(totalPage / perPage)
         await Mseleksi.findAll({
-            include : [{
-                model : Mformulir,
-                attributes : ["nama", "email","tempat_lahir"]
-            }],
+            include : [
+                {
+                    model : Mformulir,
+                    attributes : ["nama", "email","tempat_lahir"]
+                },
+                {
+                    model : MseleksiProdi,
+                    include : [
+                        {
+                            model : Mprodi,
+                            attributes : ["nama_prodi", "code_prodi"],
+                            as : "prodiprimer"
+                        },{
+                            model : Mprodi,
+                            attributes : ["nama_prodi", "code_prodi"],
+                            as : "prodisekunder"
+                        },{
+                            model : Mprodi,
+                            attributes : ["nama_prodi", "code_prodi"],
+                            as : "prodiseleksiadmin"
+                        }
+                    ]
+                }
+            ],
             where: {
                 [Op.or]: [
                     {
