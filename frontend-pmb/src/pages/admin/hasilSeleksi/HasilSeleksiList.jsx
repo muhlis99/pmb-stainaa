@@ -60,6 +60,10 @@ const HasilSeleksiList = () => {
         setPage(0)
     }
 
+    const pemilihanProdi = (e) => {
+
+    }
+
     const umumkan = async (seleksiId) => {
         await axios.post(
             `v1/informasi/umumkanSeleksi/${seleksiId}`
@@ -151,7 +155,8 @@ const HasilSeleksiList = () => {
                                                                     {item.status_info == 0 ?
                                                                         <button onClick={() => umumkan(item.id_seleksi)} className='btn btn-sm btn-secondary'>Umumkan</button>
                                                                         :
-                                                                        <button disabled className='btn btn-sm btn-secondary'>Umumkan</button>
+                                                                        ''
+                                                                        // <button disabled className='btn btn-sm btn-secondary'>Umumkan</button>
                                                                     }
                                                                 </td>
                                                             </tr>
