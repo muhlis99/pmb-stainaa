@@ -210,8 +210,8 @@ module.exports = {
         })
         const date = new Date().toLocaleDateString('en-CA')
         if(!dataUse) return res.json({message:"data not found"})
-        const isiPengumunan = `selamat anda telah menyelesaikan pertanyaan dari server PMB STAINAA.&#13;&#10;
-                                peserta mahasiswa baru atas nama ${dataUse.formulirs[0].nama} telah lulus ujian.&#13;&#10;
+        const isiPengumunan = `selamat anda telah menyelesaikan pertanyaan dari server PMB STAINAA.
+                                peserta mahasiswa baru atas nama ${dataUse.formulirs[0].nama} telah lulus ujian.
                                 adapun prodi yang anda pilih
                                 1. prodi utama adalah ${seleksiProdi.prodiprimer[0].nama_prodi}
                                 2. prodi kedua adalah ${seleksiProdi.prodisekunder[0].nama_prodi}
