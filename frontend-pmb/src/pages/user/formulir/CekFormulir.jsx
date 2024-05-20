@@ -5,7 +5,7 @@ import { getMe } from "../../../features/authSlice"
 import { useNavigate, Link } from 'react-router-dom'
 import {
     FaCaretRight, FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt,
-    FaCheckCircle, FaFilePdf
+    FaCheckCircle, FaFilePdf, FaImage, FaFileCsv, FaCreditCard, FaFileArchive
 } from "react-icons/fa"
 import { RiParentFill } from "react-icons/ri"
 import axios from 'axios'
@@ -283,16 +283,16 @@ const CekFormulir = () => {
                                             <table cellPadding={5}>
                                                 <tbody>
                                                     <tr>
-                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td><h5 className='mb-0'><FaImage className='h1 text-info'></FaImage></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
-                                                            <span>
+                                                            <span style={{ cursor: 'pointer' }} onClick={() => { imageModal() }}>
                                                                 {biodata.foto_diri}
                                                             </span>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-success'></FaFilePdf></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
                                                             <span>
@@ -301,7 +301,7 @@ const CekFormulir = () => {
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td><h5 className='mb-0'><FaFileCsv className='h1 text-warning'></FaFileCsv></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
                                                             <span>
@@ -310,7 +310,7 @@ const CekFormulir = () => {
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td><h5 className='mb-0'><FaCreditCard className='h1 text-secondary'></FaCreditCard></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
                                                             <span>
@@ -319,7 +319,7 @@ const CekFormulir = () => {
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td><h5 className='mb-0'><FaFileArchive className='h1 text-success'></FaFileArchive></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
                                                             <span>
