@@ -522,7 +522,6 @@ const DetailApprove = () => {
         }
     }
 
-    console.log(biodataBuktiPendaftaran);
 
     return (
         <LayoutAdmin>
@@ -1093,11 +1092,6 @@ const DetailApprove = () => {
                                                 <td>{biodataBuktiPendaftaran.kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
                                             </tr>
                                             <tr>
-                                                <td>Jenjang Pendidikan</td>
-                                                <td>&nbsp;:&nbsp;</td>
-                                                <td>{ }</td>
-                                            </tr>
-                                            <tr>
                                                 <td>Prodi</td>
                                                 <td>&nbsp;:&nbsp;</td>
                                                 <td>{prodiKetAdmin}</td>
@@ -1113,14 +1107,14 @@ const DetailApprove = () => {
                             </div>
                             <div style={tableStyle.grid}>
                                 <div>
-                                    <p style={{ textAlign: 'justify', textJustify: 'inter-word' }}>Selamat! Anda telah berhasil mendaftar pada seleksi Mahasiswa Baru Sekolah Tinggi Nurul Abror Al-Robbaniyin
+                                    <p style={{ textAlign: 'justify', textJustify: 'inter-word' }}>Selamat! Anda telah berhasil mendaftar pada  Sekolah Tinggi Nurul Abror Al-Robbaniyin
                                         Alasbuluh Wongsorejo Banyuwangi.</p>
 
                                     <span style={{ textAlign: 'justify', textJustify: 'inter-word' }}>
                                         Silakan menyampaikan dokumen persyaratan dalam bentuk hardcopy ke</span>
                                     <ol>
-                                        <li>LK SMK NAA (untuk melakukan pembayaran).</li>
-                                        <li>Panitia PMB STAINAA (untuk melakukan registrasi ulang).</li>
+                                        <li>BUAK STAINAA atau</li>
+                                        <li>Panitia PMB STAINAA.</li>
                                     </ol>
                                 </div>
                             </div>
