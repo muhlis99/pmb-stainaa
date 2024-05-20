@@ -454,7 +454,7 @@ const DetailApprove = () => {
                                 icon: 'success',
                                 confirmButtonColor: '#3085d6'
                             }).then(() => {
-                                navigate(0)
+                                navigate('/approve')
                             })
                         })
                     }

@@ -3,10 +3,14 @@ import LayoutUser from '../../LayoutUser'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
 import { useNavigate, Link } from 'react-router-dom'
-import { FaCaretRight, FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt, FaCheckCircle } from "react-icons/fa"
+import {
+    FaCaretRight, FaFileAlt, FaHandPointer, FaHands, FaMapMarkedAlt,
+    FaCheckCircle, FaFilePdf
+} from "react-icons/fa"
 import { RiParentFill } from "react-icons/ri"
 import axios from 'axios'
 import "./timeline.css"
+import moment from 'moment'
 
 const CekFormulir = () => {
     const dispatch = useDispatch()
@@ -21,6 +25,7 @@ const CekFormulir = () => {
     const [nama, setNama] = useState("")
     const [idPendaftar, setIdPendaftar] = useState('')
     const [statusFormulir, setStatusFormulir] = useState('')
+    const [biodata, setBiodata] = useState([])
 
     useEffect(() => {
         if (isError) {
@@ -38,6 +43,7 @@ const CekFormulir = () => {
                 if (user) {
                     const response = await axios.get(`v1/formulir/getByToken/${user.data.token}`)
                     setIdPendaftar(response.data.data.id)
+                    setBiodata(response.data.data)
                 }
             } catch (error) {
 
@@ -197,7 +203,7 @@ const CekFormulir = () => {
                                         <div className="col-xl-12 col-md-12 col-sm-12">
                                             <div className="row">
                                                 <div className="col-md-12">
-                                                    <FaCheckCircle className='text-success'></FaCheckCircle>
+                                                    <FaCheckCircle className='text-success h2'></FaCheckCircle> <span className='text-success text-bold'>SELESAI</span>
                                                     <p>Pendaftaran anda telah selesai dalam tahap pengisian formulir silahkan untuk melanjutkan step selajnutnya yakni melakukan pembayaran</p>
                                                 </div>
                                             </div>
@@ -210,32 +216,120 @@ const CekFormulir = () => {
                         <div className="row mt-2">
                             <div className="col-xl-12 col-md-12 col-sm-12">
                                 <div className="card">
-
+                                    <div className="card-header py-1">
+                                        <h5 className="card-title mt-1">
+                                            IDENTITAS DIRI
+                                        </h5>
+                                    </div>
                                     <div className="card-body">
-                                        <table>
-                                            <tr>
-                                                nama
-                                            </tr>
-                                            <tr>
-                                                alamat
-                                            </tr>
-                                            <tr>
-                                                jenis kelamin
-                                            </tr>
-                                        </table>
-                                        <br />
-                                        <br />
-                                        <table>
-                                            <tr>
-                                                foto diri
-                                            </tr>
-                                            <tr>
-                                                kk
-                                            </tr>
-                                            <tr>
-                                                ktp
-                                            </tr>
-                                        </table>
+
+                                        <div className="col-md-12">
+                                            <table cellPadding={5}>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'>NO KK</h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>{biodata.no_kk}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'>NO NIK</h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>{biodata.nik}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'>NISN</h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>{biodata.nisn}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'>Nama</h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td>{biodata.nama}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'>Tempat Lahir</h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2 text-capitalize'>{biodata.tempat_lahir}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'>Tanggal Lahir</h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>{moment(biodata.tanggal_lahir).format('DD MMMM YYYY')}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'>Jenis Kelamin</h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>{biodata.jenis_kelamin == "l" ? "Laki-laki" : "Perempuan"}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'>email</h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>{biodata.email}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="card mt-4">
+                                    <div className="card-header py-1">
+                                        <h5 className="card-title mt-1">
+                                            BERKAS
+                                        </h5>
+                                    </div>
+                                    <div className="card-body">
+
+                                        <div className="col-md-12">
+                                            <table cellPadding={5}>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>
+                                                            <span>
+                                                                {biodata.foto_diri}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>
+                                                            <span>
+                                                                {biodata.foto_ktp}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>
+                                                            <span>
+                                                                {biodata.foto_kk}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>
+                                                            <span>
+                                                                {biodata.foto_ijazah}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h5 className='mb-0'><FaFilePdf className='h1 text-info'></FaFilePdf></h5></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td className='py-2'>
+                                                            <span>
+                                                                {biodata.foto_suket_santri}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
