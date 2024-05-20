@@ -8,6 +8,8 @@ const Msemester = require('../model/semesterModel.js')
 const MloginMhs = require('../model/loginModel.js')
 const MtahunAjaran = require('../model/tahunAjaranModel.js')
 const Mregistrasi = require('../model/Mregistrasi.js')
+const MjenjangPendidikan = require('../model/jenjangPendidikanModel.js')
+const Mfakultas = require('../model/fakultasModel.js')
 const { Sequelize, Op } = require('sequelize')
 const argon = require('argon2')
 const nodemailer = require('nodemailer')
@@ -184,6 +186,63 @@ module.exports = {
                 catch(err => {
                     next(err)
                 })
+    },
+
+    getSemesterByKode : async (req, res, next) => {
+        const kode = req.params.kode 
+        await Msemester.findOne({
+            include : [{
+                model : MtahunAjaran
+            }],
+            where: {
+                code_semester: kode,
+            }
+        }).
+            then(getById => {
+                if (!getById) {
+                    return res.status(404).json({
+                        message: "Data semester Tidak Ditemukan",
+                        data: null
+                    })
+                }
+                res.status(201).json({
+                    message: "Data semester Ditemukan",
+                    data: getById
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
+
+    },
+
+    getProdiByKode : async (req, res, next) => {
+        const kode = req.params.kode
+        await Mprodi.findOne({
+            include : [{
+                model : MjenjangPendidikan
+            },{
+                model : Mfakultas
+            }],
+            where: {
+                code_prodi: kode,
+            }
+        }).
+            then(getById => {
+                if (!getById) {
+                    return res.status(404).json({
+                        message: "Data Mapprove Tidak Ditemukan",
+                        data: null
+                    })
+                }
+                res.status(201).json({
+                    message: "Data Mapprove Ditemukan",
+                    data: getById
+                })
+            }).
+            catch(err => {
+                next(err)
+            })
     },
 
     approve : async (req, res, next) => {
