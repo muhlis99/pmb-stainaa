@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const db = require('../config/database.js')
+const tahunAjaran = require('./tahunAjaranModel.js')
 
 const semesterModel = db.define('semester', {
     'id_semester': {
@@ -37,4 +38,6 @@ const semesterModel = db.define('semester', {
     paranoid: true,
 })
 
+tahunAjaran.belongsTo(semesterModel, { foreignKey: 'code_tahun_ajaran' })
+semesterModel.hasMany(tahunAjaran, { sourceKey: 'code_tahun_ajaran', foreignKey: 'code_tahun_ajaran' })
 module.exports = semesterModel
