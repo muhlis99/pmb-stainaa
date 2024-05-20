@@ -356,6 +356,7 @@ const DetailApprove = () => {
 
     const approveData = () => {
         try {
+
             Swal.fire({
                 title: "Approve Data ini?",
                 text: 'Pastikan semua data telah valid',

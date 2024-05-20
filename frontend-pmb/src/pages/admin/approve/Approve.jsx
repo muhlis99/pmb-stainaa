@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import LayoutAdmin from '../../LayoutAdmin'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
@@ -8,10 +8,13 @@ import moment from "moment"
 import ReactPaginate from "react-paginate"
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import { SlOptions } from "react-icons/sl"
+import kop from "../../../assets/kop.png"
+import jsPDF from "jspdf"
 
 const Approve = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const templateRef = useRef(null)
     const { isError, user } = useSelector((state) => state.auth)
     const [Approve, setApprove] = useState([])
     const [page, setPage] = useState(0)
@@ -33,6 +36,58 @@ const Approve = () => {
     useEffect(() => {
         getApproveAll()
     }, [page, keyword])
+
+    const tableStyle = {
+        image: {
+            width: '597px'
+        },
+        wrap: {
+            width: '600px',
+            fontFamily: "Arial, Helvetica, sans-serif",
+            background: '#ffffff',
+            color: '#000000'
+        },
+        title: {
+            fontSize: '12px',
+            margin: 'auto',
+        },
+        grid: {
+            display: 'grid',
+            gridTemplateColumns: 'auto auto',
+            width: '80%',
+            margin: 'auto',
+            fontSize: '10px'
+        },
+        gridItem: {
+            fontSize: '10px',
+        },
+        table: {
+            fontSize: '8px',
+            margin: 'auto',
+            width: '80%',
+            border: '1px solid black',
+            borderCollapse: 'collapse'
+        },
+        tr: {
+        },
+        td: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse',
+            fontWeight: 'bold'
+        },
+        td2: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse'
+        },
+        tdMakul: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse',
+            wordSpacing: '2px'
+        },
+    }
 
     const getApproveAll = async () => {
         try {
@@ -58,6 +113,32 @@ const Approve = () => {
         e.preventDefault()
         setKeyword(e ? e.target.value : "")
         setPage(0)
+    }
+
+    const handleGeneratePdf = () => {
+        const doc = new jsPDF({
+            format: 'a4',
+            orientation: 'potrait',
+            unit: 'pt',
+        })
+
+        doc.setFont('Inter-Regular', 'normal')
+        doc.setFontSize(1);
+
+        doc.html(templateRef.current, {
+            async callback(doc) {
+                await doc.save('Bukti Pendaftaran ')
+            }
+        })
+    }
+
+    const downloadBuktiPendaftaran = async (e) => {
+        e.preventDefault()
+        try {
+            handleGeneratePdf()
+        } catch (error) {
+
+        }
     }
 
 
@@ -150,7 +231,11 @@ const Approve = () => {
                                                                     {item.status == "tidak" ?
                                                                         <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Approve</Link>
                                                                         :
-                                                                        <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Lihat </Link>
+                                                                        <>
+                                                                            <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Lihat </Link><br />
+                                                                            <button className='btn btn-sm btn-secondary mt-1' onClick={downloadBuktiPendaftaran}>Download</button>
+
+                                                                        </>
                                                                     }
                                                                 </td>
                                                             </tr>
@@ -184,6 +269,67 @@ const Approve = () => {
                                             />
                                         </nav>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row mt-3 d-none">
+                    <div ref={templateRef}>
+                        <div style={tableStyle.wrap}>
+                            <img src={kop} alt="kop" style={tableStyle.image} />
+
+                            <div style={tableStyle.grid} className='mb-3 mt-3'>
+                                <div style={tableStyle.gridItem}>
+                                    {/* <h4 className='fw-bold'>NO. Pendaftaran : {user && user.data.token}</h4> */}
+                                    {/* <table cellPadding={5}>
+                                        <tbody>
+                                            <tr>
+                                                <td><span>NIK</span></td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodata.nik}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nama</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{nama}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tempat/Tanggal Lahir</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodata.tempat_lahir}, {biodata.tanggal_lahir}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jenis Kelamin</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tanggal Daftar</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodata.tanggal_daftar}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table> */}
+                                </div>
+                                <div style={tableStyle.gridItem}>
+                                    <div className='border mt-5 text-center algn-items-center' style={{ width: '135px', height: '160px' }}>
+                                        <h6 style={{ marginTop: '70px' }}>4x6</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={tableStyle.grid}>
+                                <div>
+                                    <p style={{ textAlign: 'justify', textJustify: 'inter-word' }}>Selamat! Anda telah berhasil mendaftar pada seleksi Mahasiswa Baru Sekolah Tinggi Nurul Abror Al-Robbaniyin
+                                        Alasbuluh Wongsorejo Banyuwangi.</p>
+
+                                    <span style={{ textAlign: 'justify', textJustify: 'inter-word' }}>
+                                        Silakan menyampaikan dokumen persyaratan dalam bentuk hardcopy ke</span>
+                                    <ol>
+                                        <li>LK SMK NAA (untuk melakukan pembayaran).</li>
+                                        <li>Panitia PMB STAINAA (untuk melakukan registrasi ulang).</li>
+                                    </ol>
                                 </div>
                             </div>
                         </div>
