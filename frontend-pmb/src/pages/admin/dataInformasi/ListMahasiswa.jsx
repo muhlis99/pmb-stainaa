@@ -117,7 +117,7 @@ const ListMahasiswa = () => {
                                                                 <td className='text-capitalize'>{item.formulirs[0].tanggal_lahir && moment(item.formulirs[0].tanggal_lahir).format('DD MMMM YYYY')}</td>
                                                                 <td className='text-capitalize'>{item.formulirs[0].jenis_kelamin == 'l' ? 'Laki-Laki' : item.formulirs[0].jenis_kelamin == 'p' ? 'Perempuan' : ""}</td>
                                                                 <td>
-                                                                    <Link to="/detailInformasi" state={{ token: item.token }} className='btn btn-sm btn-info'>Detail</Link>
+                                                                    <Link to="/detailInformasi" state={{ token: item.token }} className='btn btn-sm btn-info'>setting</Link>
                                                                 </td>
                                                             </tr>
                                                         ))}
