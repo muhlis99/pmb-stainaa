@@ -60,6 +60,7 @@ const Approve = () => {
         setPage(0)
     }
 
+
     return (
         <LayoutAdmin>
             <section className="container-fluid p-4">
@@ -85,48 +86,11 @@ const Approve = () => {
                                     <div className="col-md-12">
                                         <div className="table-responsive">
 
-                                            {/* <table className='table table-sm table-bordered text-nowrap mb-0 table-centered'>
-                                                <thead>
-                                                    <tr>
-                                                        <th className='py-2'>No</th>
-                                                        <th className='py-2'>Nama</th>
-                                                        <th className='py-2'>Formulir</th>
-                                                        <th className='py-2'>Pembayaran</th>
-                                                        <th className='py-2'>Seleksi</th>
-                                                        <th className='py-2'>Tanggal</th>
-                                                        <th className='py-2'>Approve</th>
-                                                        <th className='py-2'>Aksi</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {Approve.length == 0 ?
-                                                        <tr>
-                                                            <td align='center' colSpan={8}>
-                                                                Tidak ada data!
-                                                            </td>
-                                                        </tr>
-                                                        :
-                                                        Approve.map((item, index) => (
-                                                            <tr key={item.id_approve}>
-                                                                <td>{(page - 1) * 10 + index + 1}</td>
-                                                                <td>{item.formulirs[0].nama}</td>
-                                                                <td>{item.status_formulir}</td>
-                                                                <td>{item.status_pembayaran}</td>
-                                                                <td>{item.status_seleksi}</td>
-                                                                <td >{item.tanggal_approve == ""? <i className="fe fe-clock"></i> :moment(item.tanggal_approve).format('DD MMMM YYYY')}</td>
-                                                                <td >{item.status == 'tidak' ? 'Belum' : 'Selesai'}</td>
-                                                                <td>
-                                                                    <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Lihat</Link>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                </tbody>
-                                            </table> */}
                                             <table className="table mb-0 text-nowrap table-sm table-hover table-centered">
                                                 <thead className="">
                                                     <tr>
                                                         <th className='py-2'>No</th>
-                                                        <th className='py-2'>Nama</th>
+                                                        <th className='py-2'>Identitas</th>
                                                         <th className='py-2'>Formulir</th>
                                                         <th className='py-2'>Pembayaran</th>
                                                         <th className='py-2'>Seleksi</th>
@@ -146,7 +110,14 @@ const Approve = () => {
                                                         Approve.map((item, index) => (
                                                             <tr key={item.id_approve}>
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
-                                                                <td>{item.formulirs[0].nama}</td>
+                                                                <td>
+                                                                    <table>
+                                                                        <tr><td>Nama</td><td>:</td><td>{item.formulirs[0].nama}</td></tr>
+                                                                        <tr><td>Tempat Lahir</td><td>:</td><td>{item.formulirs[0].tempat_lahir}</td></tr>
+                                                                        <tr><td>Tanggal Lahir</td><td>:</td><td>{item.formulirs[0].tanggal_lahir}</td></tr>
+                                                                        <tr><td>Email</td><td>:</td><td>{item.formulirs[0].email}</td></tr>
+                                                                    </table>
+                                                                </td>
                                                                 <td>
                                                                     {item.formulir == "belum" ?
                                                                         <span className="badge bg-warning">Pending</span>
@@ -176,7 +147,11 @@ const Approve = () => {
 
                                                                 </td>
                                                                 <td>
-                                                                    <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Lihat</Link>
+                                                                    {item.status == "tidak" ?
+                                                                        <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Approve</Link>
+                                                                        :
+                                                                        <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Lihat </Link>
+                                                                    }
                                                                 </td>
                                                             </tr>
                                                         ))}
