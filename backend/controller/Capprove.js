@@ -43,7 +43,7 @@ module.exports = {
         await Mapprove.findAll({
             include : [{
                 model : Mformulir,
-                attributes : ["nama","tanggal_lahir", "tempat_lahir","email"]
+                attributes : ["nama","tanggal_lahir", "tempat_lahir","email", "nik"]
             }],
             where: {
                 [Op.or]: [
@@ -158,6 +158,32 @@ module.exports = {
             catch(err => {
                 next(err)
             })
+    },
+
+    getMhsByNik : async (req, res, next) => {
+        const nik = req.params.nik
+        const mahsiswaUse = await Mmahasiswa.findOne({
+            where : {
+                nik : nik,
+                status : "aktif"
+            }
+        })
+        if(!mahsiswaUse) return res.status(201).json({message : "data not found"})
+            await Mmahasiswa.findOne({
+                where : {
+                    nik : nik,
+                    status : "aktif"
+                }
+            }).
+                then(result => {
+                    res.status(201).json({
+                        message: "Data Mapprove Ditemukan",
+                        data: result
+                    })
+                }).
+                catch(err => {
+                    next(err)
+                })
     },
 
     approve : async (req, res, next) => {
