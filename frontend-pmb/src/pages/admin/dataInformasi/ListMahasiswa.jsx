@@ -52,6 +52,7 @@ const ListMahasiswa = () => {
 
         }
     }
+    console.log(Mahasiswa);
 
     const pageCount = Math.ceil(rows / perPage)
 
@@ -111,10 +112,10 @@ const ListMahasiswa = () => {
                                                         Mahasiswa.map((item, index) => (
                                                             <tr key={item.id}>
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
-                                                                <td className='text-capitalize'>{item.nama}</td>
-                                                                <td className='text-capitalize'>{item.tempat_lahir}</td>
-                                                                <td className='text-capitalize'>{item.tanggal_lahir && moment(item.tanggal_lahir).format('DD MMMM YYYY')}</td>
-                                                                <td className='text-capitalize'>{item.jenis_kelamin == 'l' ? 'Laki-Laki' : item.jenis_kelamin == 'p' ? 'Perempuan' : ""}</td>
+                                                                <td className='text-capitalize'>{item.formulirs[0].nama}</td>
+                                                                <td className='text-capitalize'>{item.formulirs[0].tempat_lahir}</td>
+                                                                <td className='text-capitalize'>{item.formulirs[0].tanggal_lahir && moment(item.formulirs[0].tanggal_lahir).format('DD MMMM YYYY')}</td>
+                                                                <td className='text-capitalize'>{item.formulirs[0].jenis_kelamin == 'l' ? 'Laki-Laki' : item.formulirs[0].jenis_kelamin == 'p' ? 'Perempuan' : ""}</td>
                                                                 <td>
                                                                     <Link to="/detailInformasi" state={{ token: item.token }} className='btn btn-sm btn-info'>Detail</Link>
                                                                 </td>

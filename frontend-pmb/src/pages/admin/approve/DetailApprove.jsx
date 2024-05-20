@@ -7,6 +7,9 @@ import logo from "../../../assets/noimage.svg"
 import axios from 'axios'
 import moment from 'moment'
 import Swal from 'sweetalert2'
+import { FaBalanceScale, FaBook } from "react-icons/fa"
+
+
 
 const DetailApprove = () => {
     const dispatch = useDispatch()
@@ -44,6 +47,11 @@ const DetailApprove = () => {
     const [kabupaten, setKabupaten] = useState("")
     const [provinsi, setProvinsi] = useState("")
     const [negara, setNegara] = useState("")
+    const [prodiSekunder, setProdiSekunder] = useState("")
+    const [prodiPrimer, setProdiPrimer] = useState("")
+    const [prodiKetAdmin, setProdiKetAdmin] = useState("")
+    const [indexProdiKetAdmin, setIndexProdiKetAdmin] = useState("")
+    const [index, setIndex] = useState("")
 
     useEffect(() => {
         if (isError) {
@@ -58,6 +66,8 @@ const DetailApprove = () => {
     useEffect(() => {
         getApproveById()
         getMhsByToken()
+        getHasilProdiMhs()
+        getIndexProdiAdmin()
     }, [location])
 
     useEffect(() => {
@@ -84,6 +94,9 @@ const DetailApprove = () => {
         pendidikanWaliByCode()
         penghasilanWaliByCode()
     }, [biodata])
+
+    const background = ['text-secondary', 'text-info', 'text-primary', 'text-success', 'text-danger', 'text-warning']
+    const ikon = [<FaBook />, <FaBalanceScale />]
 
     const getApproveById = async () => {
         try {
@@ -206,6 +219,7 @@ const DetailApprove = () => {
         ijazah()
         suket()
     }, [biodata])
+
 
     const fotoDiri = async () => {
         try {
@@ -367,13 +381,6 @@ const DetailApprove = () => {
                             icon: 'error',
                             confirmButtonColor: '#3085d6'
                         })
-                    } else if (idProdi == '') {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Program Studi Tidak boleh kosong',
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6'
-                        })
                     } else {
                         axios.put(`v1/approve/approve`, {
                             token: location.state.token,
@@ -394,6 +401,28 @@ const DetailApprove = () => {
             })
         } catch (error) {
 
+        }
+    }
+
+    const getHasilProdiMhs = async () => {
+        try {
+            const response = await axios.get(`/v1/seleksi/getProdiByToken/${location.state.token}`)
+            setProdiPrimer(response.data.data.prodiprimer[0].nama_prodi)
+            setProdiSekunder(response.data.data.prodisekunder[0].nama_prodi)
+            setProdiKetAdmin(response.data.data.prodiseleksiadmin[0].nama_prodi)
+            setIndexProdiKetAdmin(response.data.data.prodi_seleksi_admin)
+        } catch (error) {
+
+        }
+    }
+
+    const getIndexProdiAdmin = () => {
+        if (indexProdiKetAdmin == "1") {
+            let i = 0
+            setIndex(i)
+        } else {
+            let i = 1
+            setIndex(i)
         }
     }
 
@@ -811,51 +840,115 @@ const DetailApprove = () => {
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="card shadow-lg mb-3">
+                                    <div className="card-header py-1">
+                                        <h5 className="card-title mt-1">
+                                            Data Prodi
+                                        </h5>
+                                    </div>
                                     <div className="card-body">
                                         <div className="row">
-                                            <div className="col-lg-4 col-md-4 col-sm-12 mb-2">
-                                                <label htmlFor="tahunAjaran" className="form-label">Tahun Ajaran</label>
-                                                <select name="tahunAjaran" id="tahunAjaran"
-                                                    className='form-select form-select-sm' value={kodeTahun || ""} onChange={(e) => setKodeTahun(e.target.value)}>
-                                                    <option value="">-Tahun Ajaran-</option>
-                                                    {Tahun.map((item) => (
-                                                        <option key={item.id_tahun_ajaran} value={item.code_tahun_ajaran}>{item.tahun_ajaran}</option>
-                                                    ))}
-                                                </select>
+                                            <div className="col-xl-4 col-md-4 col-sm-12">
+                                                <div className={`card shadow bg-light`}>
+                                                    <div className="text-center my-4">
+                                                        <p className="mb-0"> PRODI PERTAMA </p>
+                                                        <h1 className={`display-2 ${background[0]} mb-2 fw-bold`}>{ikon[0]}</h1>
+                                                        <p className="mb-0">{prodiPrimer}</p>
+                                                    </div>
+                                                    <div className='d-flex justify-content-center mb-3'>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="col-lg-4 col-md-4 col-sm-12 mb-2">
-                                                <label htmlFor="semester" className="form-label">Semester</label>
-                                                <select name="semester" id="semester"
-                                                    className='form-select form-select-sm' value={idSemester || ""} onChange={(e) => setIdSemester(e.target.value)} >
-                                                    <option value="">-Semester-</option>
-                                                    {Semester.map((item) => (
-                                                        <option key={item.id_semester} value={item.id_semester}>Semester {item.semester}</option>
-                                                    ))}
-                                                </select>
+                                            <div className="col-xl-4 col-md-4 col-sm-12">
+                                                <div className={`card shadow bg-light`}>
+                                                    <div className="text-center my-4">
+                                                        <p className="mb-0"> PRODI KEDUA </p>
+                                                        <h1 className={`display-2 ${background[1]} mb-2 fw-bold`}>{ikon[1]}</h1>
+                                                        <p className="mb-0">{prodiSekunder}</p>
+                                                    </div>
+                                                    <div className='d-flex justify-content-center mb-3'>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="col-lg-4 col-md-4 col-sm-12 mb-2">
-                                                <label htmlFor="prodi" className="form-label">Program Studi</label>
-                                                <select name="prodi" id="prodi"
-                                                    className='form-select form-select-sm' value={idProdi || ""} onChange={(e) => setIdProdi(e.target.value)}>
-                                                    <option value="">-Program Studi-</option>
-                                                    {Prodi.map((item) => (
-                                                        <option key={item.id_prodi} value={item.id_prodi}>{item.nama_prodi}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="card-footer">
-                                        <div className="row">
-                                            <div className="col-md-12">
-                                                <Link to="/approve" className='btn btn-danger btn-sm'>Kembali</Link>
-                                                <button onClick={approveData} className='btn btn-info btn-sm float-end'>Approve</button>
+                                            <div className="col-xl-4 col-md-4 col-sm-12">
+                                                <div className={`card shadow bg-light`}>
+                                                    <div className="text-center my-4">
+                                                        <p className="mb-0"> PRODI KETENTUAN ADMIN </p>
+                                                        <h1 className={`display-2 ${background[index]} mb-2 fw-bold`}>{ikon[index]}</h1>
+                                                        <p className="mb-0">{prodiKetAdmin}</p>
+                                                    </div>
+                                                    <div className='d-flex justify-content-center mb-3'>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                {
+                                    Approve.status == "tidak" ?
+                                        <>
+                                            <div className="card shadow-lg mb-3">
+                                                <div className="card-body">
+                                                    <div className="row mt-2 mb-2">
+                                                        <p className='text-center h4'>
+                                                            Sebelum melakukan Apprpove Diharap menetukan tahun ajaran dan semester calon mahasiswa baru
+                                                        </p>
+                                                    </div>
+                                                    <div className="row">
+                                                        <div className="col-lg-6 col-md-6 col-sm-12 mb-2">
+                                                            <label htmlFor="tahunAjaran" className="form-label">Tahun Ajaran</label>
+                                                            <select name="tahunAjaran" id="tahunAjaran"
+                                                                className='form-select form-select-sm' value={kodeTahun || ""} onChange={(e) => setKodeTahun(e.target.value)}>
+                                                                <option value="">-Tahun Ajaran-</option>
+                                                                {Tahun.map((item) => (
+                                                                    <option key={item.id_tahun_ajaran} value={item.code_tahun_ajaran}>{item.tahun_ajaran}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                        <div className="col-lg-6 col-md-6 col-sm-12 mb-2">
+                                                            <label htmlFor="semester" className="form-label">Semester</label>
+                                                            <select name="semester" id="semester"
+                                                                className='form-select form-select-sm' value={idSemester || ""} onChange={(e) => setIdSemester(e.target.value)} >
+                                                                <option value="">-Semester-</option>
+                                                                {Semester.map((item) => (
+                                                                    <option key={item.id_semester} value={item.id_semester}>Semester {item.semester}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="card-footer">
+                                                    <div className="row">
+                                                        <div className="col-md-12">
+                                                            <Link to="/approve" className='btn btn-danger btn-sm'>Kembali</Link>
+                                                            <button onClick={approveData} className='btn btn-info btn-sm float-end'>Approve</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                        :
+                                        <>
+                                            <div className="card shadow-lg mb-3">
+                                                <div className="card-body">
+                                                    <div className="row mt-2 mb-2">
+                                                        <p className='text-center h4'>
+                                                            APPROVAL / PERSETUJUAN calon mahasiswa baru telah berhasil dimohon  diberitahukan kepada yang bersangkutan, dan silahkan download bukti approval dilaman utama atas perhatian dan kerjasamanya TERIMAKASIH.
+                                                        </p>
+                                                    </div>
+                                                    <div className="row">
+                                                    </div>
+                                                </div>
+                                                <div className="card-footer">
+                                                    <div className="row">
+                                                        <div className="col-md-12 text-center">
+                                                            <Link to="/approve" className=' btn btn-danger btn-sm'>Kembali</Link>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                }
                             </div>
 
                         </div>

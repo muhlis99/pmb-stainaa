@@ -196,13 +196,8 @@ const CekFormulir = () => {
                                     <div className="card-body">
                                         <div className="col-xl-12 col-md-12 col-sm-12">
                                             <div className="row">
-                                                <div className="col-md-0">
-                                                    <h1>
-                                                        <FaCheckCircle className='text-success'></FaCheckCircle>
-
-                                                    </h1>
-                                                </div>
                                                 <div className="col-md-12">
+                                                    <FaCheckCircle className='text-success'></FaCheckCircle>
                                                     <p>Pendaftaran anda telah selesai dalam tahap pengisian formulir silahkan untuk melanjutkan step selajnutnya yakni melakukan pembayaran</p>
                                                 </div>
                                             </div>

@@ -1,4 +1,4 @@
-const Mapprove =  require('../model/Mapprove.js')
+const Mapprove = require('../model/Mapprove.js')
 const Mformulir = require('../model/Mformulir.js')
 const Mmahasiswa = require('../model/mahasiswaModel.js')
 const MhistoryMhs = require('../model/historyMahasiswaModel.js')
@@ -8,7 +8,7 @@ const Msemester = require('../model/semesterModel.js')
 const MloginMhs = require('../model/loginModel.js')
 const MtahunAjaran = require('../model/tahunAjaranModel.js')
 const Mregistrasi = require('../model/Mregistrasi.js')
-const {Sequelize,Op} =  require('sequelize')
+const { Sequelize, Op } = require('sequelize')
 const argon = require('argon2')
 const nodemailer = require('nodemailer')
 const smtpTransport = require('nodemailer-smtp-transport')
@@ -17,8 +17,8 @@ const fs = require('fs')
 const QRCode = require("qrcode");
 const { createCanvas, loadImage } = require("canvas");
 
-module.exports = {    
-    getAll : async (req, res, next) => {
+module.exports = {
+    getAll: async (req, res, next) => {
         const currentPage = parseInt(req.query.page) || 1
         const perPage = parseInt(req.query.perPage) || 10
         const search = req.query.search || ""
@@ -80,39 +80,39 @@ module.exports = {
             })
     },
 
-    getAllTahunAjaran : async (req, res, next) => {
+    getAllTahunAjaran: async (req, res, next) => {
         await MtahunAjaran.findAll().
-        then(result => {
-            res.status(201).json({
-                message: "Data tahun ajaran Ditemukan",
-                data: result
+            then(result => {
+                res.status(201).json({
+                    message: "Data tahun ajaran Ditemukan",
+                    data: result
+                })
+            }).
+            catch(err => {
+                console.log(err)
             })
-        }).
-        catch(err => {
-            console.log(err)
-        })
     },
 
-    getAllSemester : async (req, res, next) => {
+    getAllSemester: async (req, res, next) => {
         const kode = req.params.kode
         await Msemester.findAll({
-            where : {
-                code_tahun_ajaran : kode,
-                status : "aktif"
+            where: {
+                code_tahun_ajaran: kode,
+                status: "aktif"
             }
         }).
-        then(result => {
-            res.status(201).json({
-                message: "Data semester Ditemukan",
-                data: result
+            then(result => {
+                res.status(201).json({
+                    message: "Data semester Ditemukan",
+                    data: result
+                })
+            }).
+            catch(err => {
+                console.log(err)
             })
-        }).
-        catch(err => {
-            console.log(err)
-        })
     },
 
-    getById : async (req, res, next) => {
+    getById: async (req, res, next) => {
         const id = req.params.id
         await Mapprove.findOne({
             where: {
@@ -136,7 +136,7 @@ module.exports = {
             })
     },
 
-    getByToken : async (req, res, next) => {
+    getByToken: async (req, res, next) => {
         const kode = req.params.kode
         await Mapprove.findOne({
             where: {
@@ -248,29 +248,29 @@ module.exports = {
                 })
             }
         }
-        
+
         let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
-        const {token, semester} = req.body
+        const { token, semester } = req.body
         const date = new Date().toLocaleDateString('en-CA')
         await Mapprove.update({
-            tanggal_approve : date,
-            status : "setuju"
+            tanggal_approve: date,
+            status: "setuju"
         }, {
-            where : {
-                token : token
+            where: {
+                token: token
             }
         })
-        const dataSemester = await Msemester.findOne({where:{id_semester:semester}})
-        const dataSeleksiProdi = await MseleksiProdi.findOne({where:{token:token}})
-        const dataProdi = await Mprodi.findOne({where : {id_prodi : dataSeleksiProdi.prodi_seleksi_admin}})
-        const dataMhs = await Mformulir.findOne({where:{token:token}})
+        const dataSemester = await Msemester.findOne({ where: { id_semester: semester } })
+        const dataSeleksiProdi = await MseleksiProdi.findOne({ where: { token: token } })
+        const dataProdi = await Mprodi.findOne({ where: { id_prodi: dataSeleksiProdi.prodi_seleksi_admin } })
+        const dataMhs = await Mformulir.findOne({ where: { token: token } })
 
         const dateM = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
         const date_nim = new Date()
         const t_nim = date_nim.getFullYear().toString().substr(-2)
         // const b_nim = ("0" + (date_nim.getMonth() + 1)).slice(-2)
         const b_nim = "09"
-        let  kode_prodi_nim = ""
+        let kode_prodi_nim = ""
         if (dataProdi.code_prodi == "S1FAIPAI") {
             kode_prodi_nim = "01"
         }
@@ -366,7 +366,7 @@ module.exports = {
             jenis_tinggal: dataMhs.jenis_tinggal,
             penerima_kps: dataMhs.penerima_kps,
             code_semester: dataSemester.code_semester,
-            code_tahun_ajaran : dataSemester.code_tahun_ajaran,
+            code_tahun_ajaran: dataSemester.code_tahun_ajaran,
             tanggal_masuk_kuliah: dateM,
             email: dataMhs.email,
             no_hp: dataMhs.no_hp,
@@ -412,20 +412,20 @@ module.exports = {
         })
 
         await MhistoryMhs.create({
-            code_history: randomNumber +  dataSemester.code_semester,
+            code_history: randomNumber + dataSemester.code_semester,
             nim: nim,
             code_semester: dataSemester.code_semester,
-            code_tahun_ajaran : dataSemester.code_tahun_ajaran,
+            code_tahun_ajaran: dataSemester.code_tahun_ajaran,
             code_jenjang_pendidikan: dataProdi.code_jenjang_pendidikan,
             code_fakultas: dataProdi.code_fakultas,
             code_prodi: dataProdi.code_prodi,
             status: "aktif"
         }).then(async result => {
             await Mregistrasi.update({
-                status : "tidak"
+                status: "tidak"
             }, {
-                where : {
-                    token : token
+                where: {
+                    token: token
                 }
             })
 
