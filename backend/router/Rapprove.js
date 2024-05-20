@@ -7,6 +7,7 @@ router.get('/semester/:kode', Capprove.getAllSemester)
 router.get('/tahunAjaran', Capprove.getAllTahunAjaran)
 router.get('/byId/:id', Capprove.getById)
 router.get('/byToken/:kode', Capprove.getByToken)
+router.get('/mhsByNik/:nik', Capprove.getMhsByNik)
 router.put('/approve', Capprove.approve)
 
 
