@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import LayoutAdmin from '../../LayoutAdmin'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
@@ -8,6 +8,8 @@ import axios from 'axios'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import { FaBalanceScale, FaBook } from "react-icons/fa"
+import kop from "../../../assets/kop.png"
+import jsPDF from "jspdf"
 
 
 
@@ -15,6 +17,7 @@ const DetailApprove = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const location = useLocation()
+    const templateRef = useRef(null)
     const { isError, user } = useSelector((state) => state.auth)
     const [Approve, setApprove] = useState([])
     const [biodata, setBiodata] = useState([])
@@ -52,6 +55,9 @@ const DetailApprove = () => {
     const [prodiKetAdmin, setProdiKetAdmin] = useState("")
     const [indexProdiKetAdmin, setIndexProdiKetAdmin] = useState("")
     const [index, setIndex] = useState("")
+    const [nik, setNik] = useState("")
+    const [biodataBuktiPendaftaran, setBiodataBuktiPendaftaran] = useState([])
+
 
     useEffect(() => {
         if (isError) {
@@ -68,6 +74,7 @@ const DetailApprove = () => {
         getMhsByToken()
         getHasilProdiMhs()
         getIndexProdiAdmin()
+        getBiodataBuktiPendaftaran()
     }, [location])
 
     useEffect(() => {
@@ -97,6 +104,58 @@ const DetailApprove = () => {
 
     const background = ['text-secondary', 'text-info', 'text-primary', 'text-success', 'text-danger', 'text-warning']
     const ikon = [<FaBook />, <FaBalanceScale />]
+    const tableStyle = {
+        image: {
+            width: '597px'
+        },
+        wrap: {
+            width: '600px',
+            fontFamily: "Arial, Helvetica, sans-serif",
+            background: '#ffffff',
+            color: '#000000'
+        },
+        title: {
+            fontSize: '12px',
+            margin: 'auto',
+        },
+        grid: {
+            display: 'grid',
+            gridTemplateColumns: 'auto auto',
+            width: '80%',
+            margin: 'auto',
+            fontSize: '10px'
+        },
+        gridItem: {
+            fontSize: '10px',
+        },
+        table: {
+            fontSize: '8px',
+            margin: 'auto',
+            width: '80%',
+            border: '1px solid black',
+            borderCollapse: 'collapse'
+        },
+        tr: {
+        },
+        td: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse',
+            fontWeight: 'bold'
+        },
+        td2: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse'
+        },
+        tdMakul: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse',
+            wordSpacing: '2px'
+        },
+    }
+
 
     const getApproveById = async () => {
         try {
@@ -111,6 +170,7 @@ const DetailApprove = () => {
         try {
             const response = await axios.get(`v1/formulir/getByToken/${location.state.token}`)
             setBiodata(response.data.data)
+            setNik(response.data.data.nik)
             setNegara(response.data.data.negaras[0].nama_negara)
             setProvinsi(response.data.data.provinsis[0].nama_provinsi)
             setKabupaten(response.data.data.kabupatens[0].nama_kabupaten)
@@ -394,7 +454,7 @@ const DetailApprove = () => {
                                 icon: 'success',
                                 confirmButtonColor: '#3085d6'
                             }).then(() => {
-                                navigate('/approve')
+                                navigate(0)
                             })
                         })
                     }
@@ -426,6 +486,43 @@ const DetailApprove = () => {
             setIndex(i)
         }
     }
+
+    const handleGeneratePdf = () => {
+        const doc = new jsPDF({
+            format: 'a4',
+            orientation: 'potrait',
+            unit: 'pt',
+        })
+
+        doc.setFont('Inter-Regular', 'normal')
+        doc.setFontSize(1);
+
+        doc.html(templateRef.current, {
+            async callback(doc) {
+                await doc.save('Bukti Pendaftaran ' + biodataBuktiPendaftaran.nama)
+            }
+        })
+    }
+
+    const getBiodataBuktiPendaftaran = async () => {
+        try {
+            const data = await axios.get(`/v1/approve/mhsByNik/${nik}`)
+            setBiodataBuktiPendaftaran(data.data.data)
+
+        } catch (error) {
+
+        }
+    }
+
+    const downloadBuktiPendaftaran = () => {
+        try {
+            handleGeneratePdf()
+        } catch (error) {
+
+        }
+    }
+
+    console.log(biodataBuktiPendaftaran);
 
     return (
         <LayoutAdmin>
@@ -934,10 +1031,15 @@ const DetailApprove = () => {
                                                 <div className="card-body">
                                                     <div className="row mt-2 mb-2">
                                                         <p className='text-center h4'>
-                                                            APPROVAL / PERSETUJUAN calon mahasiswa baru telah berhasil dimohon  diberitahukan kepada yang bersangkutan, dan silahkan download bukti approval dilaman utama atas perhatian dan kerjasamanya TERIMAKASIH.
+                                                            APPROVAL / PERSETUJUAN calon mahasiswa baru telah berhasil dimohon  diberitahukan kepada yang bersangkutan, dan silahkan download bukti approval Dibawah ini atas perhatian dan kerjasamanya TERIMAKASIH.
                                                         </p>
+
                                                     </div>
                                                     <div className="row">
+                                                        <div className="col-md-12 text-center">
+                                                            <button className='btn btn-sm btn-secondary mt-1' onClick={() => { downloadBuktiPendaftaran() }}>Download Bukti Pendaftaran</button>
+
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div className="card-footer">
@@ -952,6 +1054,76 @@ const DetailApprove = () => {
                                 }
                             </div>
 
+                        </div>
+                    </div>
+                </div>
+                <div className="row mt-3 d-none">
+                    <div ref={templateRef}>
+                        <div style={tableStyle.wrap}>
+                            <img src={kop} alt="kop" style={tableStyle.image} />
+
+                            <div style={tableStyle.grid} className='mb-3 mt-3'>
+                                <div style={tableStyle.gridItem}>
+                                    <h4 className='fw-bold'>NO. Pendaftaran : {user && user.data.token}</h4>
+                                    <table cellPadding={5}>
+                                        <tbody>
+                                            <tr>
+                                                <td><span>NIM</span></td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodataBuktiPendaftaran.nim}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span>NIK</span></td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodataBuktiPendaftaran.nik}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nama</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodataBuktiPendaftaran.nama}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tempat/Tanggal Lahir</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodataBuktiPendaftaran.tempat_lahir}, {biodataBuktiPendaftaran.tanggal_lahir}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jenis Kelamin</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{biodataBuktiPendaftaran.kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jenjang Pendidikan</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{ }</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Prodi</td>
+                                                <td>&nbsp;:&nbsp;</td>
+                                                <td>{prodiKetAdmin}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style={tableStyle.gridItem}>
+                                    <div className='border mt-5 text-center algn-items-center' style={{ width: '135px', height: '160px' }}>
+                                        <h6 style={{ marginTop: '70px' }}>4x6</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={tableStyle.grid}>
+                                <div>
+                                    <p style={{ textAlign: 'justify', textJustify: 'inter-word' }}>Selamat! Anda telah berhasil mendaftar pada seleksi Mahasiswa Baru Sekolah Tinggi Nurul Abror Al-Robbaniyin
+                                        Alasbuluh Wongsorejo Banyuwangi.</p>
+
+                                    <span style={{ textAlign: 'justify', textJustify: 'inter-word' }}>
+                                        Silakan menyampaikan dokumen persyaratan dalam bentuk hardcopy ke</span>
+                                    <ol>
+                                        <li>LK SMK NAA (untuk melakukan pembayaran).</li>
+                                        <li>Panitia PMB STAINAA (untuk melakukan registrasi ulang).</li>
+                                    </ol>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
