@@ -487,6 +487,16 @@ const DetailApprove = () => {
         }
     }
 
+    const getBiodataBuktiPendaftaran = async () => {
+        try {
+            const data = await axios.get(`/v1/approve/mhsByNik/${nik}`)
+            setBiodataBuktiPendaftaran(data.data.data)
+
+        } catch (error) {
+
+        }
+    }
+
     const handleGeneratePdf = () => {
         const doc = new jsPDF({
             format: 'a4',
@@ -499,20 +509,12 @@ const DetailApprove = () => {
 
         doc.html(templateRef.current, {
             async callback(doc) {
-                await doc.save('Bukti Pendaftaran ' + biodataBuktiPendaftaran.nama)
+                doc.save('Bukti Pendaftaran ' + biodataBuktiPendaftaran.nama)
             }
         })
     }
 
-    const getBiodataBuktiPendaftaran = async () => {
-        try {
-            const data = await axios.get(`/v1/approve/mhsByNik/${nik}`)
-            setBiodataBuktiPendaftaran(data.data.data)
-
-        } catch (error) {
-
-        }
-    }
+    console.log(biodataBuktiPendaftaran.nama);
 
     const downloadBuktiPendaftaran = () => {
         try {

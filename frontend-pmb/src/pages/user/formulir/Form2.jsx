@@ -369,7 +369,7 @@ const Form2 = () => {
                                         <div className="row">
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="negara" className="form-label">Negara</label>
-                                                <select name="negara" id="negara" className='form-select form-select-sm' value={kodeNegara || ''} onChange={(e) => setKodeNegara(e.target.value)}>
+                                                <select name="negara" id="negara" className='form-select form-select-sm text-uppercase' value={kodeNegara || ''} onChange={(e) => setKodeNegara(e.target.value)}>
                                                     <option value="">-Negara-</option>
                                                     {Negara.map((item) => (
                                                         <option key={item.id_negara} value={item.code_negara}>{item.nama_negara}</option>
@@ -378,7 +378,7 @@ const Form2 = () => {
                                             </div>
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="provinsi" className="form-label">Provinsi</label>
-                                                <select name="provinsi" id="provinsi" className='form-select form-select-sm' value={kodeProvinsi || ''} onChange={(e) => setKodeProvinsi(e.target.value)}>
+                                                <select name="provinsi" id="provinsi" className='form-select form-select-sm text-uppercase' value={kodeProvinsi || ''} onChange={(e) => setKodeProvinsi(e.target.value)}>
                                                     <option value="">-Provinsi-</option>
                                                     {Provinsi.map((item) => (
                                                         <option key={item.id_provinsi} value={item.code_provinsi}>{item.nama_provinsi}</option>
@@ -387,7 +387,7 @@ const Form2 = () => {
                                             </div>
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="kabupaten" className="form-label">Kabupaten</label>
-                                                <select name="kabupaten" id="kabupaten" className='form-select form-select-sm' value={kodeKabupaten || ''} onChange={(e) => setKodeKabupaten(e.target.value)}>
+                                                <select name="kabupaten" id="kabupaten" className='form-select form-select-sm text-uppercase' value={kodeKabupaten || ''} onChange={(e) => setKodeKabupaten(e.target.value)}>
                                                     <option value="">-Kabupaten-</option>
                                                     {Kabupaten.map((item) => (
                                                         <option key={item.id_kabupaten} value={item.code_kabupaten}>{item.nama_kabupaten}</option>
@@ -396,7 +396,7 @@ const Form2 = () => {
                                             </div>
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="kecamatan" className="form-label">Kecamatan</label>
-                                                <select name="kecamatan" id="kecamatan" className='form-select form-select-sm' value={kodeKecamatan || ''} onChange={(e) => setKodeKecamatan(e.target.value)}>
+                                                <select name="kecamatan" id="kecamatan" className='form-select form-select-sm text-uppercase' value={kodeKecamatan || ''} onChange={(e) => setKodeKecamatan(e.target.value)}>
                                                     <option value="">-Kecamatan-</option>
                                                     {Kecamatan.map((item) => (
                                                         <option key={item.id_kecamatan} value={item.code_kecamatan}>{item.nama_kecamatan}</option>
@@ -405,7 +405,7 @@ const Form2 = () => {
                                             </div>
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="desa" className="form-label">Desa</label>
-                                                <select name="desa" id="desa" className='form-select form-select-sm' value={kodeDesa || ''} onChange={(e) => setKodeDesa(e.target.value)}>
+                                                <select name="desa" id="desa" className='form-select form-select-sm text-uppercase' value={kodeDesa || ''} onChange={(e) => setKodeDesa(e.target.value)}>
                                                     <option value="">-Desa-</option>
                                                     {Desa.map((item) => (
                                                         <option key={item.id_desa} value={item.code_desa}>{item.nama_desa}</option>
@@ -414,31 +414,31 @@ const Form2 = () => {
                                             </div>
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="kodepos" className="form-label">Kode Pos</label>
-                                                <input type="number" id="kodepos" className="form-control form-control-sm" name="kodepos" placeholder="Masukkan Kode Pos" value={kodePos || ''} onChange={(e) => setKodePos(e.target.value)} />
+                                                <input type="number" id="kodepos" className="form-control form-control-sm text-uppercase" name="kodepos" placeholder="Masukkan Kode Pos" value={kodePos || ''} onChange={(e) => setKodePos(e.target.value)} />
                                             </div>
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="dusun" className="form-label">Dusun</label>
-                                                <input type="text" id="dusun" className="form-control form-control-sm" name="dusun" placeholder="Masukkan Dusun" value={dusun || ''} onChange={(e) => setDusun(e.target.value)} />
+                                                <input type="text" id="dusun" className="form-control form-control-sm text-uppercase" name="dusun" placeholder="Masukkan Dusun" value={dusun || ''} onChange={(e) => setDusun(e.target.value)} />
                                             </div>
                                             <div className="col-md-3">
                                                 <div className="row">
                                                     <div className="col-md-6">
                                                         <label htmlFor="rt" className="form-label">RT</label>
-                                                        <input type="number" id="rt" className="form-control form-control-sm" name="rt" placeholder="RT" value={rt || ''} onChange={(e) => setRt(e.target.value)} />
+                                                        <input type="number" id="rt" className="form-control form-control-sm text-uppercase" name="rt" placeholder="RT" value={rt || ''} onChange={(e) => setRt(e.target.value)} />
                                                     </div>
                                                     <div className="col-md-6">
                                                         <label htmlFor="rw" className="form-label">RW</label>
-                                                        <input type="number" id="rw" className="form-control form-control-sm" name="rw" placeholder="RW" value={rw || ''} onChange={(e) => setRw(e.target.value)} />
+                                                        <input type="number" id="rw" className="form-control form-control-sm text-uppercase" name="rw" placeholder="RW" value={rw || ''} onChange={(e) => setRw(e.target.value)} />
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="col-md-6 mb-3">
                                                 <label htmlFor="jalan" className="form-label">Jalan</label>
-                                                <textarea name="jalan" id="jalan" className='form-control' value={jalan || ''} onChange={(e) => setJalan(e.target.value)}></textarea>
+                                                <textarea name="jalan" id="jalan" className='form-control text-uppercase' value={jalan || ''} onChange={(e) => setJalan(e.target.value)} placeholder='masukkan jalan'></textarea>
                                             </div>
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="jenisTinggal" className="form-label">Jenis Tinggal</label>
-                                                <select name="jenisTinggal" id="jenisTinggal" className='form-select form-select-sm' value={jenisTinggal || ''} onChange={(e) => setJenisTinggal(e.target.value)}>
+                                                <select name="jenisTinggal" id="jenisTinggal" className='form-select form-select-sm text-uppercase' value={jenisTinggal || ''} onChange={(e) => setJenisTinggal(e.target.value)}>
                                                     <option value="">-Jenis Tinggal-</option>
                                                     {Jenis.map((item) => (
                                                         <option key={item.id_jenis_tinggal} value={item.code_jenis_tinggal}>{item.nama_jenis_tinggal}</option>
@@ -447,7 +447,7 @@ const Form2 = () => {
                                             </div>
                                             <div className="col-md-3 mb-3">
                                                 <label htmlFor="alatTransport" className="form-label">Alat Transportasi</label>
-                                                <select name="alatTransport" id="alatTransport" className='form-select form-select-sm' value={alatTransportasi || ''} onChange={(e) => setAlatTransportasi(e.target.value)}>
+                                                <select name="alatTransport" id="alatTransport" className='form-select form-select-sm text-uppercase' value={alatTransportasi || ''} onChange={(e) => setAlatTransportasi(e.target.value)}>
                                                     <option value="">-Alat Transportasi-</option>
                                                     {AlatTrans.map((item) => (
                                                         <option key={item.id_alat_transportasi} value={item.code_alat_transportasi}>{item.nama_alat_transportasi}</option>

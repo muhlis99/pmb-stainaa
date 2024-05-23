@@ -204,7 +204,7 @@ const CekFormulir = () => {
                                             <div className="row">
                                                 <div className="col-md-12">
                                                     <FaCheckCircle className='text-success h2'></FaCheckCircle> <span className='text-success text-bold'>SELESAI</span>
-                                                    <p>Pendaftaran anda telah selesai dalam tahap pengisian formulir silahkan untuk melanjutkan step selajnutnya yakni melakukan pembayaran</p>
+                                                    <p>Pendaftaran anda telah selesai dalam tahap pengisian formulir silahkan untuk melanjutkan step selanjutnya yakni melakukan pembayaran</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -278,7 +278,6 @@ const CekFormulir = () => {
                                         </h5>
                                     </div>
                                     <div className="card-body">
-
                                         <div className="col-md-12">
                                             <table cellPadding={5}>
                                                 <tbody>
@@ -286,45 +285,60 @@ const CekFormulir = () => {
                                                         <td><h5 className='mb-0'><FaImage className='h1 text-info'></FaImage></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
-                                                            <span style={{ cursor: 'pointer' }} onClick={() => { imageModal() }}>
+                                                            <Link to='/detailberkas/fotoDiri'
+                                                                target='_blank'
+                                                                style={{ color: '#64748b' }}
+                                                            >
                                                                 {biodata.foto_diri}
-                                                            </span>
+                                                            </Link>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td><h5 className='mb-0'><FaFilePdf className='h1 text-success'></FaFilePdf></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
-                                                            <span>
+                                                            <Link to='/detailberkas/scanKtp'
+                                                                target='_blank'
+                                                                style={{ color: '#64748b' }}
+                                                            >
                                                                 {biodata.foto_ktp}
-                                                            </span>
+                                                            </Link>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td><h5 className='mb-0'><FaFileCsv className='h1 text-warning'></FaFileCsv></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
-                                                            <span>
+                                                            <Link to='/detailberkas/scanKK'
+                                                                target='_blank'
+                                                                style={{ color: '#64748b' }}
+                                                            >
                                                                 {biodata.foto_kk}
-                                                            </span>
+                                                            </Link>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td><h5 className='mb-0'><FaCreditCard className='h1 text-secondary'></FaCreditCard></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
-                                                            <span>
+                                                            <Link to='/detailberkas/scanIjazah'
+                                                                target='_blank'
+                                                                style={{ color: '#64748b' }}
+                                                            >
                                                                 {biodata.foto_ijazah}
-                                                            </span>
+                                                            </Link>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td><h5 className='mb-0'><FaFileArchive className='h1 text-success'></FaFileArchive></h5></td>
                                                         <td>&nbsp;:&nbsp;</td>
                                                         <td className='py-2'>
-                                                            <span>
+                                                            <Link to='/detailberkas/scanSuratKeterangan'
+                                                                target='_blank'
+                                                                style={{ color: '#64748b' }}
+                                                            >
                                                                 {biodata.foto_suket_santri}
-                                                            </span>
+                                                            </Link>
                                                         </td>
                                                     </tr>
                                                 </tbody>
