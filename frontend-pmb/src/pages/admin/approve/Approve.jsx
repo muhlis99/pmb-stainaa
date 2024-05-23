@@ -38,11 +38,11 @@ const Approve = () => {
         try {
             const response = await axios.get(`v1/approve/all?page=${page}&search=${keyword}`)
             setApprove(response.data.data)
-            setNik(response.data.data.nik)
             setPage(response.data.current_page)
             setrows(response.data.total_data)
             setPages(response.data.total_page)
             setperPage(response.data.per_page)
+            setNik(response.data.data.nik)
         } catch (error) {
 
         }
@@ -85,7 +85,6 @@ const Approve = () => {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className="table-responsive">
-
                                             <table className="table mb-0 text-nowrap table-sm table-hover table-centered">
                                                 <thead className="">
                                                     <tr>
@@ -112,10 +111,28 @@ const Approve = () => {
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
                                                                 <td>
                                                                     <table>
-                                                                        <tr><td>Nama</td><td>:</td><td>{item.formulirs[0].nama}</td></tr>
-                                                                        <tr><td>Tempat Lahir</td><td>:</td><td>{item.formulirs[0].tempat_lahir}</td></tr>
-                                                                        <tr><td>Tanggal Lahir</td><td>:</td><td>{item.formulirs[0].tanggal_lahir}</td></tr>
-                                                                        <tr><td>Email</td><td>:</td><td>{item.formulirs[0].email}</td></tr>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>Nama</td>
+                                                                                <td>&nbsp;:&nbsp;</td>
+                                                                                <td>{item.formulirs[0].nama}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Tempat Lahir</td>
+                                                                                <td>&nbsp;:&nbsp;</td>
+                                                                                <td>{item.formulirs[0].tempat_lahir}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Tanggal Lahir</td>
+                                                                                <td>&nbsp;:&nbsp;</td>
+                                                                                <td>{item.formulirs[0].tanggal_lahir}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Email</td>
+                                                                                <td>&nbsp;:&nbsp;</td>
+                                                                                <td>{item.formulirs[0].email}</td>
+                                                                            </tr>
+                                                                        </tbody>
                                                                     </table>
                                                                 </td>
                                                                 <td>
