@@ -17,7 +17,9 @@ const smtpTransport = require('nodemailer-smtp-transport')
 const path = require('path')
 const fs = require('fs')
 const QRCode = require("qrcode");
-const { createCanvas, loadImage } = require("canvas");
+// const { createCanvas, loadImage } = require("canvas");
+const axios = require('axios')
+const endPoint = "https://api-siakad.stainaa.ac.id/v1/mahasiswa/"
 
 module.exports = {
     getAll: async (req, res, next) => {
@@ -246,67 +248,67 @@ module.exports = {
     },
 
     approve : async (req, res, next) => {
-        async function createQrCode(dataForQRcode, center_image, width, cwidth) {
-            const canvas = createCanvas(width, width)
-            QRCode.toCanvas(
-                canvas,
-                dataForQRcode,
-                {
-                    errorCorrectionLevel: "H",
-                    width: 500,
-                    margin: 1,
-                    color: {
-                        dark: "#000000",
-                        light: "#ffffff",
-                    },
-                }
-            )
+        // async function createQrCode(dataForQRcode, center_image, width, cwidth) {
+        //     const canvas = createCanvas(width, width)
+        //     QRCode.toCanvas(
+        //         canvas,
+        //         dataForQRcode,
+        //         {
+        //             errorCorrectionLevel: "H",
+        //             width: 500,
+        //             margin: 1,
+        //             color: {
+        //                 dark: "#000000",
+        //                 light: "#ffffff",
+        //             },
+        //         }
+        //     )
 
-            const ctx = canvas.getContext("2d")
-            const img = await loadImage(center_image)
-            const center = (width - cwidth) / 1
-            ctx.drawImage(img, 200, 190, cwidth, cwidth)
-            return canvas.toDataURL("image/png")
-        }
+        //     const ctx = canvas.getContext("2d")
+        //     const img = await loadImage(center_image)
+        //     const center = (width - cwidth) / 1
+        //     ctx.drawImage(img, 200, 190, cwidth, cwidth)
+        //     return canvas.toDataURL("image/png")
+        // }
 
-        async function mainQrCode(nim, params, qrCodeOld = "") {
-            if (qrCodeOld) {
-                const data = params
-                const centerImageBase64 = fs.readFileSync(
-                    path.resolve('./stainaa.png')
-                )
-                const dataQrWithLogo = Buffer.from(centerImageBase64).toString('base64url')
-                const qrCode = await createQrCode(
-                    nim,
-                    `data:image/png;base64,${dataQrWithLogo}`,
-                    150,
-                    100
-                )
-                const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
-                fs.unlinkSync(`./tmp_siakad/mahasiswa/qrcode/${qrCodeOld}`)
-                let filename = `./tmp_siakad/mahasiswa/qrcode/${data}.png`;
-                fs.writeFile(filename, base64Data, "base64url", (err) => {
-                    if (!err) console.log(`${filename} created successfully!`)
-                })
-            } else {
-                const data = params
-                const centerImageBase64 = fs.readFileSync(
-                    path.resolve('./stainaa.png')
-                )
-                const dataQrWithLogo = Buffer.from(centerImageBase64).toString('base64url')
-                const qrCode = await createQrCode(
-                    nim,
-                    `data:image/png;base64,${dataQrWithLogo}`,
-                    150,
-                    100
-                )
-                const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
-                let filename = `./tmp_siakad/mahasiswa/qrcode/${data}.png`;
-                fs.writeFile(filename, base64Data, "base64url", (err) => {
-                    if (!err) console.log(`${filename} created successfully!`)
-                })
-            }
-        }
+        // async function mainQrCode(nim, params, qrCodeOld = "") {
+        //     if (qrCodeOld) {
+        //         const data = params
+        //         const centerImageBase64 = fs.readFileSync(
+        //             path.resolve('./stainaa.png')
+        //         )
+        //         const dataQrWithLogo = Buffer.from(centerImageBase64).toString('base64url')
+        //         const qrCode = await createQrCode(
+        //             nim,
+        //             `data:image/png;base64,${dataQrWithLogo}`,
+        //             150,
+        //             100
+        //         )
+        //         const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
+        //         fs.unlinkSync(`./tmp_siakad/mahasiswa/qrcode/${qrCodeOld}`)
+        //         let filename = `./tmp_siakad/mahasiswa/qrcode/${data}.png`;
+        //         fs.writeFile(filename, base64Data, "base64url", (err) => {
+        //             if (!err) console.log(`${filename} created successfully!`)
+        //         })
+        //     } else {
+        //         const data = params
+        //         const centerImageBase64 = fs.readFileSync(
+        //             path.resolve('./stainaa.png')
+        //         )
+        //         const dataQrWithLogo = Buffer.from(centerImageBase64).toString('base64url')
+        //         const qrCode = await createQrCode(
+        //             nim,
+        //             `data:image/png;base64,${dataQrWithLogo}`,
+        //             150,
+        //             100
+        //         )
+        //         const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
+        //         let filename = `./tmp_siakad/mahasiswa/qrcode/${data}.png`;
+        //         fs.writeFile(filename, base64Data, "base64url", (err) => {
+        //             if (!err) console.log(`${filename} created successfully!`)
+        //         })
+        //     }
+        // }
 
         let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
         const { token, semester } = req.body
@@ -353,7 +355,8 @@ module.exports = {
             no_urut_mhs = "0001"
             nim = t_nim + b_nim + kode_prodi_nim + no_urut_mhs
             dataQrCode = "mahasiswaQrcode" + Buffer.from(nim).toString('base64url')
-            mainQrCode(nim, dataQrCode)
+            await axios.get(`${endPoint}/qrcodepmb/${nim}/${dataQrCode}`)
+            // mainQrCode(nim, dataQrCode)
         } else {
             const code = "0000"
             const a = no_urut_mhs_terakhir.toString()
@@ -363,7 +366,8 @@ module.exports = {
             no_urut_mhs = nomor + b
             nim = t_nim + b_nim + kode_prodi_nim + no_urut_mhs
             dataQrCode = "mahasiswaQrcode" + Buffer.from(nim).toString('base64url')
-            mainQrCode(nim, dataQrCode)
+            await axios.get(`${endPoint}/qrcodepmb/${nim}/${dataQrCode}`)
+            // mainQrCode(nim, dataQrCode)
         }
 
         const filefotodiriold = `./tmp_pmb/diri/${dataMhs.foto_diri}`;
