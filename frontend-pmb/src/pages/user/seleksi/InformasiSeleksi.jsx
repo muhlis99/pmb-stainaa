@@ -138,91 +138,93 @@ const InformasiSeleksi = () => {
                 </div>
                 <div className="row">
                     <div className="col-md-12">
-                        {idPendaftar == '' || statusSeleksi == 'belum' ?
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="row">
-                                        <div className="col-xl-12 col-md-12 col-sm-12">
-                                            <h2 className='display-5'>Tes Kemampuan Dasar</h2>
-                                            <p style={{ fontSize: '16px' }}>
-                                                Sebagai prasyarat untuk menjadi
-                                                mahasiswa STAINAA. Kamu harus mengerjakan soal kemampuan belajar.
-                                                Perhatikan petunjuk berikut sebelum memulai tes.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-xl-12 col-md-12 col-sm-12">
-                                            <h3 className='display-6'>Mengenai Tes</h3>
-                                            <ul>
-                                                <li style={{ fontSize: '16px' }}>Tes yang diuji berupa tes kemampuan kompetensi.</li>
-                                                <li style={{ fontSize: '16px' }}>Tes hanya dapat dilakukan satu kali (tidak ada pengulangan).</li>
-                                                <li style={{ fontSize: '16px' }}>Jika halaman ditutup tes akan tetap berlangsung.</li>
-                                                <li className='fw-bold' style={{ fontSize: '16px' }}>Pertanyaan dalam tes tidak dapat disebarluaskan.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-xl-12 col-md-12 col-sm-12">
-                                            <h3 className='display-6'>Sebelum Pengerjaan</h3>
-                                            <ul>
-                                                <li style={{ fontSize: '16px' }}>Pastikan kamu berada ditempat yang kondusif.</li>
-                                                <li style={{ fontSize: '16px' }}>Pastikan kamu berada ditempat dengan koneksi internet yang stabil.</li>
-                                                <li style={{ fontSize: '16px' }}>Bila perlu, kamu bisa menggunakan alat bantu corat-coret seperti kertas dan pensil/pulpen untuk menyelesaikan soal.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="card-footer">
-                                    <div className="row">
-                                        <div className="col-md-8">
-                                            <div className="form-check">
-                                                <input className="form-check-input" type="checkbox" onChange={checked} id="flexCheckDefault" />
-                                                <label className="form-check-label" htmlFor="flexCheckDefault">
-                                                    Saya telah membaca dan memahami setiap petunjuk tes dan siap mulai tes.
-                                                </label>
+                        {idPendaftar == '' || statusSeleksi == '' ?
+                            ""
+                            : idPendaftar == '' || statusSeleksi == 'belum' ?
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="row">
+                                            <div className="col-xl-12 col-md-12 col-sm-12">
+                                                <h2 className='display-5'>Tes Kemampuan Dasar</h2>
+                                                <p style={{ fontSize: '16px' }}>
+                                                    Sebagai prasyarat untuk menjadi
+                                                    mahasiswa STAINAA. Kamu harus mengerjakan soal kemampuan belajar.
+                                                    Perhatikan petunjuk berikut sebelum memulai tes.
+                                                </p>
                                             </div>
                                         </div>
-                                        <div className="col-md-4">
-                                            {statusSeleksi == 'belum' ?
-                                                <button className={`float-end btn btn-sm btn-primary ${tombolMulai ? '' : 'd-none'}`} onClick={tambahSeleksi}>Lanjut</button>
-                                                :
-                                                <Link to="/formseleksi" state={{ waktuNow: new Date() }} className={`btn btn-sm btn-primary float-end ${tombolMulai ? '' : 'd-none'}`}>Lanjut</Link>
-                                            }
+                                        <div className="row">
+                                            <div className="col-xl-12 col-md-12 col-sm-12">
+                                                <h3 className='display-6'>Mengenai Tes</h3>
+                                                <ul>
+                                                    <li style={{ fontSize: '16px' }}>Tes yang diuji berupa tes kemampuan kompetensi.</li>
+                                                    <li style={{ fontSize: '16px' }}>Tes hanya dapat dilakukan satu kali (tidak ada pengulangan).</li>
+                                                    <li style={{ fontSize: '16px' }}>Jika halaman ditutup tes akan tetap berlangsung.</li>
+                                                    <li className='fw-bold' style={{ fontSize: '16px' }}>Pertanyaan dalam tes tidak dapat disebarluaskan.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-xl-12 col-md-12 col-sm-12">
+                                                <h3 className='display-6'>Sebelum Pengerjaan</h3>
+                                                <ul>
+                                                    <li style={{ fontSize: '16px' }}>Pastikan kamu berada ditempat yang kondusif.</li>
+                                                    <li style={{ fontSize: '16px' }}>Pastikan kamu berada ditempat dengan koneksi internet yang stabil.</li>
+                                                    <li style={{ fontSize: '16px' }}>Bila perlu, kamu bisa menggunakan alat bantu corat-coret seperti kertas dan pensil/pulpen untuk menyelesaikan soal.</li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            :
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="row">
-                                        <div className="col-xl-12 col-md-12 col-sm-12 text-center mb-4">
-                                            <h4>
-                                                Anda telah menyelesaikan seleksi masuk sebagai mahasiswa baru STAINAA, silakan tunggu informasi lebih lanjut
-                                            </h4>
-                                        </div>
-                                        <div className="col-xl-12 col-md-12 col-sm-12 d-flex gap-5 justify-content-center">
-                                            <div className='text-center'>
-                                                <h3 className='display-5'>Total Soal</h3>
-                                                <h3 className='display-3 mt-3'>{totalSoal}</h3>
+                                    <div className="card-footer">
+                                        <div className="row">
+                                            <div className="col-md-8">
+                                                <div className="form-check">
+                                                    <input className="form-check-input" type="checkbox" onChange={checked} id="flexCheckDefault" />
+                                                    <label className="form-check-label" htmlFor="flexCheckDefault">
+                                                        Saya telah membaca dan memahami setiap petunjuk tes dan siap mulai tes.
+                                                    </label>
+                                                </div>
                                             </div>
-                                            <div className='text-center'>
-                                                <h3 className='display-5'>Total Selesai</h3>
-                                                <h3 className='display-3 mt-3'>{penyelesaian}</h3>
-                                            </div>
-                                        </div>
-                                        <div className="col-xl-12 col-md-12 col-sm-12 d-flex justify-content-evenly mt-4">
-                                            <div className=''>
-                                                <h5>Tanggal : {moment(tanggal).format('DD MMMM YYYY')}</h5>
-                                            </div>
-                                            <div className=''>
-                                                <h5>Durasi : {durasi}</h5>
+                                            <div className="col-md-4">
+                                                {statusSeleksi == 'belum' ?
+                                                    <button className={`float-end btn btn-sm btn-primary ${tombolMulai ? '' : 'd-none'}`} onClick={tambahSeleksi}>Lanjut</button>
+                                                    :
+                                                    <Link to="/formseleksi" state={{ waktuNow: new Date() }} className={`btn btn-sm btn-primary float-end ${tombolMulai ? '' : 'd-none'}`}>Lanjut</Link>
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                :
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="row">
+                                            <div className="col-xl-12 col-md-12 col-sm-12 text-center mb-4">
+                                                <h4>
+                                                    Anda telah menyelesaikan seleksi masuk sebagai mahasiswa baru STAINAA, silakan tunggu informasi lebih lanjut
+                                                </h4>
+                                            </div>
+                                            <div className="col-xl-12 col-md-12 col-sm-12 d-flex gap-5 justify-content-center">
+                                                <div className='text-center'>
+                                                    <h3 className='display-5'>Total Soal</h3>
+                                                    <h3 className='display-3 mt-3'>{totalSoal}</h3>
+                                                </div>
+                                                <div className='text-center'>
+                                                    <h3 className='display-5'>Total Selesai</h3>
+                                                    <h3 className='display-3 mt-3'>{penyelesaian}</h3>
+                                                </div>
+                                            </div>
+                                            <div className="col-xl-12 col-md-12 col-sm-12 d-flex justify-content-evenly mt-4">
+                                                <div className=''>
+                                                    <h5>Tanggal : {moment(tanggal).format('DD MMMM YYYY')}</h5>
+                                                </div>
+                                                <div className=''>
+                                                    <h5>Durasi : {durasi}</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         }
                     </div>
                 </div>

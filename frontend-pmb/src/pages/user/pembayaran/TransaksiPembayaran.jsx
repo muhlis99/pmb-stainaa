@@ -706,7 +706,7 @@ const TransaksiPembayaran = () => {
                                 </div>
                                 <div style={tableStyle.gridItem}>
                                     <div className='border mt-5 text-center algn-items-center' style={{ width: '135px', height: '160px' }}>
-                                        <h6 style={{ marginTop: '70px' }}>4x6</h6>
+                                        <h6 style={{ marginTop: '70px' }}>3x4</h6>
                                     </div>
                                 </div>
                             </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import LayoutAdmin from '../../LayoutAdmin'
 import { useDispatch, useSelector } from "react-redux"
 import { getMe } from "../../../features/authSlice"
@@ -8,13 +8,15 @@ import axios from 'axios'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import { FaBalanceScale, FaBook } from "react-icons/fa"
-
-
+import kop from "../../../assets/kop.png"
+import jsPDF from "jspdf"
+import { FallingLines } from 'react-loader-spinner'
 
 const DetailApprove = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const location = useLocation()
+    const templateRef = useRef(null)
     const { isError, user } = useSelector((state) => state.auth)
     const [Approve, setApprove] = useState([])
     const [biodata, setBiodata] = useState([])
@@ -52,6 +54,10 @@ const DetailApprove = () => {
     const [prodiKetAdmin, setProdiKetAdmin] = useState("")
     const [indexProdiKetAdmin, setIndexProdiKetAdmin] = useState("")
     const [index, setIndex] = useState("")
+    const [nik, setNik] = useState("")
+    const [biodataBuktiPendaftaran, setBiodataBuktiPendaftaran] = useState([])
+    const [loading, setLoading] = useState(false)
+
 
     useEffect(() => {
         if (isError) {
@@ -69,6 +75,10 @@ const DetailApprove = () => {
         getHasilProdiMhs()
         getIndexProdiAdmin()
     }, [location])
+
+    useEffect(() => {
+        getBiodataBuktiPendaftaran()
+    }, [nik, Approve])
 
     useEffect(() => {
         getDataProdi()
@@ -97,11 +107,64 @@ const DetailApprove = () => {
 
     const background = ['text-secondary', 'text-info', 'text-primary', 'text-success', 'text-danger', 'text-warning']
     const ikon = [<FaBook />, <FaBalanceScale />]
+    const tableStyle = {
+        image: {
+            width: '597px'
+        },
+        wrap: {
+            width: '600px',
+            fontFamily: "Arial, Helvetica, sans-serif",
+            background: '#ffffff',
+            color: '#000000'
+        },
+        title: {
+            fontSize: '12px',
+            margin: 'auto',
+        },
+        grid: {
+            display: 'grid',
+            gridTemplateColumns: 'auto auto',
+            width: '80%',
+            margin: 'auto',
+            fontSize: '10px'
+        },
+        gridItem: {
+            fontSize: '10px',
+        },
+        table: {
+            fontSize: '8px',
+            margin: 'auto',
+            width: '80%',
+            border: '1px solid black',
+            borderCollapse: 'collapse'
+        },
+        tr: {
+        },
+        td: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse',
+            fontWeight: 'bold'
+        },
+        td2: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse'
+        },
+        tdMakul: {
+            padding: '5px 6px',
+            border: '1px solid black',
+            borderCollapse: 'collapse',
+            wordSpacing: '2px'
+        },
+    }
+
 
     const getApproveById = async () => {
         try {
             const response = await axios.get(`v1/approve/byId/${location.state.idApprove}`)
             setApprove(response.data.data)
+            console.log(response.data.data);
         } catch (error) {
 
         }
@@ -111,6 +174,7 @@ const DetailApprove = () => {
         try {
             const response = await axios.get(`v1/formulir/getByToken/${location.state.token}`)
             setBiodata(response.data.data)
+            setNik(response.data.data.nik)
             setNegara(response.data.data.negaras[0].nama_negara)
             setProvinsi(response.data.data.provinsis[0].nama_provinsi)
             setKabupaten(response.data.data.kabupatens[0].nama_kabupaten)
@@ -123,28 +187,28 @@ const DetailApprove = () => {
 
     const jalurPendaftaranByCode = async () => {
         if (biodata.jalur_pendaftaran) {
-            const response = await axios.get(`v1/equipment/jalurPendaftaran/getById/${biodata.jalur_pendaftaran}`)
+            const response = await axios.get(`v1/equipment/jalurPendaftaran/getByCode/${biodata.jalur_pendaftaran}`)
             setJalurPendaftaran(response.data.data.nama_jalur_pendaftaran)
         }
     }
 
     const jenisPendaftaranByCode = async () => {
         if (biodata.jenis_pendaftaran) {
-            const response = await axios.get(`v1/equipment/jenisPendaftaran/getById/${biodata.jenis_pendaftaran}`)
+            const response = await axios.get(`v1/equipment/jenisPendaftaran/getByCode/${biodata.jenis_pendaftaran}`)
             setJenisPendaftaran(response.data.data.nama_jenis_pendaftaran)
         }
     }
 
     const jenisTinggalByCode = async () => {
         if (biodata.jenis_tinggal) {
-            const response = await axios.get(`v1/equipment/jenisTinggal/getById/${biodata.jenis_tinggal}`)
+            const response = await axios.get(`v1/equipment/jenisTinggal/getByCode/${biodata.jenis_tinggal}`)
             setJenisTinggal(response.data.data.nama_jenis_tinggal)
         }
     }
 
     const alatTransportasiByCode = async () => {
         if (biodata.alat_transportasi) {
-            const response = await axios.get(`v1/equipment/alatTransportasi/getById/${biodata.alat_transportasi}`)
+            const response = await axios.get(`v1/equipment/alatTransportasi/getByCode/${biodata.alat_transportasi}`)
             setAlatTransportasi(response.data.data.nama_alat_transportasi)
         }
     }
@@ -383,18 +447,20 @@ const DetailApprove = () => {
                             confirmButtonColor: '#3085d6'
                         })
                     } else {
+                        setLoading(true)
                         axios.put(`v1/approve/approve`, {
                             token: location.state.token,
-                            prodi: idProdi,
                             semester: idSemester
                         }).then(function (response) {
+                            setLoading(false)
                             Swal.fire({
                                 title: 'Berhasil',
                                 text: response.data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#3085d6'
                             }).then(() => {
-                                navigate('/approve')
+                                getApproveById()
+                                getBiodataBuktiPendaftaran()
                             })
                         })
                     }
@@ -427,535 +493,657 @@ const DetailApprove = () => {
         }
     }
 
+    const getBiodataBuktiPendaftaran = async () => {
+        try {
+            if (nik && Approve.status == 'setuju') {
+                const data = await axios.get(`/v1/approve/mhsByNik/${nik}`)
+                setBiodataBuktiPendaftaran(data.data.data)
+            }
+        } catch (error) {
+            // console.log(error);
+        }
+    }
+
+    const handleGeneratePdf = () => {
+        const doc = new jsPDF({
+            format: 'a4',
+            orientation: 'potrait',
+            unit: 'pt',
+        })
+
+        doc.setFont('Inter-Regular', 'normal')
+        doc.setFontSize(1);
+
+        doc.html(templateRef.current, {
+            async callback(doc) {
+                doc.save('Bukti Pendaftaran ' + biodataBuktiPendaftaran.nama)
+            }
+        })
+    }
+
+    console.log(biodataBuktiPendaftaran.nama);
+
+    const downloadBuktiPendaftaran = () => {
+        try {
+            handleGeneratePdf()
+        } catch (error) {
+
+        }
+    }
+
+
     return (
         <LayoutAdmin>
-            <section className="container-fluid p-4">
-                <div className="row">
-                    <div className="col-lg-12 col-md-12 col-12">
-                        <div className="border-bottom pb-3 mb-3 d-lg-flex justify-content-between align-items-center">
-                            <div className="mb-3 mb-lg-0">
-                                <h1 className="mb-0 h2 fw-bold">Approve</h1>
+            {loading ?
+                <div className='position-absolute z-3 bg-light start-0 end-0 top-0 bottom-0 w-100 d-flex justify-content-center align-items-center' style={{ height: '100%' }}>
+                    <div>
+                        <FallingLines
+                            color="#754FFE"
+                            width="100"
+                            visible={true}
+                            ariaLabel="falling-circles-loading"
+                            className="align-items-center"
+                        />
+                    </div>
+                </div> :
+                <section className="container-fluid p-4">
+                    <div className="row">
+                        <div className="col-lg-12 col-md-12 col-12">
+                            <div className="border-bottom pb-3 mb-3 d-lg-flex justify-content-between align-items-center">
+                                <div className="mb-3 mb-lg-0">
+                                    <h1 className="mb-0 h2 fw-bold">Approve</h1>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col-xl-12 col-md-12 colsm-12">
-                        <div className="row">
-                            <div className="col-xl-12 col-md-12 colsm-12">
-                                <div className="card shadow-lg mb-3">
-                                    <div className="card-header py-1">
-                                        <h5 className="card-title mt-1">
-                                            Detail Diri
-                                        </h5>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="row">
-                                            <div className="col-xl-6 col-md-6 col-sm-12">
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>NIK</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.nik}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>No KK</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.no_kk}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>NPWP</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.npwp}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Nama</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.nama}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Tempat Lahir</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.tempat_lahir}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Tanggal Lahir</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{moment(biodata.tanggal_lahir).format('DD MMMM YYYY')}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Jenis Kelamin</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.jenis_kelamin == 'l' ? 'Laki-Laki' : biodata.jenis_kelamin == 'p' ? 'Perempuan' : ''}</h5></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div className="col-xl-6 col-md-6 col-sm-12">
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>Email</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.email}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>NISN</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.nisn}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Penerima KPS</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.penerima_kps}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Nomor KPS</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.no_kps == '' ? '-' : biodata.no_kps}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Jalur Pendaftaran</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{jalurPendaftaran}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Jenis Pendaftaran</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{jenisPendaftaran}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Tanggal Daftar</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{moment(biodata.tanggal_daftar).format('DD MMMM YYYY h:mm:ss A')}</h5></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                    <div className="row">
+                        <div className="col-xl-12 col-md-12 colsm-12">
+                            <div className="row">
+                                <div className="col-xl-12 col-md-12 colsm-12">
+                                    <div className="card shadow-lg mb-3">
+                                        <div className="card-header py-1">
+                                            <h5 className="card-title mt-1">
+                                                Detail Diri
+                                            </h5>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="card shadow-lg mb-3">
-                                    <div className="card-header py-1">
-                                        <h5 className="card-title mt-1">
-                                            Detail Alamat
-                                        </h5>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="row">
-                                            <div className="col-xl-6 col-md-6 col-sm-12">
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>Alamat Jalan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.jalan}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Dusun</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.dusun}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>RT</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.rt}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>RW</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.rw}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Kode Pos</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.kode_pos}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Desa</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{desa}</h5></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div className="col-xl-6 col-md-6 col-sm-12">
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>Kecamatan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{kecamatan}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Kabupaten</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{kabupaten}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Provinsi</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{provinsi}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Negara</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{negara}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Transportasi</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{alatTransportasi}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Jenis Tinggal</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{jenisTinggal}</h5></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="card shadow-lg mb-3">
-                                    <div className="card-header py-1">
-                                        <h5 className="card-title mt-1">
-                                            Detail Orang Tua
-                                        </h5>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="row">
-                                            <div className="col-xl-6 col-md-6 col-sm-12">
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>NIK Ayah</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.nik_ayah}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Nama Ayah</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.nama_ayah}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Tanggal Lahir</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{moment(biodata.tanggal_lahir_ayah).format('DD MMMM YYYY')}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Pekerjaan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{pekerjaanAyah}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Penghasilan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{penghasilanAyah}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Pendidikan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{pendidikanAyah}</h5></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div className="col-xl-6 col-md-6 col-sm-12">
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>NIK Ibu</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.nik_ibu}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Nama Ibu</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.nama_ibu}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Tanggal Lahir</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{moment(biodata.tanggal_lahir_ibu).format('DD MMMM YYYY')}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Pekerjaan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{pekerjaanIbu}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Penghasilan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{penghasilanIbu}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Pendidikan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{pendidikanIbu}</h5></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="card shadow-lg mb-3">
-                                    <div className="card-header py-1">
-                                        <h5 className="card-title mt-1">
-                                            Detail Wali
-                                        </h5>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="row">
-                                            <div className="col-xl-6 col-md-6 col-sm-12">
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>NIK Wali</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.nik_wali}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Nama Wali</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5 className='text-capitalize'>{biodata.nama_wali}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Tanggal Lahir</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{moment(biodata.tanggal_lahir_wali).format('DD MMMM YYYY')}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Pekerjaan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{pekerjaanWali}</h5></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div className="col-xl-6 col-md-6 col-sm-12">
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><h5>Penghasilan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{penghasilanWali}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>Pendidikan</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{pendidikanWali}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>No WhatsApp</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.no_hp}</h5></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><h5>No Telepon</h5></td>
-                                                            <td><h5>&nbsp;:&nbsp;</h5></td>
-                                                            <td><h5>{biodata.no_telepon}</h5></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="card shadow-lg mb-3">
-                                    <div className="card-body">
-                                        <div className="row justify-content-center">
-                                            <div className="col-xl-2 col-md-2 col-sm-12">
-                                                <div className="card shadow-lg">
-                                                    <div className="card-header py-1">
-                                                        <h6 className='card-title mt-2'>Foto Diri</h6>
-                                                    </div>
-                                                    <div className="card-body p-1">
-                                                        {fotoMhs ?
-                                                            <img src={`data:;base64,${fotoMhs}`} alt="" className='img-fluid' />
-                                                            :
-                                                            <img src={logo} alt="" className='img-fluid' />
-                                                        }
-                                                    </div>
+                                        <div className="card-body">
+                                            <div className="row">
+                                                <div className="col-xl-6 col-md-6 col-sm-12">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><h5>NIK</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.nik}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>No KK</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.no_kk}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>NPWP</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.npwp}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Nama</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.nama}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Tempat Lahir</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.tempat_lahir}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Tanggal Lahir</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{moment(biodata.tanggal_lahir).format('DD MMMM YYYY')}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Jenis Kelamin</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.jenis_kelamin == 'l' ? 'Laki-Laki' : biodata.jenis_kelamin == 'p' ? 'Perempuan' : ''}</h5></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                            </div>
-                                            <div className="col-xl-2 col-md-2 col-sm-12">
-                                                <div className="card shadow-lg">
-                                                    <div className="card-header py-1">
-                                                        <h6 className='card-title mt-2'>Scan KTP</h6>
-                                                    </div>
-                                                    <div className="card-body p-1">
-                                                        {fotoKtp ?
-                                                            <img src={`data:;base64,${fotoKtp}`} alt="" className='img-fluid' />
-                                                            :
-                                                            <img src={logo} alt="" className='img-fluid' />
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-2 col-md-2 col-sm-12">
-                                                <div className="card shadow-lg">
-                                                    <div className="card-header py-1">
-                                                        <h6 className='card-title mt-2'>Scan KK</h6>
-                                                    </div>
-                                                    <div className="card-body p-1">
-                                                        {fotoKk ?
-                                                            <img src={`data:;base64,${fotoKk}`} alt="" className='img-fluid' />
-                                                            :
-                                                            <img src={logo} alt="" className='img-fluid' />
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-2 col-md-2 col-sm-12">
-                                                <div className="card shadow-lg">
-                                                    <div className="card-header py-1">
-                                                        <h6 className='card-title mt-2'>Scan Ijazah</h6>
-                                                    </div>
-                                                    <div className="card-body p-1">
-                                                        {fotoIjazah ?
-                                                            <img src={`data:;base64,${fotoIjazah}`} alt="" className='img-fluid' />
-                                                            :
-                                                            <img src={logo} alt="" className='img-fluid' />
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-2 col-md-2 col-sm-12">
-                                                <div className="card shadow-lg">
-                                                    <div className="card-header py-1">
-                                                        <h6 className='card-title mt-2'>Ket Aktif</h6>
-                                                    </div>
-                                                    <div className="card-body p-1">
-                                                        {fotoSuket ?
-                                                            <img src={`data:;base64,${fotoSuket}`} alt="" className='img-fluid' />
-                                                            :
-                                                            <img src={logo} alt="" className='img-fluid' />
-                                                        }
-                                                    </div>
+                                                <div className="col-xl-6 col-md-6 col-sm-12">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><h5>Email</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.email}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>NISN</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.nisn}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Penerima KPS</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.penerima_kps}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Nomor KPS</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.no_kps == '' ? '-' : biodata.no_kps}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Jalur Pendaftaran</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{jalurPendaftaran}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Jenis Pendaftaran</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{jenisPendaftaran}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Tanggal Daftar</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{moment(biodata.tanggal_daftar).format('DD MMMM YYYY h:mm:ss A')}</h5></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="card shadow-lg mb-3">
-                                    <div className="card-header py-1">
-                                        <h5 className="card-title mt-1">
-                                            Data Prodi
-                                        </h5>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="row">
-                                            <div className="col-xl-4 col-md-4 col-sm-12">
-                                                <div className={`card shadow bg-light`}>
-                                                    <div className="text-center my-4">
-                                                        <p className="mb-0"> PRODI PERTAMA </p>
-                                                        <h1 className={`display-2 ${background[0]} mb-2 fw-bold`}>{ikon[0]}</h1>
-                                                        <p className="mb-0">{prodiPrimer}</p>
-                                                    </div>
-                                                    <div className='d-flex justify-content-center mb-3'>
-                                                    </div>
+                                    <div className="card shadow-lg mb-3">
+                                        <div className="card-header py-1">
+                                            <h5 className="card-title mt-1">
+                                                Detail Alamat
+                                            </h5>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="row">
+                                                <div className="col-xl-6 col-md-6 col-sm-12">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><h5>Alamat Jalan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.jalan}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Dusun</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.dusun}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>RT</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.rt}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>RW</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.rw}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Kode Pos</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.kode_pos}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Desa</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{desa}</h5></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                            </div>
-                                            <div className="col-xl-4 col-md-4 col-sm-12">
-                                                <div className={`card shadow bg-light`}>
-                                                    <div className="text-center my-4">
-                                                        <p className="mb-0"> PRODI KEDUA </p>
-                                                        <h1 className={`display-2 ${background[1]} mb-2 fw-bold`}>{ikon[1]}</h1>
-                                                        <p className="mb-0">{prodiSekunder}</p>
-                                                    </div>
-                                                    <div className='d-flex justify-content-center mb-3'>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-4 col-md-4 col-sm-12">
-                                                <div className={`card shadow bg-light`}>
-                                                    <div className="text-center my-4">
-                                                        <p className="mb-0"> PRODI KETENTUAN ADMIN </p>
-                                                        <h1 className={`display-2 ${background[index]} mb-2 fw-bold`}>{ikon[index]}</h1>
-                                                        <p className="mb-0">{prodiKetAdmin}</p>
-                                                    </div>
-                                                    <div className='d-flex justify-content-center mb-3'>
-                                                    </div>
+                                                <div className="col-xl-6 col-md-6 col-sm-12">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><h5>Kecamatan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{kecamatan}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Kabupaten</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{kabupaten}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Provinsi</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{provinsi}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Negara</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{negara}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Transportasi</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{alatTransportasi}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Jenis Tinggal</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{jenisTinggal}</h5></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                {
-                                    Approve.status == "tidak" ?
-                                        <>
-                                            <div className="card shadow-lg mb-3">
-                                                <div className="card-body">
-                                                    <div className="row mt-2 mb-2">
-                                                        <p className='text-center h4'>
-                                                            Sebelum melakukan Apprpove Diharap menetukan tahun ajaran dan semester calon mahasiswa baru
-                                                        </p>
-                                                    </div>
-                                                    <div className="row">
-                                                        <div className="col-lg-6 col-md-6 col-sm-12 mb-2">
-                                                            <label htmlFor="tahunAjaran" className="form-label">Tahun Ajaran</label>
-                                                            <select name="tahunAjaran" id="tahunAjaran"
-                                                                className='form-select form-select-sm' value={kodeTahun || ""} onChange={(e) => setKodeTahun(e.target.value)}>
-                                                                <option value="">-Tahun Ajaran-</option>
-                                                                {Tahun.map((item) => (
-                                                                    <option key={item.id_tahun_ajaran} value={item.code_tahun_ajaran}>{item.tahun_ajaran}</option>
-                                                                ))}
-                                                            </select>
+                                    <div className="card shadow-lg mb-3">
+                                        <div className="card-header py-1">
+                                            <h5 className="card-title mt-1">
+                                                Detail Orang Tua
+                                            </h5>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="row">
+                                                <div className="col-xl-6 col-md-6 col-sm-12">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><h5>NIK Ayah</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.nik_ayah}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Nama Ayah</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.nama_ayah}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Tanggal Lahir</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{moment(biodata.tanggal_lahir_ayah).format('DD MMMM YYYY')}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Pekerjaan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{pekerjaanAyah}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Penghasilan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{penghasilanAyah}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Pendidikan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{pendidikanAyah}</h5></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div className="col-xl-6 col-md-6 col-sm-12">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><h5>NIK Ibu</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.nik_ibu}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Nama Ibu</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.nama_ibu}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Tanggal Lahir</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{moment(biodata.tanggal_lahir_ibu).format('DD MMMM YYYY')}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Pekerjaan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{pekerjaanIbu}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Penghasilan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{penghasilanIbu}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Pendidikan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{pendidikanIbu}</h5></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="card shadow-lg mb-3">
+                                        <div className="card-header py-1">
+                                            <h5 className="card-title mt-1">
+                                                Detail Wali
+                                            </h5>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="row">
+                                                <div className="col-xl-6 col-md-6 col-sm-12">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><h5>NIK Wali</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.nik_wali}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Nama Wali</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5 className='text-capitalize'>{biodata.nama_wali}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Tanggal Lahir</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{moment(biodata.tanggal_lahir_wali).format('DD MMMM YYYY')}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Pekerjaan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{pekerjaanWali}</h5></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div className="col-xl-6 col-md-6 col-sm-12">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><h5>Penghasilan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{penghasilanWali}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>Pendidikan</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{pendidikanWali}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>No WhatsApp</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.no_hp}</h5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><h5>No Telepon</h5></td>
+                                                                <td><h5>&nbsp;:&nbsp;</h5></td>
+                                                                <td><h5>{biodata.no_telepon}</h5></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="card shadow-lg mb-3">
+                                        <div className="card-body">
+                                            <div className="row justify-content-center">
+                                                <div className="col-xl-2 col-md-2 col-sm-12">
+                                                    <div className="card shadow-lg">
+                                                        <div className="card-header py-1">
+                                                            <h6 className='card-title mt-2'>Foto Diri</h6>
                                                         </div>
-                                                        <div className="col-lg-6 col-md-6 col-sm-12 mb-2">
-                                                            <label htmlFor="semester" className="form-label">Semester</label>
-                                                            <select name="semester" id="semester"
-                                                                className='form-select form-select-sm' value={idSemester || ""} onChange={(e) => setIdSemester(e.target.value)} >
-                                                                <option value="">-Semester-</option>
-                                                                {Semester.map((item) => (
-                                                                    <option key={item.id_semester} value={item.id_semester}>Semester {item.semester}</option>
-                                                                ))}
-                                                            </select>
+                                                        <div className="card-body p-1">
+                                                            {fotoMhs ?
+                                                                <img src={`data:;base64,${fotoMhs}`} alt="" className='img-fluid' />
+                                                                :
+                                                                <img src={logo} alt="" className='img-fluid' />
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="card-footer">
-                                                    <div className="row">
-                                                        <div className="col-md-12">
-                                                            <Link to="/approve" className='btn btn-danger btn-sm'>Kembali</Link>
-                                                            <button onClick={approveData} className='btn btn-info btn-sm float-end'>Approve</button>
+                                                <div className="col-xl-2 col-md-2 col-sm-12">
+                                                    <div className="card shadow-lg">
+                                                        <div className="card-header py-1">
+                                                            <h6 className='card-title mt-2'>Scan KTP</h6>
+                                                        </div>
+                                                        <div className="card-body p-1">
+                                                            {fotoKtp ?
+                                                                <img src={`data:;base64,${fotoKtp}`} alt="" className='img-fluid' />
+                                                                :
+                                                                <img src={logo} alt="" className='img-fluid' />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xl-2 col-md-2 col-sm-12">
+                                                    <div className="card shadow-lg">
+                                                        <div className="card-header py-1">
+                                                            <h6 className='card-title mt-2'>Scan KK</h6>
+                                                        </div>
+                                                        <div className="card-body p-1">
+                                                            {fotoKk ?
+                                                                <img src={`data:;base64,${fotoKk}`} alt="" className='img-fluid' />
+                                                                :
+                                                                <img src={logo} alt="" className='img-fluid' />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xl-2 col-md-2 col-sm-12">
+                                                    <div className="card shadow-lg">
+                                                        <div className="card-header py-1">
+                                                            <h6 className='card-title mt-2'>Scan Ijazah</h6>
+                                                        </div>
+                                                        <div className="card-body p-1">
+                                                            {fotoIjazah ?
+                                                                <img src={`data:;base64,${fotoIjazah}`} alt="" className='img-fluid' />
+                                                                :
+                                                                <img src={logo} alt="" className='img-fluid' />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xl-2 col-md-2 col-sm-12">
+                                                    <div className="card shadow-lg">
+                                                        <div className="card-header py-1">
+                                                            <h6 className='card-title mt-2'>Ket Aktif</h6>
+                                                        </div>
+                                                        <div className="card-body p-1">
+                                                            {fotoSuket ?
+                                                                <img src={`data:;base64,${fotoSuket}`} alt="" className='img-fluid' />
+                                                                :
+                                                                <img src={logo} alt="" className='img-fluid' />
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </>
-                                        :
-                                        <>
-                                            <div className="card shadow-lg mb-3">
-                                                <div className="card-body">
-                                                    <div className="row mt-2 mb-2">
-                                                        <p className='text-center h4'>
-                                                            APPROVAL / PERSETUJUAN calon mahasiswa baru telah berhasil dimohon  diberitahukan kepada yang bersangkutan, dan silahkan download bukti approval dilaman utama atas perhatian dan kerjasamanya TERIMAKASIH.
-                                                        </p>
-                                                    </div>
-                                                    <div className="row">
+                                        </div>
+                                    </div>
+                                    <div className="card shadow-lg mb-3">
+                                        <div className="card-header py-1">
+                                            <h5 className="card-title mt-1">
+                                                Data Prodi
+                                            </h5>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="row">
+                                                <div className="col-xl-4 col-md-4 col-sm-12">
+                                                    <div className={`card shadow bg-light`}>
+                                                        <div className="text-center my-4">
+                                                            <p className="mb-0"> PRODI PERTAMA </p>
+                                                            <h1 className={`display-2 ${background[0]} mb-2 fw-bold`}>{ikon[0]}</h1>
+                                                            <p className="mb-0">{prodiPrimer}</p>
+                                                        </div>
+                                                        <div className='d-flex justify-content-center mb-3'>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="card-footer">
-                                                    <div className="row">
-                                                        <div className="col-md-12 text-center">
-                                                            <Link to="/approve" className=' btn btn-danger btn-sm'>Kembali</Link>
+                                                <div className="col-xl-4 col-md-4 col-sm-12">
+                                                    <div className={`card shadow bg-light`}>
+                                                        <div className="text-center my-4">
+                                                            <p className="mb-0"> PRODI KEDUA </p>
+                                                            <h1 className={`display-2 ${background[1]} mb-2 fw-bold`}>{ikon[1]}</h1>
+                                                            <p className="mb-0">{prodiSekunder}</p>
+                                                        </div>
+                                                        <div className='d-flex justify-content-center mb-3'>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xl-4 col-md-4 col-sm-12">
+                                                    <div className={`card shadow bg-light`}>
+                                                        <div className="text-center my-4">
+                                                            <p className="mb-0"> PRODI KETENTUAN ADMIN </p>
+                                                            <h1 className={`display-2 ${background[index]} mb-2 fw-bold`}>{ikon[index]}</h1>
+                                                            <p className="mb-0">{prodiKetAdmin}</p>
+                                                        </div>
+                                                        <div className='d-flex justify-content-center mb-3'>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </>
-                                }
-                            </div>
+                                        </div>
+                                    </div>
+                                    {
+                                        Approve.status == "tidak" ?
+                                            <>
+                                                <div className="card shadow-lg mb-3">
+                                                    <div className="card-body">
+                                                        <div className="row mt-2 mb-2">
+                                                            <p className='text-center h4'>
+                                                                Sebelum melakukan Apprpove Diharap menentukan tahun ajaran dan semester calon mahasiswa baru
+                                                            </p>
+                                                        </div>
+                                                        <div className="row">
+                                                            <div className="col-lg-6 col-md-6 col-sm-12 mb-2">
+                                                                <label htmlFor="tahunAjaran" className="form-label">Tahun Ajaran</label>
+                                                                <select name="tahunAjaran" id="tahunAjaran"
+                                                                    className='form-select form-select-sm' value={kodeTahun || ""} onChange={(e) => setKodeTahun(e.target.value)}>
+                                                                    <option value="">-Tahun Ajaran-</option>
+                                                                    {Tahun.map((item) => (
+                                                                        <option key={item.id_tahun_ajaran} value={item.code_tahun_ajaran}>{item.tahun_ajaran}</option>
+                                                                    ))}
+                                                                </select>
+                                                            </div>
+                                                            <div className="col-lg-6 col-md-6 col-sm-12 mb-2">
+                                                                <label htmlFor="semester" className="form-label">Semester</label>
+                                                                <select name="semester" id="semester"
+                                                                    className='form-select form-select-sm' value={idSemester || ""} onChange={(e) => setIdSemester(e.target.value)} >
+                                                                    <option value="">-Semester-</option>
+                                                                    {Semester.map((item) => (
+                                                                        <option key={item.id_semester} value={item.id_semester}>Semester {item.semester}</option>
+                                                                    ))}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="card-footer">
+                                                        <div className="row">
+                                                            <div className="col-md-12">
+                                                                <Link to="/approve" className='btn btn-danger btn-sm'>Kembali</Link>
+                                                                <button onClick={approveData} className='btn btn-info btn-sm float-end'>Approve</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </>
+                                            :
+                                            <>
+                                                <div className="card shadow-lg mb-3">
+                                                    <div className="card-body">
+                                                        <div className="row mt-2 mb-2">
+                                                            <p className='text-center h4'>
+                                                                APPROVAL/PERSETUJUAN calon mahasiswa baru telah berhasil, mohon lakukan pemberitahuan kepada yang bersangkutan, dan silahkan download bukti approval di bawah ini!. atas perhatian dan kerjasamanya TERIMAKASIH.
+                                                            </p>
 
+                                                        </div>
+                                                        <div className="row">
+                                                            <div className="col-md-12 text-center">
+                                                                <button className='btn btn-sm btn-secondary mt-1' onClick={() => { downloadBuktiPendaftaran() }}>Download Bukti Pendaftaran</button>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="card-footer">
+                                                        <div className="row">
+                                                            <div className="col-md-12 text-center">
+                                                                <Link to="/approve" className=' btn btn-danger btn-sm'>Kembali</Link>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </>
+                                    }
+                                </div>
+
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                    <div className="row mt-3 d-none">
+                        <div ref={templateRef}>
+                            <div style={tableStyle.wrap}>
+                                <img src={kop} alt="kop" style={tableStyle.image} />
+
+                                <div style={tableStyle.grid} className='mb-3 mt-3'>
+                                    <div style={tableStyle.gridItem}>
+                                        <h4 className='fw-bold'>NO. Pendaftaran : {user && user.data.token}</h4>
+                                        <table cellPadding={5}>
+                                            <tbody>
+                                                <tr>
+                                                    <td><span>NIM</span></td>
+                                                    <td>&nbsp;:&nbsp;</td>
+                                                    <td>{biodataBuktiPendaftaran.nim}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><span>NIK</span></td>
+                                                    <td>&nbsp;:&nbsp;</td>
+                                                    <td>{biodataBuktiPendaftaran.nik}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nama</td>
+                                                    <td>&nbsp;:&nbsp;</td>
+                                                    <td>{biodataBuktiPendaftaran.nama}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Tempat/Tanggal Lahir</td>
+                                                    <td>&nbsp;:&nbsp;</td>
+                                                    <td>{biodataBuktiPendaftaran.tempat_lahir}, {biodataBuktiPendaftaran.tanggal_lahir}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Jenis Kelamin</td>
+                                                    <td>&nbsp;:&nbsp;</td>
+                                                    <td>{biodataBuktiPendaftaran.kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Prodi</td>
+                                                    <td>&nbsp;:&nbsp;</td>
+                                                    <td>{prodiKetAdmin}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style={tableStyle.gridItem}>
+                                        <div className='border mt-5 text-center algn-items-center' style={{ width: '135px', height: '160px' }}>
+                                            <h6 style={{ marginTop: '70px' }}>3x4</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style={tableStyle.grid}>
+                                    <div>
+                                        <p style={{ textAlign: 'justify', textJustify: 'inter-word' }}>Selamat! Anda telah berhasil mendaftar pada  Sekolah Tinggi Nurul Abror Al-Robbaniyin
+                                            Alasbuluh Wongsorejo Banyuwangi.</p>
+
+                                        <span style={{ textAlign: 'justify', textJustify: 'inter-word' }}>
+                                            Silakan menyampaikan dokumen persyaratan dalam bentuk hardcopy ke</span>
+                                        <ol>
+                                            <li>BUAK STAINAA atau</li>
+                                            <li>Panitia PMB STAINAA.</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
         </LayoutAdmin>
     )
 }

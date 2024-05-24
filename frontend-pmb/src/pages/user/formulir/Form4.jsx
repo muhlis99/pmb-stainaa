@@ -345,36 +345,40 @@ const Form4 = () => {
                                         <div className="row mt-2">
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="nikWali" className="form-label">NIK Wali</label>
-                                                <input type="number" id="nikWali" className="form-control form-control-sm" name="nikWali" placeholder="NIK Wali" value={nikWali} onChange={(e) => setNikWali(e.target.value)} />
+                                                <input type="number" id="nikWali" className="form-control form-control-sm text-uppercase" name="nikWali" placeholder="NIK Wali" value={nikWali} onChange={(e) => setNikWali(e.target.value)} />
                                             </div>
                                             <div className="col-md-8 mb-3">
                                                 <label htmlFor="namaWali" className="form-label">Nama Wali</label>
-                                                <input type="text" id="namaWali" className="form-control form-control-sm" name="namaWali" placeholder="Nama Wali" value={namaWali} onChange={(e) => setNamaWali(e.target.value)} />
+                                                <input type="text" id="namaWali" className="form-control form-control-sm text-uppercase" name="namaWali" placeholder="Nama Wali" value={namaWali} onChange={(e) => setNamaWali(e.target.value)} />
                                             </div>
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="tanggalLahirWali" className="form-label">Tanggal Lahir</label>
-                                                <select name="tanggalLahirWali" id="tanggalLahirWali" className='form-select form-select-sm' value={tgWali} onChange={(e) => setTgWali(e.target.value)}>
+                                                <select name="tanggalLahirWali" id="tanggalLahirWali" className='form-select form-select-sm text-uppercase
+                                                    text-uppercase' value={tgWali} onChange={(e) => setTgWali(e.target.value)}>
                                                     <option value="">Tanggal Lahir</option>
                                                     {tg}
                                                 </select>
                                             </div>
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="bulanLahirWali" className="form-label">Bulan Lahir</label>
-                                                <select name="bulanLahirWali" id="bulanLahirWali" className='form-select form-select-sm' value={blWali} onChange={(e) => setBlWali(e.target.value)}>
+                                                <select name="bulanLahirWali" id="bulanLahirWali" className='form-select form-select-sm text-uppercase
+                                                    text-uppercase' value={blWali} onChange={(e) => setBlWali(e.target.value)}>
                                                     <option value="">Bulan Lahir</option>
                                                     {bl}
                                                 </select>
                                             </div>
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="tahunLahirWali" className="form-label">Tahun Lahir</label>
-                                                <select name="tahunLahirWali" id="tahunLahirWali" className='form-select form-select-sm' value={thWali} onChange={(e) => setThWali(e.target.value)}>
+                                                <select name="tahunLahirWali" id="tahunLahirWali" className='form-select form-select-sm text-uppercase
+                                                    text-uppercase' value={thWali} onChange={(e) => setThWali(e.target.value)}>
                                                     <option value="">Tahun Lahir</option>
                                                     {th}
                                                 </select>
                                             </div>
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="pekerjaanWali" className="form-label">Pekerjaan Wali</label>
-                                                <select name="pekerjaanWali" id="pekerjaanWali" className='form-select form-select-sm' value={pkrjnWali} onChange={(e) => setPkrjnWali(e.target.value)}>
+                                                <select name="pekerjaanWali" id="pekerjaanWali" className='form-select form-select-sm text-uppercase
+                                                    text-uppercase' value={pkrjnWali} onChange={(e) => setPkrjnWali(e.target.value)}>
                                                     <option value="">Pekerjaan Wali</option>
                                                     {Pekerjaan.map((item) => (
                                                         <option key={item.id_pekerjaan} value={item.code_pekerjaan}>{item.nama_pekerjaan}</option>
@@ -383,7 +387,8 @@ const Form4 = () => {
                                             </div>
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="penghasilanWali" className="form-label">Penghasilan Wali</label>
-                                                <select name="penghasilanWali" id="penghasilanWali" className='form-select form-select-sm' value={pndptWali} onChange={(e) => setPndptWali(e.target.value)}>
+                                                <select name="penghasilanWali" id="penghasilanWali" className='form-select form-select-sm text-uppercase
+                                                    text-uppercase' value={pndptWali} onChange={(e) => setPndptWali(e.target.value)}>
                                                     <option value="">Penghasilan Wali</option>
                                                     {Penghasilan.map((item) => (
                                                         <option key={item.id_penghasilan} value={item.code_penghasilan}>{item.nama_penghasilan}</option>
@@ -392,7 +397,8 @@ const Form4 = () => {
                                             </div>
                                             <div className="col-md-4 mb-3">
                                                 <label htmlFor="pendidikanWali" className="form-label">Pendidikan Wali</label>
-                                                <select name="pendidikanWali" id="pendidikanWali" className='form-select form-select-sm' value={pndknWali} onChange={(e) => setPndknWali(e.target.value)}>
+                                                <select name="pendidikanWali" id="pendidikanWali" className='form-select form-select-sm text-uppercase
+                                                    text-uppercase' value={pndknWali} onChange={(e) => setPndknWali(e.target.value)}>
                                                     <option value="">Pendidikan Wali</option>
                                                     {Pendidikan.map((item) => (
                                                         <option key={item.id_pendidikan} value={item.code_pendidikan}>{item.nama_pendidikan}</option>

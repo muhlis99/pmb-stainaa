@@ -14,6 +14,7 @@ import Form3 from "./pages/user/formulir/Form3"
 import Form4 from "./pages/user/formulir/Form4"
 import Form5 from "./pages/user/formulir/Form5"
 import DetailFormulir from "./pages/user/formulir/DetailFormulir"
+import DetailBerkas from "./pages/user/formulir/DetailBerkas"
 import TransaksiPembayaran from "./pages/user/pembayaran/TransaksiPembayaran"
 
 import Home from "./pages/admin/dashboard/Home"
@@ -56,6 +57,7 @@ function App() {
           <Route path="/formulir4" element={<Form4 />} />
           <Route path="/formulir5" element={<Form5 />} />
           <Route path="/detailformulir" element={<DetailFormulir />} />
+          <Route path="/detailberkas/:berkas" element={<DetailBerkas />} />
           <Route path="/pembayaran" element={<TransaksiPembayaran />} />
           <Route path="/infoseleksi" element={<InformasiSeleksi />} />
           <Route path="/formseleksi" element={<FormSeleksi />} />
