@@ -112,7 +112,7 @@ const DetailBerkas = () => {
     return (
         <div className='text-center d-flex align-items-center justify-content-center'>
             {detail ?
-                <img src={`data:;base64,${detail}`} className='border border-3 mt-5' width={500} alt="" />
+                <img src={`data:;base64,${detail}`} className='img-fluid mt-5' width={500} alt="" />
                 :
                 ''
             }

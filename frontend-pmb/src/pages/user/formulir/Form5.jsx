@@ -273,7 +273,7 @@ const Form5 = () => {
                 <div className='position-absolute z-3 bg-light start-0 end-0 top-0 bottom-0 w-100 d-flex justify-content-center align-items-center' style={{ height: '100%' }}>
                     <div>
                         <FallingLines
-                            color="#754FFE"
+                            color="#0B5ED7"
                             width="100"
                             visible={true}
                             ariaLabel="falling-circles-loading"
@@ -321,7 +321,7 @@ const Form5 = () => {
                                     <FaFileAlt className='text-light' size={45} />
                                 </div>
                             </div>
-                            
+
                             <div className="row justify-content-center">
                                 <div className="titleplace">
                                     Melengkapi Data Diri
@@ -420,16 +420,16 @@ const Form5 = () => {
                                                 </div>
                                             </div>
                                             <div className="col-md-4">
-                                            <div className="col-md-8 mb-3">
-                                                    <label  className="form-label">Keterangan </label>
+                                                <div className="col-md-8 mb-3">
+                                                    <label className="form-label">Keterangan </label>
                                                     <div className='text-center mb-3'>
-                                                            <img src={fileLogo} alt="" width={250} height={250} className='border border-1' />
+                                                        <img src={fileLogo} alt="" width={250} height={250} className='border border-1' />
                                                     </div>
                                                     <span>Berkas yang anda upload tidak boleh lebih dari dari 2 mb dan harap diperhatikan ketajaman foto</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
                                     <div className="card-footer">
                                         <Link to="/cekdetaildata" className="btn btn-sm btn-danger">Kembali</Link>

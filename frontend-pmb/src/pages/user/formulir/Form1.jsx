@@ -135,6 +135,7 @@ const Form1 = () => {
         setLoading(true)
         try {
             if (nik == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'NIK tidak boleh kosong',
@@ -142,6 +143,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (nik.length < 16) {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'NIK tidak boleh kurang dari 16 digit',
@@ -149,6 +151,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (nik.length > 16) {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'NIK tidak boleh lebih dari 16 digit',
@@ -156,6 +159,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (kk == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'No KK tidak boleh kosong',
@@ -163,6 +167,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (kk.length < 16) {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'No KK tidak boleh kurang dari 16 digit',
@@ -170,6 +175,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (kk.length > 16) {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'No KK tidak boleh lebih dari 16 digit',
@@ -177,6 +183,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (nisn == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'No KK tidak boleh kosong',
@@ -184,6 +191,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (nisn.length < 10) {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'NISN tidak boleh kurang dari 10 digit',
@@ -191,6 +199,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (nisn.length > 10) {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'NISN tidak boleh lebih dari 10 digit',
@@ -198,6 +207,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (nama == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'Nama tidak boleh kosong',
@@ -205,6 +215,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (thn == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'Tahun Lahir tidak boleh kosong',
@@ -212,6 +223,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (bln == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'Bulan Lahir tidak boleh kosong',
@@ -219,6 +231,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (tgl == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'Tanggal Lahir tidak boleh kosong',
@@ -226,6 +239,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (tmp == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'Tempat Lahir tidak boleh kosong',
@@ -233,6 +247,7 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (jenkel == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'Jenis Kelamin tidak boleh kosong',
@@ -240,13 +255,15 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else if (jalurp == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'Jalur Pendaftaran tidak boleh kosong',
                     icon: 'error',
                     confirmButtonColor: '#3085d6'
                 })
-            }  else if (jenisp == '') {
+            } else if (jenisp == '') {
+                setLoading(false)
                 Swal.fire({
                     title: 'Error',
                     text: 'Jenis Pendaftaran tidak boleh kosong',
@@ -254,7 +271,6 @@ const Form1 = () => {
                     confirmButtonColor: '#3085d6'
                 })
             } else {
-                setLoading(false)
                 await axios.put(`v1/formulir/form1/${location.state.token}`, {
                     nik: nik,
                     no_kk: kk,
@@ -298,7 +314,7 @@ const Form1 = () => {
                     <div className='position-absolute z-3 bg-light start-0 end-0 top-0 bottom-0 w-100 d-flex justify-content-center align-items-center' style={{ height: '100%' }}>
                         <div>
                             <FallingLines
-                                color="#754FFE"
+                                color="#0B5ED7"
                                 width="100"
                                 visible={true}
                                 ariaLabel="falling-circles-loading"

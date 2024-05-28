@@ -11,6 +11,7 @@ import Swal from 'sweetalert2'
 import moment from 'moment'
 import 'moment-timezone'
 import 'moment/locale/id'
+import { FallingLines } from 'react-loader-spinner'
 
 const TransaksiPembayaran = () => {
     const dispatch = useDispatch()
@@ -18,6 +19,7 @@ const TransaksiPembayaran = () => {
     const templateRef = useRef(null)
     const openModal = useRef()
     const closeModal = useRef()
+    const closeModale = useRef()
     const openModalImage = useRef()
     const closeModalImage = useRef()
     const { isError, user } = useSelector((state) => state.auth)
@@ -48,6 +50,8 @@ const TransaksiPembayaran = () => {
     const [namabuktiTransaksi, setNamaBuktiTransaksi] = useState('')
     const [buktiPrevTransaksi, setbuktiPrevTransaksi] = useState('')
     const [biodata, setBiodata] = useState([])
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         const date = moment().tz('Asia/Jakarta').format('YYYY-MM-DD')
         const years = moment().tz('Asia/Jakarta').format('YYYY')
@@ -270,6 +274,10 @@ const TransaksiPembayaran = () => {
         closeModal.current.click()
     }
 
+    const closeModalSimpan = () => {
+        closeModale.current.click()
+    }
+
     const loadBukti = (e) => {
         const image = e.target.files[0]
         setKwitansi(image)
@@ -294,6 +302,7 @@ const TransaksiPembayaran = () => {
                 formData.append("tanggal_transaksi", tanggalTransaksi)
                 formData.append("bukti_transaksi", kwitansi)
                 if (nominal == '') {
+                    setLoading(false)
                     Swal.fire({
                         title: 'Transaksi gagal',
                         text: 'Nominal Tidak Boleh Kosong',
@@ -301,6 +310,7 @@ const TransaksiPembayaran = () => {
                         confirmButtonColor: '#3085d6'
                     })
                 } else if (kwitansi == '') {
+                    setLoading(false)
                     Swal.fire({
                         title: 'Transaksi gagal',
                         text: 'Bukti Transaksi tidak boleh kosong',
@@ -308,6 +318,8 @@ const TransaksiPembayaran = () => {
                         confirmButtonColor: '#3085d6'
                     })
                 } else {
+                    closeModalSimpan()
+                    setLoading(true)
                     await axios.put(`v1/transaksi/tambahTransaksi/${idTransaksi}`, formData, {
                         headers: {
                             "Content-Type": "multipart/form-data"
@@ -317,17 +329,17 @@ const TransaksiPembayaran = () => {
                             title: response.data.message,
                             icon: "success"
                         }).then(() => {
+                            setLoading(false)
+                            modalHide()
                             getStatusDownload()
                             getTotalPembayaran()
                             getTransaksi()
                             setNominal('')
                             setKwitansi('')
                             setPrevKwitansi('')
-                            modalHide()
                         });
                     })
                 }
-
             }
         } catch (error) {
 
@@ -385,6 +397,8 @@ const TransaksiPembayaran = () => {
                         confirmButtonColor: '#3085d6'
                     })
                 } else {
+                    closeModalSimpan()
+                    setLoading(true)
                     await axios.put(`v1/transaksi/tambahTransaksi/${idTransaksi}`, formData, {
                         headers: {
                             "Content-Type": "multipart/form-data"
@@ -394,6 +408,7 @@ const TransaksiPembayaran = () => {
                             title: response.data.message,
                             icon: "success"
                         }).then(() => {
+                            setLoading(false)
                             getStatusDownload()
                             getTotalPembayaran()
                             getTransaksi()
@@ -459,274 +474,300 @@ const TransaksiPembayaran = () => {
         }
     }
 
+
+
     return (
         <LayoutUser>
-            <button type="button" className="btn btn-primary d-none" ref={openModal} data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
-            <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <form onSubmit={transaksiKe == 1 ? simpanTransaksiPertama : simpanTransaksi}>
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="staticBackdropLabel">Transaksi ke {transaksiKe}</h5>
-                                <button type="button" className="btn-close d-none" data-bs-dismiss="modal" aria-label="Close" ref={closeModal}></button>
-                                <button type="button" className="btn-close" onClick={modalHide} aria-label="Close"></button>
-                            </div>
-                            <div className="modal-body">
-                                <div className="row">
-                                    <div className="col-md-12 mb-3">
-                                        <label htmlFor="nominal" className="form-label">Nominal Transaksi</label>
-                                        <input type="number" id="nominal" className="form-control form-control-sm" name="nominal" placeholder="Nominal Transakti" value={nominal || ""} onChange={(e) => setNominal(e.target.value)} />
+            {loading ?
+                <div className='position-absolute bg-light start-0 end-0 top-0 bottom-0 w-100 d-flex justify-content-center align-items-center' style={{ height: '100%', zIndex: '50' }}>
+                    <div>
+                        <FallingLines
+                            color="#0B5ED7"
+                            width="100"
+                            visible={true}
+                            ariaLabel="falling-circles-loading"
+                            className="align-items-center"
+                        />
+                    </div>
+                </div>
+                :
+                <>
+                    <button type="button" className="btn btn-primary d-none" ref={openModal} data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
+                    <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div className="modal-dialog modal-dialog-centered">
+                            <div className="modal-content">
+                                <form onSubmit={transaksiKe == 1 ? simpanTransaksiPertama : simpanTransaksi}>
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="staticBackdropLabel">Transaksi ke {transaksiKe}</h5>
+                                        <button type="button" className="btn-close d-none" data-bs-dismiss="modal" aria-label="Close" ref={closeModal}></button>
+                                        <button type="button" className="btn-close d-none" ref={closeModale} data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" className="btn-close" onClick={modalHide} aria-label="Close"></button>
                                     </div>
-                                    <div className="col-md-12 mb-3">
-                                        <label htmlFor="bukti" className="form-label">Bukti Transaksi</label>
-                                        <div className='mb-2'>
-                                            {prevKwitansi ?
-                                                <img src={prevKwitansi} alt="" width={150} className='border border-1 border-dark' />
-                                                :
-                                                ""
-                                            }
-                                        </div>
-                                        <input type="file" onChange={loadBukti} id="bukti" className="form-control form-control-sm" name="bukti" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button type='submit' className="btn btn-info btn-sm">Simpan</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <button type="button" className="btn btn-primary d-none" ref={openModalImage} data-bs-toggle="modal" data-bs-target="#modalImage"></button>
-            <div className="modal fade" id="modalImage" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">Bukti Pembayaran</h5>
-                            <button type="button" className="btn-close d-none" ref={closeModalImage} data-bs-dismiss="modal" aria-label="Close"></button>
-                            <button type="button" className="btn-close" onClick={modalImageClose} aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            {buktiPrevTransaksi == '' ?
-                                <img src={noimage} width={450} alt="" />
-                                :
-                                <img src={`data:;base64,${buktiPrevTransaksi}`} width={450} alt="" />
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-12 col-md-12 col-12">
-                        <div className="border-bottom pb-2 mb-3 d-lg-flex justify-content-between align-items-center">
-                            <div className="mb-2 mb-lg-0">
-                                <h1 className="mb-0 h2 fw-bold">Pembayaran</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-4 mb-2">
-                        <div className="card shadow">
-                            <div className="card-body p-5">
-                                <h5>Sebelum melakukan transaksi pembayaran pendaftaran, anda harus mendownload terlebih dahulu bukti pendaftaran.</h5>
-                                {statusDownload == 'belum' ?
-                                    <button className='btn btn-sm btn-info  mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
-                                    :
-                                    <span className='text text-center text-success'>selesai mendownload bukti pendaftaran</span>
-                                    // <button className='btn btn-sm btn-info  mt-4'>Download</button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-8">
-                        <div className="card shadow">
-                            <div className="card-body py-3">
-                                <h5>Tata cara melakukan pembayaran</h5>
-                                <ol>
-                                    <li>Download bukti pendaftaran.</li>
-                                    <li>Transfer pembayaran melalui rekening LK SMK NAA.</li>
-                                    <li>Atau langsung mendatangi LK SMK NAA dengan menyerahkan bukti pendaftaran.</li>
-                                    <li>Upload bukti pembayaran.</li>
-                                    <li>Total Biaya yang harus dilunasi adalah {accountBiaya} dengan angsuran sebanyak {jumlahAngsuran} Kali.</li>
-                                    <li>Untuk melakukan pembayaran pertama anda harus membayar sebesar {accountMinimal}.</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row mt-3">
-                    <div className="col-md-12">
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="row">
-                                    <div className="col-md-4">
-                                        <table>
-                                            <tbody>
-                                                <tr>
-                                                    <td><h4>Nama</h4></td>
-                                                    <td><h4>&nbsp;:&nbsp;</h4></td>
-                                                    <td><h4>{nama}</h4></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><h4>Email</h4></td>
-                                                    <td><h4>&nbsp;:&nbsp;</h4></td>
-                                                    <td><h4>{email}</h4></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><h4>Jenis Kelamin</h4></td>
-                                                    <td><h4>&nbsp;:&nbsp;</h4></td>
-                                                    <td><h4>{kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</h4></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="col-md-8 mt-2">
+                                    <div className="modal-body">
                                         <div className="row">
-                                            <div className="col-sm-1">
-                                                {/* <h3>Angsuran</h3>
+                                            <div className="col-md-12 mb-3">
+                                                <label htmlFor="nominal" className="form-label">Nominal Transaksi</label>
+                                                <input type="number" id="nominal" className="form-control form-control-sm" name="nominal" placeholder="Nominal Transakti" value={nominal || ""} onChange={(e) => setNominal(e.target.value)} />
+                                            </div>
+                                            <div className="col-md-12 mb-3">
+                                                <label htmlFor="bukti" className="form-label">Bukti Transaksi</label>
+                                                <div className='mb-2'>
+                                                    {prevKwitansi ?
+                                                        <img src={prevKwitansi} alt="" width={150} className='border border-1 border-dark' />
+                                                        :
+                                                        ""
+                                                    }
+                                                </div>
+                                                <input type="file" onChange={loadBukti} id="bukti" className="form-control form-control-sm" name="bukti" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type='submit' className="btn btn-info btn-sm">Simpan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" className="btn btn-primary d-none" ref={openModalImage} data-bs-toggle="modal" data-bs-target="#modalImage"></button>
+                    <div className="modal fade" id="modalImage" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div className="modal-dialog modal-dialog-centered">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="staticBackdropLabel">Bukti Pembayaran</h5>
+                                    <button type="button" className="btn-close d-none" ref={closeModalImage} data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" className="btn-close" onClick={modalImageClose} aria-label="Close"></button>
+                                </div>
+                                <div className="modal-body">
+                                    {buktiPrevTransaksi == '' ?
+                                        <img src={noimage} width={450} alt="" />
+                                        :
+                                        <img src={`data:;base64,${buktiPrevTransaksi}`} width={450} alt="" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-lg-12 col-md-12 col-12">
+                                <div className="border-bottom pb-2 mb-3 d-lg-flex justify-content-between align-items-center">
+                                    <div className="mb-2 mb-lg-0">
+                                        <h1 className="mb-0 h2 fw-bold">Pembayaran</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-4 mb-2">
+                                <div className="card shadow">
+                                    <div className="card-body p-5">
+                                        <h5>Sebelum melakukan transaksi pembayaran pendaftaran, anda harus mendownload terlebih dahulu bukti pendaftaran.</h5>
+                                        {statusDownload == 'belum' ?
+                                            <button className='btn btn-sm btn-info  mt-4' onClick={downloadBuktiPendaftaran}>Download</button>
+                                            :
+                                            <span className='text text-center text-success'>selesai mendownload bukti pendaftaran</span>
+                                            // <button className='btn btn-sm btn-info  mt-4'>Download</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-8">
+                                <div className="card shadow">
+                                    <div className="card-body py-3">
+                                        <h5>Tata cara melakukan pembayaran</h5>
+                                        <ol>
+                                            <li>Download bukti pendaftaran.</li>
+                                            <li>Transfer pembayaran melalui rekening LK SMK NAA.</li>
+                                            <li>Atau langsung mendatangi LK SMK NAA dengan menyerahkan bukti pendaftaran.</li>
+                                            <li>Upload bukti pembayaran.</li>
+                                            <li>Total Biaya yang harus dilunasi adalah {accountBiaya} dengan angsuran sebanyak {jumlahAngsuran} Kali.</li>
+                                            <li>Untuk melakukan pembayaran pertama anda harus membayar sebesar {accountMinimal}.</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row mt-3">
+                            <div className="col-md-12">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="row">
+                                            <div className="col-md-4">
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><h4>Nama</h4></td>
+                                                            <td><h4>&nbsp;:&nbsp;</h4></td>
+                                                            <td><h4>{nama}</h4></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><h4>Email</h4></td>
+                                                            <td><h4>&nbsp;:&nbsp;</h4></td>
+                                                            <td><h4>{email}</h4></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><h4>Jenis Kelamin</h4></td>
+                                                            <td><h4>&nbsp;:&nbsp;</h4></td>
+                                                            <td><h4>{kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</h4></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div className="col-md-8 mt-2">
+                                                <div className="row">
+                                                    <div className="col-sm-1">
+                                                        {/* <h3>Angsuran</h3>
                                                 <h3>{jumlahAngsuran} Kali</h3> */}
-                                            </div>
-                                            <div className="col-sm-3">
-                                                <h3>Total Biaya</h3>
-                                                <h3>{accountBiaya}</h3>
-                                            </div>
-                                            <div className="col-sm-3">
-                                                <h3>Total Bayar</h3>
-                                                <h3>{accountingTransaksi && accountingTransaksi}</h3>
-                                            </div>
-                                            <div className="col-sm-3">
-                                                <h3>Status</h3>
-                                                {status == 'lunas' ?
-                                                    <h3 className='text-capitalize text-success'>{status}</h3>
-                                                    :
-                                                    <h3 className='text-capitalize text-danger'>{status}</h3>
-                                                }
+                                                    </div>
+                                                    <div className="col-sm-3">
+                                                        <h3>Total Biaya</h3>
+                                                        <h3>{accountBiaya}</h3>
+                                                    </div>
+                                                    <div className="col-sm-3">
+                                                        <h3>Total Bayar</h3>
+                                                        <h3>{accountingTransaksi && accountingTransaksi}</h3>
+                                                    </div>
+                                                    <div className="col-sm-3">
+                                                        <h3>Status</h3>
+                                                        {status == 'lunas' ?
+                                                            <h3 className='text-capitalize text-success'>{status}</h3>
+                                                            :
+                                                            <h3 className='text-capitalize text-danger'>{status}</h3>
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                        {Transaksi.length == 0 || Transaksi.length == jumlahAngsuran || status == 'lunas' ?
+                                            ""
+                                            :
+                                            <div className="row">
+                                                <div className='col-md-12'>
+                                                    <button className='btn btn-sm btn-info float-end' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Transaksi</button>
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
-                                {Transaksi.length == 0 || Transaksi.length == jumlahAngsuran || status == 'lunas' ?
-                                    ""
-                                    :
-                                    <div className="row">
-                                        <div className='col-md-12'>
-                                            <button className='btn btn-sm btn-info float-end' onClick={() => tambahTransaksi(Transaksi.length + 1)}>Tambah Transaksi</button>
-                                        </div>
-                                    </div>
-                                }
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div className='row mt-3'>
-                    <div className="col-md-12">
-                        {Transaksi.map((item, index) => (
-                            <div div key={item.id_transaksi} className="card shadow mb-2" >
-                                <div className="card-body">
-                                    <div className="row">
-                                        <div className="col-md-2">
-                                            <h5>Transaksi</h5>
-                                            <span>Transaksi ke {item.pembayaran_ke}</span>
-                                        </div>
-                                        <div className="col-md-2">
-                                            <h5>Akhir Pembayaran</h5>
-                                            <span>{moment(item.tenggat_pembayaran).locale('id').format('DD MMMM YYYY')}</span>
-                                            <h5>Tanggal Transaksi</h5>
-                                            <span>{item.tanggal_transaksi && moment(item.tanggal_transaksi).locale('id').format('DD MMMM YYYY')}</span>
-                                        </div>
-                                        {/* <div className="col-md-2">
+                        <div className='row mt-3'>
+                            <div className="col-md-12">
+                                {Transaksi.map((item, index) => (
+                                    <div div key={item.id_transaksi} className="card shadow mb-2" >
+                                        <div className="card-body">
+                                            <div className="row">
+                                                <div className="col-md-2">
+                                                    <h5>Transaksi</h5>
+                                                    <span>Transaksi ke {item.pembayaran_ke}</span>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <h5>Akhir Pembayaran</h5>
+                                                    <span>{moment(item.tenggat_pembayaran).locale('id').format('DD MMMM YYYY')}</span>
+                                                    <h5>Tanggal Transaksi</h5>
+                                                    <span>{item.tanggal_transaksi && moment(item.tanggal_transaksi).locale('id').format('DD MMMM YYYY')}</span>
+                                                </div>
+                                                {/* <div className="col-md-2">
                                         </div> */}
-                                        <div className="col-md-2">
-                                            <h5>Nominal Transaksi</h5>
-                                            <span>{item.nominal}</span>
-                                        </div>
-                                        <div className="col-md-2">
-                                            <h5>Status Transaksi</h5>
-                                            <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi == "habis" ? "waktu habis" : item.status_transaksi}</span>
-                                        </div>
-                                        <div className="col-md-2">
-                                            <h5>Keterangan</h5>
-                                            <span className="">{item.keterangan}</span>
-                                        </div>
-                                        <div className="col-md-2">
-                                            <h5>Aksi</h5>
-                                            {item.status_tombol == '1' ?
-                                                <button className='btn btn-sm btn-primary' onClick={() => modalImageOpen(item.bukti_transaksi)}>Bukti Transaksi</button>
-                                                :
-                                                <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)}>Upload Bukti</button>
-                                            }
+                                                <div className="col-md-2">
+                                                    <h5>Nominal Transaksi</h5>
+                                                    <span>{item.nominal}</span>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <h5>Status Transaksi</h5>
+                                                    <span className={`text-capitalize ${item.status_transaksi == 'selesai' ? 'text-success' : 'text-danger'}`}>{item.status_transaksi == "habis" ? "waktu habis" : item.status_transaksi}</span>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <h5>Keterangan</h5>
+                                                    <span className="">{item.keterangan}</span>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <h5>Aksi</h5>
+                                                    {item.status_tombol == '1' ?
+                                                        <button className='btn btn-sm btn-primary' onClick={() => modalImageOpen(item.bukti_transaksi)}>Bukti Transaksi</button>
+                                                        :
+                                                        <button className='btn btn-sm btn-info' onClick={() => modalShow(item.id_transaksi)}>Upload Bukti</button>
+                                                    }
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="row mt-3 d-none">
-                    <div ref={templateRef}>
-                        <div style={tableStyle.wrap}>
-                            <img src={kop} alt="kop" style={tableStyle.image} />
+                        </div>
+                        <div className="row mt-3 d-none">
+                            <div ref={templateRef}>
+                                <div style={tableStyle.wrap}>
+                                    <img src={kop} alt="kop" style={tableStyle.image} />
 
-                            <div style={tableStyle.grid} className='mb-3 mt-3'>
-                                <div style={tableStyle.gridItem}>
-                                    <h4 className='fw-bold'>NO. Pendaftaran : {user && user.data.token}</h4>
-                                    <table cellPadding={5}>
-                                        <tbody>
-                                            <tr>
-                                                <td><span>NIK</span></td>
-                                                <td>&nbsp;:&nbsp;</td>
-                                                <td>{biodata.nik}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Nama</td>
-                                                <td>&nbsp;:&nbsp;</td>
-                                                <td>{nama}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Tempat/Tanggal Lahir</td>
-                                                <td>&nbsp;:&nbsp;</td>
-                                                <td>{biodata.tempat_lahir}, {biodata.tanggal_lahir}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Jenis Kelamin</td>
-                                                <td>&nbsp;:&nbsp;</td>
-                                                <td>{kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Tanggal Daftar</td>
-                                                <td>&nbsp;:&nbsp;</td>
-                                                <td>{biodata.tanggal_daftar}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div style={tableStyle.gridItem}>
-                                    <div className='border mt-5 text-center algn-items-center' style={{ width: '135px', height: '160px' }}>
-                                        <h6 style={{ marginTop: '70px' }}>3x4</h6>
+                                    <div style={tableStyle.grid} className='mb-3 mt-3'>
+                                        <div style={tableStyle.gridItem}>
+                                            <h4 className='fw-bold'>NO. Pendaftaran : {user && user.data.token}</h4>
+                                            <table cellPadding={5}>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><span>NIK</span></td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td>{biodata.nik}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Nama</td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td>{nama}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tempat/Tanggal Lahir</td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td>{biodata.tempat_lahir}, {biodata.tanggal_lahir}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jenis Kelamin</td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td>{kelamin == 'l' ? 'Laki-Laki' : 'Perempuan'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tanggal Daftar</td>
+                                                        <td>&nbsp;:&nbsp;</td>
+                                                        <td>{biodata.tanggal_daftar}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div style={tableStyle.gridItem}>
+                                            <div className='border mt-5 text-center algn-items-center' style={{ width: '135px', height: '160px' }}>
+                                                <h6 style={{ marginTop: '70px' }}>3x4</h6>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div style={tableStyle.grid}>
-                                <div>
-                                    <p style={{ textAlign: 'justify', textJustify: 'inter-word' }}>Selamat! Anda telah berhasil mendaftar pada seleksi Mahasiswa Baru Sekolah Tinggi Nurul Abror Al-Robbaniyin
-                                        Alasbuluh Wongsorejo Banyuwangi.</p>
+                                    <div style={tableStyle.grid}>
+                                        <div>
+                                            <p style={{ textAlign: 'justify', textJustify: 'inter-word' }}>Selamat! Anda telah berhasil mendaftar pada seleksi Mahasiswa Baru Sekolah Tinggi Nurul Abror Al-Robbaniyin
+                                                Alasbuluh Wongsorejo Banyuwangi.</p>
 
-                                    <span style={{ textAlign: 'justify', textJustify: 'inter-word' }}>
-                                        Silakan menyampaikan dokumen persyaratan dalam bentuk hardcopy ke</span>
-                                    <ol>
-                                        <li>LK SMK NAA (untuk melakukan pembayaran).</li>
-                                        <li>Panitia PMB STAINAA (untuk melakukan registrasi ulang).</li>
-                                    </ol>
+                                            <span style={{ textAlign: 'justify', textJustify: 'inter-word' }}>
+                                                Silakan menyampaikan dokumen persyaratan ke</span>
+                                            <ol type='A'>
+                                                <li>
+                                                    LK SMKNAA atau bisa melakukan transfer ke Rekening LK SMKNAA dengan melampirkan dokumen ini dalam bentuk softcopy
+                                                    <ol>
+                                                        <li>BRI 000701002791300 a.n SMK NURUL ABROR Al ROBBANIYIN</li>
+                                                        <li>BNI 1149829792 a.n NURUL ABROR Al ROBBANIYIN</li>
+                                                    </ol>
+                                                </li>
+                                                <li>Petugas PMB STAINAAA ketika melakukan registrasi ulang dengan bentuk hardcopy.</li>
+                                            </ol>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </>
+            }
+
         </LayoutUser >
     )
 }
