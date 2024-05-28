@@ -55,13 +55,13 @@ const InformasiSeleksi = () => {
 
     useEffect(() => {
         getStatusPembayaran()
-    }, [idPendaftar])
+    }, [user])
 
 
     const getStatusPembayaran = async () => {
         try {
-            if (idPendaftar) {
-                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
+            if (user) {
+                const response = await axios.get(`v1/approve/byToken/${user.data.token}`)
                 setStatusSeleksi(response.data.data.status_seleksi)
             }
         } catch (error) {
