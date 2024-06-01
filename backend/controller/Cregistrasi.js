@@ -118,7 +118,7 @@ module.exports = {
             password : hashPass,
             role : "user",
             verivikasi_kode : "",
-            status : "aktif"
+            status : ""
         }).then(async result => {
             let randomNumber = Math.floor(100000 + Math.random() * 900000)
             await registrasi.update({
@@ -184,7 +184,8 @@ module.exports = {
         }
         await registrasi.update({
             token : randomNumber,
-            verifikasi_kode : ""
+            verifikasi_kode : "",
+            status : "aktif"
         }, {
             where : {
                 verifikasi_kode : kode
