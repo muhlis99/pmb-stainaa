@@ -83,28 +83,28 @@ const DetailForm = () => {
 
     const jalurPendaftaranByCode = async () => {
         if (biodata.jalur_pendaftaran) {
-            const response = await axios.get(`v1/equipment/jalurPendaftaran/getById/${biodata.jalur_pendaftaran}`)
+            const response = await axios.get(`v1/equipment/jalurPendaftaran/getByCode/${biodata.jalur_pendaftaran}`)
             setJalurPendaftaran(response.data.data.nama_jalur_pendaftaran)
         }
     }
 
     const jenisPendaftaranByCode = async () => {
         if (biodata.jenis_pendaftaran) {
-            const response = await axios.get(`v1/equipment/jenisPendaftaran/getById/${biodata.jenis_pendaftaran}`)
+            const response = await axios.get(`v1/equipment/jenisPendaftaran/getByCode/${biodata.jenis_pendaftaran}`)
             setJenisPendaftaran(response.data.data.nama_jenis_pendaftaran)
         }
     }
 
     const jenisTinggalByCode = async () => {
         if (biodata.jenis_tinggal) {
-            const response = await axios.get(`v1/equipment/jenisTinggal/getById/${biodata.jenis_tinggal}`)
+            const response = await axios.get(`v1/equipment/jenisTinggal/getByCode/${biodata.jenis_tinggal}`)
             setJenisTinggal(response.data.data.nama_jenis_tinggal)
         }
     }
 
     const alatTransportasiByCode = async () => {
         if (biodata.alat_transportasi) {
-            const response = await axios.get(`v1/equipment/alatTransportasi/getById/${biodata.alat_transportasi}`)
+            const response = await axios.get(`v1/equipment/alatTransportasi/getByCode/${biodata.alat_transportasi}`)
             setAlatTransportasi(response.data.data.nama_alat_transportasi)
         }
     }
@@ -303,9 +303,7 @@ const DetailForm = () => {
                             <div className="col-xl-12 col-md-12 colsm-12">
                                 <div className="card shadow-lg mb-3">
                                     <div className="card-header py-1">
-                                        <h5 className="card-title mt-1">
-                                            Detail Diri
-                                        </h5>
+                                        <Link to="/dataFormulir" className='btn btn-sm btn-danger'>Kembali</Link>
                                     </div>
                                     <div className="card-body">
                                         <div className="row">

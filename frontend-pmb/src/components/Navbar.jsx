@@ -36,11 +36,8 @@ const Navbar = () => {
 
     useEffect(() => {
         getByToken()
-    }, [user])
-
-    useEffect(() => {
         getStatus()
-    }, [idPendaftar])
+    }, [user])
 
     const getByToken = async () => {
         try {
@@ -56,8 +53,8 @@ const Navbar = () => {
 
     const getStatus = async () => {
         try {
-            if (idPendaftar) {
-                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
+            if (user) {
+                const response = await axios.get(`v1/approve/byToken/${user.data.token}`)
                 setDataForm(response.data.data.status_formulir)
                 setDataPembayaran(response.data.data.status_pembayaran)
             }

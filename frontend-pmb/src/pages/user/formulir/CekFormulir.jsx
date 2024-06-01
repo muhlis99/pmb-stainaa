@@ -61,7 +61,7 @@ const CekFormulir = () => {
 
     useEffect(() => {
         getStatusFormulir()
-    }, [idPendaftar])
+    }, [user])
 
     const getDetailForm = async () => {
         try {
@@ -82,8 +82,8 @@ const CekFormulir = () => {
 
     const getStatusFormulir = async () => {
         try {
-            if (idPendaftar) {
-                const response = await axios.get(`v1/approve/byId/${idPendaftar}`)
+            if (user) {
+                const response = await axios.get(`v1/approve/byToken/${user.data.token}`)
                 setStatusFormulir(response.data.data.status_formulir)
             }
         } catch (error) {

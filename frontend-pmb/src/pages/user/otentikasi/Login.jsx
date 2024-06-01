@@ -78,7 +78,7 @@ const Login = () => {
                     <div className='position-absolute z-3 bg-light start-0 end-0 top-0 bottom-0 w-100 d-flex justify-content-center align-items-center' style={{ height: '100%' }}>
                         <div>
                             <FallingLines
-                                color="#754FFE"
+                                color="#0B5ED7"
                                 width="100"
                                 visible={true}
                                 ariaLabel="falling-circles-loading"

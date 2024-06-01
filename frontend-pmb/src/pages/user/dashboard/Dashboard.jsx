@@ -57,9 +57,9 @@ const Dashboard = () => {
                                 <h4>Selamat datang di PMB STAINAA</h4>
                                 <span>Silakan selesaikan data pendaftaran sebagaimana berikut</span>
                                 <ol>
-                                    <li>Lengkapi data formulir meliputi data diri, data alamat, data orang tua, data wali serta berkas pendaftaran.</li>
-                                    <li>Langkah selanjutnya yaitu melakukan pembayaran biaya pendaftaran.</li>
-                                    <li>Langkah selanjutnya yaitu melakukan seleksi masuk.</li>
+                                    <li>Lengkapi data formulir meliputi data diri, alamat, orang tua dan wali serta berkas pendaftaran.</li>
+                                    <li>Melakukan pembayaran biaya pendaftaran.</li>
+                                    <li>Melakukan seleksi masuk.</li>
                                 </ol>
                             </div>
                         </div>
