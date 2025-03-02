@@ -118,9 +118,9 @@ const LayoutAdmin = ({ children }) => {
                 <main id='page-content'>
                     <div className="header">
                         <nav className="navbar-default navbar navbar-expand-lg">
-                            <Link id="nav-toggle" onClick={tambahClass} >
+                            <a className='cursor-pointer' id="nav-toggle" onClick={tambahClass} >
                                 <i className="fe fe-menu"></i>
-                            </Link>
+                            </a>
                             <div className="ms-auto d-flex">
                                 <ul className="navbar-nav navbar-right-wrap ms-2 d-flex nav-top-wrap">
                                     <li className="dropdown ms-2">
