@@ -63,56 +63,61 @@ module.exports = {
             }
         })
         if (!emailUse) return res.status(404).json({ message: "Tidak dapat menemukan akun email anda" })
-        let testAccount = await nodemailer.createTestAccount()
-        let transporter = nodemailer.createTransport(smtpTransport({
-            service: "gmail",
-            auth: {
-                user: "stainaabanyuwangi@gmail.com",
-                pass: "kmmo hoed yaop gekt",
-            }
-        }))
-
-        try {
-            await user.update({
-                verifikasi_kode: randomNumber,
-            }, {
-                where: {
-                    email: email,
-                    status: "aktif"
-                }
-            }).
-                then(result => {
-                    res.status(201).json({
-                        message: "code verifikasi telah terkirim"
-                    })
-                })
-
-            await transporter.sendMail({
-                from: 'stainaabanyuwangi@gmail.com',
-                to: `${email}`,
-                subject: "kode verifikasi pmb stainaa",
-                text: 'jangan disebarakan pada orang lain',
-                html: `<div class="card" style="width: 60%;>
-                            <div class="card-body">
-                                <h5 class="card-title">Silakan masukkan kode verifikasi di bawah ini untuk mereset password anda
-                                jangan berikan kode verifikasi ini kepada siapapun</h5>
-                                <h3 style="color:blue" class="card-text">${randomNumber}</h3>
-                                <h6>Catatan :<br>
-                                1. Kode ini dikirim oleh server PMB STAINAA.<br>
-                                2. Abaikan jika anda merasa tidak melakukannya.<br>
-                                3. Pesan ini dikirim menggunakan email otomatis, mohon untuk tidak membalas email ini.
-                                </h6>
-                                <hr>
-                                <h6>banyuwangi, ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')} WIB <br>
-                                Sekolah Tinggi Agama Islam Nurul Abror Al-Robbaniyin <br>
-                                jl. KH Agus Salim No 165 68453 email : muhlis_ganteng@gmail.com</h6>
-                            </div>
-                        </div>`
+            res.status(200).json({
+                message: "Email anda ditemukan",
+                email : email,
+                token : emailUse.token
             })
+        // let testAccount = await nodemailer.createTestAccount()
+        // let transporter = nodemailer.createTransport(smtpTransport({
+        //     service: "gmail",
+        //     auth: {
+        //         user: "stainaabanyuwangi@gmail.com",
+        //         pass: "kmmo hoed yaop gekt",
+        //     }
+        // }))
 
-        } catch (err) {
-            console.log(err);
-        }
+        // try {
+        //     await user.update({
+        //         verifikasi_kode: randomNumber,
+        //     }, {
+        //         where: {
+        //             email: email,
+        //             status: "aktif"
+        //         }
+        //     }).
+        //         then(result => {
+        //             res.status(201).json({
+        //                 message: "code verifikasi telah terkirim"
+        //             })
+        //         })
+
+        //     await transporter.sendMail({
+        //         from: 'stainaabanyuwangi@gmail.com',
+        //         to: `${email}`,
+        //         subject: "kode verifikasi pmb stainaa",
+        //         text: 'jangan disebarakan pada orang lain',
+        //         html: `<div class="card" style="width: 60%;>
+        //                     <div class="card-body">
+        //                         <h5 class="card-title">Silakan masukkan kode verifikasi di bawah ini untuk mereset password anda
+        //                         jangan berikan kode verifikasi ini kepada siapapun</h5>
+        //                         <h3 style="color:blue" class="card-text">${randomNumber}</h3>
+        //                         <h6>Catatan :<br>
+        //                         1. Kode ini dikirim oleh server PMB STAINAA.<br>
+        //                         2. Abaikan jika anda merasa tidak melakukannya.<br>
+        //                         3. Pesan ini dikirim menggunakan email otomatis, mohon untuk tidak membalas email ini.
+        //                         </h6>
+        //                         <hr>
+        //                         <h6>banyuwangi, ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')} WIB <br>
+        //                         Sekolah Tinggi Agama Islam Nurul Abror Al-Robbaniyin <br>
+        //                         jl. KH Agus Salim No 165 68453 email : muhlis_ganteng@gmail.com</h6>
+        //                     </div>
+        //                 </div>`
+        //     })
+
+        // } catch (err) {
+        //     console.log(err);
+        // }
     },
 
     verifyCode: async (req, res, next) => {

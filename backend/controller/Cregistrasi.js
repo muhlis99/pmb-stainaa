@@ -110,6 +110,7 @@ module.exports = {
     
     daftar : async (req, res, next) => {
         const {nama, email, pass, conPass} = req.body
+        let randomNumber = Math.floor(100000000000 + Math.random() * 900000000000)
         if (pass != conPass) return res.status(400).json({ message: "confirmasi password yang anda masukkan salah" })
         const hashPass =  await argon.hash(pass)
         await registrasi.create({
@@ -117,51 +118,52 @@ module.exports = {
             email : email,
             password : hashPass,
             role : "user",
+            token : randomNumber,
             verivikasi_kode : "",
-            status : ""
+            status : "aktif"
         }).then(async result => {
-            let randomNumber = Math.floor(100000 + Math.random() * 900000)
-            await registrasi.update({
-                verifikasi_kode : randomNumber
-            }, {
-                where : {
-                    id_pmb : result.id_pmb
-                }
-            })
-            let testAccount = await nodemailer.createTestAccount()
-            let transporter = nodemailer.createTransport(smtpTransport({
-                service: "gmail",
-                auth: {
-                    user: "stainaabanyuwangi@gmail.com",
-                    pass: "kmmo hoed yaop gekt",
-                }
-            }))
-            await transporter.sendMail({
-                from: 'stainaabanyuwangi@gmail.com',
-                to: `${email}`,
-                subject: "Atur Ulang Kata Kunci Apliaksi Mahasiswa STAINAA",
-                text: 'jangan disebarakan pada orang lain',
-                html: `<div class="card" style="width: 60%;>
-                            <div class="card-body">
-                                <h5 class="card-title">Tinggal satu langkah lagi
-                                Silakan masukkan kode verifikasi di bawah ini, untuk melanjutkan pendaftaran PMB STAINAA
-                                Kode ini jangan diberikan kepada siapapun.</h5>
-                                <h3 style="color:blue" class="card-text">${randomNumber}</h3>
-                                <h6><br>
-                                1. Kode ini dikirim oleh server PMB STAINAA.<br>
-                                2. Abaikan jika anda merasa tidak melakukannya.<br>
-                                3. Pesan ini dikirim menggunakan email otomatis, mohon untuk tidak membalas email ini.</h6>
-                                <hr>
-                                <h6>banyuwangi, ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')} WIB <br>
-                                Sekolah Tinggi Agama Islam Nurul Abror Al-Robbaniyin <br>
-                                jl. KH Agus Salim No 165 68453 email : muhlis_ganteng@gmail.com</h6>
-                            </div>
-                        </div>`
-            })
             res.status(201).json({
-                message: "Data registrasi Ditemukan",
+                message: "Data registrasi berhasil ditambahkan",
                 data: result
             })
+            // let randomNumber = Math.floor(100000 + Math.random() * 900000)
+            // await registrasi.update({
+            //     verifikasi_kode : randomNumber
+            // }, {
+            //     where : {
+            //         id_pmb : result.id_pmb
+            //     }
+            // })
+            // let testAccount = await nodemailer.createTestAccount()
+            // let transporter = nodemailer.createTransport(smtpTransport({
+            //     service: "gmail",
+            //     auth: {
+            //         user: "stainaabanyuwangi@gmail.com",
+            //         pass: "kmmo hoed yaop gekt",
+            //     }
+            // }))
+            // await transporter.sendMail({
+            //     from: 'stainaabanyuwangi@gmail.com',
+            //     to: `${email}`,
+            //     subject: "Atur Ulang Kata Kunci Apliaksi Mahasiswa STAINAA",
+            //     text: 'jangan disebarakan pada orang lain',
+            //     html: `<div class="card" style="width: 60%;>
+            //                 <div class="card-body">
+            //                     <h5 class="card-title">Tinggal satu langkah lagi
+            //                     Silakan masukkan kode verifikasi di bawah ini, untuk melanjutkan pendaftaran PMB STAINAA
+            //                     Kode ini jangan diberikan kepada siapapun.</h5>
+            //                     <h3 style="color:blue" class="card-text">${randomNumber}</h3>
+            //                     <h6><br>
+            //                     1. Kode ini dikirim oleh server PMB STAINAA.<br>
+            //                     2. Abaikan jika anda merasa tidak melakukannya.<br>
+            //                     3. Pesan ini dikirim menggunakan email otomatis, mohon untuk tidak membalas email ini.</h6>
+            //                     <hr>
+            //                     <h6>banyuwangi, ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')} WIB <br>
+            //                     Sekolah Tinggi Agama Islam Nurul Abror Al-Robbaniyin <br>
+            //                     jl. KH Agus Salim No 165 68453 email : muhlis_ganteng@gmail.com</h6>
+            //                 </div>
+            //             </div>`
+            // })
         }).
         catch(err => {
             next(err)

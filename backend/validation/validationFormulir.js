@@ -72,18 +72,18 @@ exports.validationForm1 = [
 ]
 
 exports.validationForm2 = [
-    check('jalan')
-        .notEmpty()
-        .withMessage('jalan tidak boleh kosong'),
-    check('dusun')
-        .notEmpty()
-        .withMessage('dusun tidak boleh kosong'),
-    check('rt')
-        .notEmpty()
-        .withMessage('rt tidak boleh kosong'),
-    check('rw')
-        .notEmpty()
-        .withMessage('rw tidak boleh kosong'),
+    // check('jalan')
+    //     .notEmpty()
+    //     .withMessage('jalan tidak boleh kosong'),
+    // check('dusun')
+    //     .notEmpty()
+    //     .withMessage('dusun tidak boleh kosong'),
+    // check('rt')
+    //     .notEmpty()
+    //     .withMessage('rt tidak boleh kosong'),
+    // check('rw')
+    //     .notEmpty()
+    //     .withMessage('rw tidak boleh kosong'),
     // check('kode_pos')
     //     .notEmpty()
     //     .withMessage('kode_pos tidak boleh kosong')
