@@ -22,6 +22,7 @@ import InformasiSeleksi from "./pages/user/seleksi/InformasiSeleksi"
 import FormSeleksi from "./pages/user/seleksi/FormSeleksi"
 import PemilihanProdi from "./pages/user/seleksi/PemilihanProdi"
 import ListFormulir from "./pages/admin/dataFormulir/ListFormulir"
+import PilihCetak from "./pages/admin/dataFormulir/PilihCetak"
 import PembayaranList from "./pages/admin/pembayaran/PembayaranList"
 import TransaksiList from "./pages/admin/transaksi/TransaksiList"
 import TransaksiCek from "./pages/admin/transaksi/TransaksiCek"
@@ -36,6 +37,10 @@ import KirimInformasi from "./pages/admin/dataInformasi/KirimInformasi"
 import DataUser from "./pages/admin/dataUser/DataUser"
 import DetailForm from "./pages/admin/dataFormulir/DetailForm"
 import SeleksiProdi from "./pages/admin/hasilSeleksi/SeleksiProdi"
+import CetakForm from "./pages/admin/dataFormulir/CetakForm"
+import CetakSuratWali from "./pages/admin/dataFormulir/CetakSuratWali"
+import CetakFormAyah from "./pages/admin/dataFormulir/CetakFormAyah"
+import CetakFormIbu from "./pages/admin/dataFormulir/CetakFormIbu"
 
 function App() {
   return (
@@ -66,6 +71,11 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/dataFormulir" element={<ListFormulir />} />
           <Route path="/detailForm" element={<DetailForm />} />
+          <Route path="/cetak" element={<PilihCetak />} />
+          <Route path="/printform/:token" element={<CetakForm />} />
+          <Route path="/printformayah/:token" element={<CetakFormAyah />} />
+          <Route path="/printformibu/:token" element={<CetakFormIbu />} />
+          <Route path="/printsuratpernyataan/:token" element={<CetakSuratWali />} />
           <Route path="/pembayaranlist" element={<PembayaranList />} />
           <Route path="/transaksi" element={<TransaksiList />} />
           <Route path="/cektransaksi" element={<TransaksiCek />} />

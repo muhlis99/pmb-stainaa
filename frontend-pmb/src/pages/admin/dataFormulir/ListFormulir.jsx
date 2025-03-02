@@ -130,6 +130,9 @@ const ListFormulir = () => {
                                                         <div className="pt-2 mt-2">
                                                             <Link to="/detailForm" state={{ token: item.token }} className='btn btn-sm btn-info w-100'>Selengkapnya</Link>
                                                         </div>
+                                                        <div className="mt-2">
+                                                            <Link to="/cetak" state={{ token: item.token }} className='btn btn-sm btn-primary w-100'>Cetak</Link>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
