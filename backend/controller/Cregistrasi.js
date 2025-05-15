@@ -122,10 +122,30 @@ module.exports = {
             verivikasi_kode : "",
             status : "aktif"
         }).then(async result => {
-            res.status(201).json({
-                message: "Data registrasi berhasil ditambahkan",
-                data: result
+            await Mapprove.create({
+                token : randomNumber,
+                status_formulir : "belum",
+                status_pembayaran : "belum",
+                status_seleksi : "belum",
+                tanggal_approve : "",
+                status : "tidak"
             })
+
+            
+            req.session.userId = result.id_pmb
+            const id = result.id_pmb
+            const mail = email
+            const role = "user"
+            const token =  randomNumber
+            res.status(200).json({
+                message: "Data registrasi berhasil ditambahkan",
+                id, mail, role, token
+            })
+
+            // res.status(201).json({
+            //     message: "Data registrasi berhasil ditambahkan",
+            //     data: result
+            // })
             // let randomNumber = Math.floor(100000 + Math.random() * 900000)
             // await registrasi.update({
             //     verifikasi_kode : randomNumber
