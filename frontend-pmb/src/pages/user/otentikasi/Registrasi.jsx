@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from "../../../assets/stainaa.png"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
-import { useDispatch, useSelector } from "react-redux"
-import { RegistrasiUser, reset } from "../../../features/authSlice"
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { FallingLines } from 'react-loader-spinner'
@@ -16,8 +14,6 @@ const Registrasi = () => {
     const [password, setPassword] = useState("")
     const [konfirmPass, setKonfirmPass] = useState("")
     const [loading, setLoading] = useState(false)
-    const { user, isSuccess, isError, message } = useSelector((state) => state.auth)
-    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const togglePass = () => {
@@ -35,29 +31,6 @@ const Registrasi = () => {
             setShowConfirm(true)
         }
     }
-
-    useEffect(() => {
-        if (user || isSuccess) {
-            axios.post(`v1/formulir/createFirst/${user.data.token}`)
-            setLoading(false)
-            Swal.fire({
-                title: user.message,
-                icon: 'success',
-                confirmButtonColor: '#3085d6'
-            }).then(() => {
-                navigate('/login')
-            })
-        } else if (isError) {
-            setLoading(false)
-            Swal.fire({
-                title: 'Error',
-                text: message,
-                icon: 'error',
-                confirmButtonColor: '#3085d6'
-            })
-        }
-        dispatch(reset())
-    }, [user, isSuccess, navigate, message, dispatch])
 
     const auth = async (e) => {
         e.preventDefault()
@@ -106,25 +79,24 @@ const Registrasi = () => {
                 })
             } else {
                 setLoading(true)
-                dispatch(RegistrasiUser({ nama, email, konfirmPass, password }))
-                // await axios.post('v1/registrasi/daftar', {
-                //     nama: nama,
-                //     email: email,
-                //     conPass: konfirmPass,
-                //     pass: password
-                // }).then(function (response) {
-                //     setLoading(false)
-                //     Swal.fire({
-                //         title: 'Sukses',
-                //         text: 'Anda telah berhasil membuat akun',
-                //         icon: 'success',
-                //         confirmButtonColor: '#3085d6'
-                //     }).then(() => {
-                //         // navigate('/verifyKode')
-                //         axios.post(`v1/formulir/createFirst/${response.data.data.token}`)
-                //         navigate('/dashboard')
-                //     })
-                // })
+                await axios.post('v1/registrasi/daftar', {
+                    nama: nama,
+                    email: email,
+                    conPass: konfirmPass,
+                    pass: password
+                }).then(function (response) {
+                    setLoading(false)
+                    Swal.fire({
+                        title: 'Sukses',
+                        text: 'Anda telah berhasil membuat akun',
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6'
+                    }).then(() => {
+                        navigate('/login')
+                        axios.post(`v1/formulir/createFirst/${response.data.data.token}`)
+                        navigate('/login')
+                    })
+                })
             }
         } catch (error) {
         }

@@ -84,7 +84,7 @@ const CekFormulir = () => {
         try {
             if (user) {
                 const response = await axios.get(`v1/approve/byToken/${user.data.token}`)
-                console.log(response.data.data.status_formulir)
+                setStatusFormulir(response.data.data.status_formulir)
             }
         } catch (error) {
 
