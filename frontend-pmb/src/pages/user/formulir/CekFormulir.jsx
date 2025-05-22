@@ -84,7 +84,7 @@ const CekFormulir = () => {
         try {
             if (user) {
                 const response = await axios.get(`v1/approve/byToken/${user.data.token}`)
-                setStatusFormulir(response.data.data.status_formulir)
+                console.log(response.data.data.status_formulir)
             }
         } catch (error) {
 
@@ -119,13 +119,12 @@ const CekFormulir = () => {
                                         </>
 
                                         :
-                                        ""
-                                        // <Link to="/detailformulir" state={{ token: token }} className={`timeline-point done`}>
-                                        //     <FaCaretRight className='text-light' size={45} />
-                                        // </Link>
+                                        <Link to="/detailformulir" state={{ token: token }} className={`timeline-point done`}>
+                                            <FaCaretRight className='text-light' size={45} />
+                                        </Link>
                                     }
-                                    {/* <div className="timeline-space">
-                                    </div> */}
+                                    <div className="timeline-space">
+                                    </div>
                                     <div className={`timeline-point ${diri == 1 ? 'done' : ''}`}>
                                         <FaHandPointer className='text-light' size={45} />
                                     </div>

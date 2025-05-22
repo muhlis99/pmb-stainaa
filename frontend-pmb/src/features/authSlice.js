@@ -14,7 +14,27 @@ export const LoginUser = createAsyncThunk("User/LoginUser", async (user, thunkAP
         const response = await axios.post('v1/login/in', {
             email: user.email,
             password: user.password,
-            status : "aktif"
+            status: "aktif"
+        })
+        return response.data
+    } catch (error) {
+        if (error.response.data.message) {
+            const message = error.response.data.message
+            return thunkAPI.rejectWithValue(message)
+        } else {
+            const message = error.response.data.message
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+})
+
+export const RegistrasiUser = createAsyncThunk("user/RegistrasiUser", async (user, thunkAPI) => {
+    try {
+        const response = await axios.post('v1/registrasi/daftar', {
+            nama: user.nama,
+            email: user.email,
+            conPass: user.konfirmPass,
+            pass: user.password
         })
         return response.data
     } catch (error) {
@@ -91,6 +111,20 @@ export const authSlice = createSlice({
             state.user = action.payload
         })
         builder.addCase(LoginUser.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        })
+
+        builder.addCase(RegistrasiUser.pending, (state) => {
+            state.isLoading = true
+        })
+        builder.addCase(RegistrasiUser.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isSuccess = true
+            state.user = action.payload
+        })
+        builder.addCase(RegistrasiUser.rejected, (state, action) => {
             state.isLoading = false
             state.isError = true
             state.message = action.payload
