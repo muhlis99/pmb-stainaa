@@ -19,7 +19,7 @@ const fs = require('fs')
 const QRCode = require("qrcode");
 // const { createCanvas, loadImage } = require("canvas");
 const axios = require('axios')
-const endPoint = "https://api-siakad.stainaa.ac.id/v1/mahasiswa/"
+const endPoint = "http://apisiakad.ponpesnaa.net/v1/mahasiswa"
 
 module.exports = {
     getAll: async (req, res, next) => {
@@ -483,46 +483,46 @@ module.exports = {
             code_fakultas: dataProdi.code_fakultas,
             code_prodi: dataProdi.code_prodi,
             status: "aktif"
-        }).then(async result => {
-            await Mregistrasi.update({
+        })
+        
+        await Mregistrasi.update({
                 status: "tidak"
             }, {
                 where: {
                     token: token
                 }
-            })
-
-            let testAccount = await nodemailer.createTestAccount()
-            let transporter = nodemailer.createTransport(smtpTransport({
-                service: "gmail",
-                auth: {
-                    user: "stainaabanyuwangi@gmail.com",
-                    pass: "kmmo hoed yaop gekt",
-                }
-            }))
-            await transporter.sendMail({
-                from: 'stainaabanyuwangi@gmail.com',
-                to: `${dataMhs.email}`,
-                subject: "Pengumuman",
-                text: 'jangan disebarakan pada orang lain',
-                html: `<div class="card" style="width: 60%;>
-                            <div class="card-body">
-                                <h5class="card-title">Pengumuman seleksi.</h5>
-                                <h2>selamat anda berhasil melakukan registrasi pendaftaran<h2>
-                                <h3>nim anda berupa<h3><h3>${nim}</h3><br>
-                                <h3>nim anda digunakan untuk login ke aplikasi siamdos.siakad.ac.id
-                                apabila tidak bisa login silahkan menghubungi tim IT STAINAA <h3>
-                                <h6><br>
-                                1. kode ini dikirim oleh server PMB STAINAA.<br>
-                                2. Abaikan jika anda merasa tidak melakukannya.<br>
-                                3. Pesan ini dikirim menggunakan email otomatis, mohon untuk tidak membalas email ini.</h6>
-                                <hr>
-                                <h6>banyuwangi, ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')} WIB <br>
-                                Sekolah Tinggi Agama Islam Nurul Abror Al-Robbaniyin <br>
-                                jl. KH Agus Salim No 165 68453 email : muhlis_ganteng@gmail.com</h6>
-                            </div>
-                        </div>`
-            })
+            }).then(result => {
+            // let testAccount = await nodemailer.createTestAccount()
+            // let transporter = nodemailer.createTransport(smtpTransport({
+            //     service: "gmail",
+            //     auth: {
+            //         user: "stainaabanyuwangi@gmail.com",
+            //         pass: "kmmo hoed yaop gekt",
+            //     }
+            // }))
+            // await transporter.sendMail({
+            //     from: 'stainaabanyuwangi@gmail.com',
+            //     to: `${dataMhs.email}`,
+            //     subject: "Pengumuman",
+            //     text: 'jangan disebarakan pada orang lain',
+            //     html: `<div class="card" style="width: 60%;>
+            //                 <div class="card-body">
+            //                     <h5class="card-title">Pengumuman seleksi.</h5>
+            //                     <h2>selamat anda berhasil melakukan registrasi pendaftaran<h2>
+            //                     <h3>nim anda berupa<h3><h3>${nim}</h3><br>
+            //                     <h3>nim anda digunakan untuk login ke aplikasi siamdos.siakad.ac.id
+            //                     apabila tidak bisa login silahkan menghubungi tim IT STAINAA <h3>
+            //                     <h6><br>
+            //                     1. kode ini dikirim oleh server PMB STAINAA.<br>
+            //                     2. Abaikan jika anda merasa tidak melakukannya.<br>
+            //                     3. Pesan ini dikirim menggunakan email otomatis, mohon untuk tidak membalas email ini.</h6>
+            //                     <hr>
+            //                     <h6>banyuwangi, ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')} WIB <br>
+            //                     Sekolah Tinggi Agama Islam Nurul Abror Al-Robbaniyin <br>
+            //                     jl. KH Agus Salim No 165 68453 email : muhlis_ganteng@gmail.com</h6>
+            //                 </div>
+            //             </div>`
+            // })
             res.status(201).json({
                 message: "Data approve success",
             })
