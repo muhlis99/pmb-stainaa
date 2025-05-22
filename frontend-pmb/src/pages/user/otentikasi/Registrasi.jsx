@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from "../../../assets/stainaa.png"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
@@ -92,7 +92,9 @@ const Registrasi = () => {
                         icon: 'success',
                         confirmButtonColor: '#3085d6'
                     }).then(() => {
-                        navigate('/verifyKode')
+                        navigate('/login')
+                        axios.post(`v1/formulir/createFirst/${response.data.data.token}`)
+                        navigate('/login')
                     })
                 })
             }
