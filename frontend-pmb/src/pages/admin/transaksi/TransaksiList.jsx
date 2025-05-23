@@ -98,26 +98,37 @@ const TransaksiList = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {Mahasiswa.length == 0 ?
-                                                        <tr>
-                                                            <td align='center' colSpan={6}>
-                                                                Tidak ada data!
-                                                            </td>
-                                                        </tr>
-                                                        :
-                                                        Mahasiswa.map((item, index) => (
+                                                    {Mahasiswa.map((item, index) => {
+                                                        const hasFormulir = item.formulirs && item.formulirs.length > 0;
+                                                        const formulir = hasFormulir ? item.formulirs[0] : {};
+                                                        return (
                                                             <tr key={item.id_approve}>
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
-                                                                <td className='text-capitalize'>{item.formulirs[0].nama}</td>
-                                                                <td className='text-capitalize'>{item.formulirs[0].tempat_lahir}</td>
-                                                                <td className='text-capitalize'>{item.formulirs[0].tanggal_lahir && moment(item.formulirs[0].tanggal_lahir).format('DD MMMM YYYY')}</td>
-                                                                <td className='text-capitalize'>{item.formulirs[0].jenis_kelamin == 'l' ? 'Laki-Laki' : item.formulirs[0].jenis_kelamin == 'p' ? 'Perempuan' : ''}</td>
-                                                                <td><span className={`badge text-capitalize ${item.status_pembayaran == 'selesai' ? 'bg-success' : 'bg-danger'}`}>{item.status_pembayaran}</span></td>
+                                                                <td className='text-capitalize'>{formulir.nama || '-'}</td>
+                                                                <td className='text-capitalize'>{formulir.tempat_lahir || '-'}</td>
+                                                                <td className='text-capitalize'>
+                                                                    {formulir.tanggal_lahir
+                                                                        ? moment(formulir.tanggal_lahir).format('DD MMMM YYYY')
+                                                                        : '-'}
+                                                                </td>
+                                                                <td className='text-capitalize'>
+                                                                    {formulir.jenis_kelamin === 'l'
+                                                                        ? 'Laki-Laki'
+                                                                        : formulir.jenis_kelamin === 'p'
+                                                                            ? 'Perempuan'
+                                                                            : '-'}
+                                                                </td>
+                                                                <td>
+                                                                    <span className={`badge text-capitalize ${item.status_pembayaran === 'selesai' ? 'bg-success' : 'bg-danger'}`}>
+                                                                        {item.status_pembayaran}
+                                                                    </span>
+                                                                </td>
                                                                 <td>
                                                                     <Link to="/cektransaksi" state={{ token: item.token }} className='btn btn-sm btn-info'>Transaksi</Link>
                                                                 </td>
                                                             </tr>
-                                                        ))}
+                                                        );
+                                                    })}
                                                 </tbody>
                                             </table>
                                         </div>

@@ -135,7 +135,7 @@ const PemilihanProdi = () => {
                 </div>
                 <div className="row">
                     <div className="col-md-8 offset-2">
-                        <p className='text-center my-4'>pilihlah prodi pertama sesuai keingan anda</p>
+                        <p className='text-center my-4'>Pilihlah prodi pertama sesuai keinginan anda!</p>
                         <div className="row">
                             {Prodi.map((item, index) => (
                                 <div key={item.id_prodi} className="col-md-6">
@@ -155,7 +155,7 @@ const PemilihanProdi = () => {
                 </div>
                 <div className="row mt-8">
                     <div className="col-md-8 offset-2">
-                        <p className='text-center my-4'>opsi prodi anda terpilih sesuai pilihan prodi pertama</p>
+                        <p className='text-center my-4'>Opsi prodi anda terpilih sesuai pilihan prodi pertama</p>
                         <div className="row">
                             {Prodi.map((item, index) => (
                                 <div key={item.id_prodi} className="col-md-6">
@@ -179,7 +179,7 @@ const PemilihanProdi = () => {
                                 <div className="row">
                                     <div className="card shadow ">
                                         <div className="my-4">
-                                            <p className="text-center mb-0">Setelah anda memilih prodi silahkan click tombol dibawah ini untuk menyelesaikan pemilihan prodi</p>
+                                            <p className="text-center mb-0">Setelah anda memilih prodi silahkan click tombol dibawah ini untuk menyelesaikan pemilihan prodi!</p>
                                             <button onClick={() => done()} className='btn btn-sm btn-info float offset-5 mt-3'>Selesai</button>
                                         </div>
                                     </div>

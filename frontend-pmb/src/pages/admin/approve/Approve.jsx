@@ -99,14 +99,10 @@ const Approve = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {Approve.length == 0 ?
-                                                        <tr>
-                                                            <td align='center' colSpan={8}>
-                                                                Tidak ada data!
-                                                            </td>
-                                                        </tr>
-                                                        :
-                                                        Approve.map((item, index) => (
+                                                    {Approve.map((item, index) => {
+                                                        const hasFormulir = item.formulirs && item.formulirs.length > 0;
+                                                        const formulir = hasFormulir ? item.formulirs[0] : {};
+                                                        return (
                                                             <tr key={item.id_approve}>
                                                                 <td>{(page - 1) * 10 + index + 1}</td>
                                                                 <td>
@@ -115,63 +111,67 @@ const Approve = () => {
                                                                             <tr>
                                                                                 <td>Nama</td>
                                                                                 <td>&nbsp;:&nbsp;</td>
-                                                                                <td>{item.formulirs[0].nama}</td>
+                                                                                <td>{formulir.nama || '-'}</td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Tempat Lahir</td>
                                                                                 <td>&nbsp;:&nbsp;</td>
-                                                                                <td>{item.formulirs[0].tempat_lahir}</td>
+                                                                                <td>{formulir.tempat_lahir || '-'}</td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Tanggal Lahir</td>
                                                                                 <td>&nbsp;:&nbsp;</td>
-                                                                                <td>{item.formulirs[0].tanggal_lahir}</td>
+                                                                                <td>{formulir.tanggal_lahir
+                                                                                    ? moment(formulir.tanggal_lahir).format('DD MMMM YYYY')
+                                                                                    : '-'}</td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Email</td>
                                                                                 <td>&nbsp;:&nbsp;</td>
-                                                                                <td>{item.formulirs[0].email}</td>
+                                                                                <td>{formulir.email || '-'}</td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
                                                                 </td>
                                                                 <td>
-                                                                    {item.formulir == "belum" ?
+                                                                    {item.formulir === "belum" ?
                                                                         <span className="badge bg-warning">Pending</span>
                                                                         : <span className="badge bg-success">Completed</span>}
                                                                 </td>
                                                                 <td>
-                                                                    {item.status_pembayaran == "belum" ?
+                                                                    {item.status_pembayaran === "belum" ?
                                                                         <span className="badge bg-warning">Pending</span>
                                                                         : <span className="badge bg-success">Completed</span>}
                                                                 </td>
                                                                 <td>
-                                                                    {item.status_seleksi == "belum" ?
+                                                                    {item.status_seleksi === "belum" ?
                                                                         <span className="badge bg-warning">Pending</span>
                                                                         : <span className="badge bg-success">Completed</span>}
                                                                 </td>
-                                                                <td >{item.tanggal_approve == "" ?
-                                                                    <div className="d-flex align-items-center">
-                                                                        <div className="icon-shape icon-sm rounded-3 border p-1">
-                                                                            <i className="fe fe-clock fs-3"></i>
+                                                                <td>
+                                                                    {item.tanggal_approve === "" ?
+                                                                        <div className="d-flex align-items-center">
+                                                                            <div className="icon-shape icon-sm rounded-3 border p-1">
+                                                                                <i className="fe fe-clock fs-3"></i>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                    : moment(item.tanggal_approve).format('DD MMMM YYYY')}</td>
-                                                                <td >
-                                                                    {item.status == "tidak" ?
-                                                                        <span className="badge bg-warning">Pending</span>
-                                                                        : <span className="badge bg-success">Completed</span>}
-
+                                                                        : moment(item.tanggal_approve).format('DD MMMM YYYY')}
                                                                 </td>
                                                                 <td>
-                                                                    {item.status == "tidak" ?
+                                                                    {item.status === "tidak" ?
+                                                                        <span className="badge bg-warning">Pending</span>
+                                                                        : <span className="badge bg-success">Completed</span>}
+                                                                </td>
+                                                                <td>
+                                                                    {item.status === "tidak" ?
                                                                         <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Approve</Link>
                                                                         :
                                                                         <Link to="/detailapprove" state={{ token: item.token, idApprove: item.id_approve }} className='btn btn-sm btn-info'>Lihat </Link>
                                                                     }
                                                                 </td>
                                                             </tr>
-                                                        ))}
+                                                        );
+                                                    })}
                                                 </tbody>
                                             </table>
                                         </div>

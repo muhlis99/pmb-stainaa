@@ -60,7 +60,18 @@ const CekFormulir = () => {
     }, [user])
 
     useEffect(() => {
+        const getStatusFormulir = async () => {
+            try {
+                if (user) {
+                    const response = await axios.get(`v1/approve/byToken/${user.data.token}`)
+                    setStatusFormulir(response.data.data.status_formulir)
+                }
+            } catch (error) {
+
+            }
+        }
         getStatusFormulir()
+
     }, [user])
 
     const getDetailForm = async () => {
@@ -80,16 +91,7 @@ const CekFormulir = () => {
         }
     }
 
-    const getStatusFormulir = async () => {
-        try {
-            if (user) {
-                const response = await axios.get(`v1/approve/byToken/${user.data.token}`)
-                setStatusFormulir(response.data.data.status_formulir)
-            }
-        } catch (error) {
 
-        }
-    }
 
     return (
         <LayoutUser>

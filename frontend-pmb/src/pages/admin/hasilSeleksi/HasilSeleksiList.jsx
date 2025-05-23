@@ -229,7 +229,7 @@ const HasilSeleksiList = () => {
                                                                     {item.total_soal == item.total_selesai ?
                                                                         <span className='badge bg-success'>Selesai</span>
                                                                         :
-                                                                        <span className='badge bg-danger'>Belum </span>
+                                                                        <span className='badge bg-danger'>Belum</span>
                                                                     }
                                                                 </td>
                                                                 <td>

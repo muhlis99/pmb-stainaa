@@ -164,7 +164,6 @@ const DetailApprove = () => {
         try {
             const response = await axios.get(`v1/approve/byId/${location.state.idApprove}`)
             setApprove(response.data.data)
-            console.log(response.data.data);
         } catch (error) {
 
         }
@@ -418,9 +417,20 @@ const DetailApprove = () => {
         }
     }
 
+    const getBiodataBuktiPendaftaran = async () => {
+        try {
+            if (nik && Approve.status == 'setuju') {
+                const data = await axios.get(`/v1/approve/mhsByNik/${nik}`)
+                console.log(data.data.data)
+                setBiodataBuktiPendaftaran(data.data.data)
+            }
+        } catch (error) {
+            // console.log(error);
+        }
+    }
+
     const approveData = () => {
         try {
-
             Swal.fire({
                 title: "Approve Data ini?",
                 text: 'Pastikan semua data telah valid',
@@ -493,17 +503,6 @@ const DetailApprove = () => {
         }
     }
 
-    const getBiodataBuktiPendaftaran = async () => {
-        try {
-            if (nik && Approve.status == 'setuju') {
-                const data = await axios.get(`/v1/approve/mhsByNik/${nik}`)
-                setBiodataBuktiPendaftaran(data.data.data)
-            }
-        } catch (error) {
-            // console.log(error);
-        }
-    }
-
     const handleGeneratePdf = () => {
         const doc = new jsPDF({
             format: 'a4',
@@ -521,7 +520,6 @@ const DetailApprove = () => {
         })
     }
 
-    console.log(biodataBuktiPendaftaran.nama);
 
     const downloadBuktiPendaftaran = () => {
         try {
@@ -529,6 +527,14 @@ const DetailApprove = () => {
         } catch (error) {
 
         }
+    }
+
+    const konfirmasi = () => {
+        Swal.fire({
+            title: "Gagal",
+            text: 'Calon mahasiswa belum melengkapi data',
+            icon: 'error'
+        })
     }
 
 
@@ -1039,7 +1045,11 @@ const DetailApprove = () => {
                                                         <div className="row">
                                                             <div className="col-md-12">
                                                                 <Link to="/approve" className='btn btn-danger btn-sm'>Kembali</Link>
-                                                                <button onClick={approveData} className='btn btn-info btn-sm float-end'>Approve</button>
+                                                                {Approve.status_formulir === "selesai" && Approve.status_pembayaran === "selesai" && Approve.status_seleksi === "selesai" ? (
+                                                                    <button onClick={approveData} className='btn btn-info btn-sm float-end'>Approve</button>
+                                                                ) : (
+                                                                    <button onClick={konfirmasi} className='btn btn-info btn-sm float-end'>Approve</button>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
