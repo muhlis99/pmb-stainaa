@@ -92,7 +92,7 @@ const Registrasi = () => {
                         icon: 'success',
                         confirmButtonColor: '#3085d6'
                     }).then(() => {
-                        axios.post(`v1/formulir/createFirst/${response.data.data.token}`)
+                        axios.post(`v1/formulir/createFirst/${response.data.token}`)
                         navigate('/login')
                     })
                 })
